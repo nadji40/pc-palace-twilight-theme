@@ -1,10 +1,10 @@
 {
     "name": {
-        "ar": "رائد",
-        "en": "Theme Raed"
+        "ar": "قصر الحاسبات",
+        "en": "PC Palace"
     },
-    "repository": "https://github.com/SallaApp/theme-raed",
-    "author_email": "support@salla.sa",
+    "repository": "https://github.com/nadji40/pc-palace-twilight-theme",
+    "author_email": "support@skylightad.com",
     "features": [
         "mega-menu",
         "fonts",
@@ -25,6 +25,15 @@
         "filters"
     ],
     "settings": [
+        {
+            "id": "palace_announcement",
+            "type": "string",
+            "format": "text",
+            "label": "نص الشريط العلوي",
+            "multilanguage": true,
+            "required": false,
+            "value": null
+        },
         {
             "id": "squar_photo_bg_image_size",
             "type": "items",
@@ -286,8 +295,8 @@
         {
             "key": "186b3f4f-25cf-4d3c-abca-cef7eed6f0ab",
             "title": {
-                "en": "Enhances Animated Images",
-                "ar": " صور متحركة (محسنة)"
+                "en": "Full-width image banner",
+                "ar": "بنر الصور العريض"
             },
             "icon": "sicon-image-carousel",
             "path": "home.enhanced-slider",
@@ -304,7 +313,7 @@
                     "type": "static",
                     "format": "description",
                     "id": "enhance-slider-note",
-                    "value": "<div >هذا العنصر غير مناسب لعرض البنرات، يمكنك استخدام عنصر <strong>صور متحركة</strong> بدلاً منه لتظهر صورة البنر بشكل كامل</div>"
+                    "value": "<div>اعرض صور الحملة بعرض كامل، مع رابط اختياري لكل صورة. المقاس المقترح 1586×538.</div>"
                 },
                 {
                     "id": "slides",
@@ -320,16 +329,34 @@
                             "slides.image": "https://cdn.salla.sa/ZrBEO/MopzhoqpTkDObcKc8Q8n77AuydanfsGXdZO7iinH.jpg",
                             "slides.title": "روِّج لمنتجاتك كصور متحركة",
                             "slides.description": "اعرض المنتجات التي تود إبرازها لزوّار متجرك في هذه المساحة",
-                            "slides.without_overlay": false
+                            "slides.without_overlay": false,
+                            "slides.url": null
                         },
                         {
                             "slides.image": "https://cdn.salla.sa/ZrBEO/3gOhYSaIhaHxhH2IHWxJYDl9JHwxP6dGKiZFSq4K.jpg",
                             "slides.title": "شجّع زوار متجرك على الشراء عبر عروض خاصة",
                             "slides.description": "اعرض المنتجات التي تود إبرازها لزوّار متجرك في هذه المساحة",
-                            "slides.without_overlay": false
+                            "slides.without_overlay": false,
+                            "slides.url": null
                         }
                     ],
                     "fields": [
+                        {
+                            "type": "items",
+                            "icon": "sicon-link",
+                            "label": "رابط البنر",
+                            "id": "slides.url",
+                            "value": null,
+                            "required": false,
+                            "format": "variable-list",
+                            "searchable": true,
+                            "source": "custom",
+                            "sources": [
+                                { "label": "منتج", "key": "products", "value": "products" },
+                                { "label": "تصنيف", "key": "categories", "value": "categories" },
+                                { "label": "صفحة", "key": "pages", "value": "pages" }
+                            ]
+                        },
                         {
                             "type": "string",
                             "icon": "sicon-image",
@@ -339,7 +366,7 @@
                             "format": "image",
                             "required": true,
                             "placeholder": null,
-                            "description": "* المقاس المناسب للصورة هو 900×600 بكسل"
+                            "description": "المقاس المقترح 1586×538 بكسل"
                         },
                         {
                             "type": "string",

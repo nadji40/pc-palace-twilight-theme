@@ -1,11 +1,11 @@
 {
-  "name": "theme-raed",
-  "version": "1.358.0",
-  "description": "Salla Theme",
+  "name": "pc-palace-twilight-theme",
+  "version": "0.1.0",
+  "description": "PC Palace-inspired public Salla Twilight theme",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/SallaApp/theme-raed.git"
+    "url": "git+https://github.com/nadji40/pc-palace-twilight-theme.git"
   },
   "scripts": {
     "preinstall": "npx only-allow pnpm",
@@ -15,7 +15,7 @@
     "development": "webpack --mode development",
     "watch": "webpack --mode development --watch"
   },
-  "author": "Salla",
+  "author": "",
   "dependencies": {
     "@babel/runtime": "^8.0.0",
     "animejs": "^3.2.2",
@@ -28,8 +28,8 @@
     "@babel/core": "^8.0.1",
     "@babel/plugin-transform-runtime": "^8.0.1",
     "@babel/preset-env": "^8.0.2",
-    "@salla.sa/twilight": "^2.14.551",
-    "@salla.sa/twilight-components": "^2.14.551",
+    "@salla.sa/twilight": "^2.14.585",
+    "@salla.sa/twilight-components": "^2.14.585",
     "@tailwindcss/forms": "^0.5.11",
     "@tailwindcss/line-clamp": "^0.4.4",
     "@tailwindcss/nesting": "0.0.0-insiders.565cd3e",

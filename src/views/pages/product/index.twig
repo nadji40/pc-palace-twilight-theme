@@ -18,7 +18,25 @@
 #}
 {% extends "layouts.master" %}
 {% block content %}
-	{% if theme.settings.get('product_index_show_breadcrumbs', true) %}
+	{% if category %}
+		<div class="container">
+			<div class="palace-category-hero">
+				<salla-breadcrumb></salla-breadcrumb>
+				<h1>{{ category.name }}</h1>
+				{% if category.description %}<p>{{ category.description|striptags }}</p>{% endif %}
+			</div>
+			{% if category.sub_categories|length %}
+				<div class="palace-subcategories">
+					{% for child in category.sub_categories %}
+						<a href="{{ child.url }}" class="palace-subcategory">
+							{% if child.image %}<img src="{{ child.image }}" loading="lazy" width="84" height="84" alt="{{ child.name }}">{% endif %}
+							<span>{{ child.name }}</span>
+						</a>
+					{% endfor %}
+				</div>
+			{% endif %}
+		</div>
+	{% elseif theme.settings.get('product_index_show_breadcrumbs', true) %}
 		<div
 			class="container container--breadcrumbs">
 			{# add breadcumbs container in pages to make a space in case breadcrumbs is off #}
@@ -43,7 +61,7 @@
 
 		<div class="main-content flex-1 w-full {{ filters ? 'ltr:lg:ml-8 rtl:lg:mr-8' : '' }}">
 			<div class="mb-4 sm:mb-6 flex justify-between items-center">
-				<h1 class="font-bold text-xl rtl:pl-3 ltr:pr-3" id="page-main-title">{{ page.title|raw }}</h1>
+				{% if category %}<h2 class="font-bold text-xl rtl:pl-3 ltr:pr-3" id="page-main-title">{{ category.name }}</h2>{% else %}<h1 class="font-bold text-xl rtl:pl-3 ltr:pr-3" id="page-main-title">{{ page.title|striptags }}</h1>{% endif %}
 				<div class="flex items-center space-x-2 rtl:space-x-reverse">
 					{% if filters %}
 						<a data-testid="store-products-filters-mobile-trigger" href="#filters-menu" class="filters-trigger bg-border-color text-primary lg:hidden mt-2">

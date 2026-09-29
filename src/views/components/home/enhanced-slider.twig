@@ -8,26 +8,19 @@
 | component.slides               | object[] | list of slides                                                               |
 | position                       | int      | Sorting number start from zero                                               |
 #}
-<section component-id="{{ componentId }}" data-testid="store-home-slider" class="s-block s-block--hero-slider s-block--full-bg wide-placeholder"> 
-    <salla-slider 
-      id="main-slider-{{ position }}"
-      auto-play
-      static-when-single
-      slider-config='{"lazy":"false"}'
-      {{ component.slides|length > 1 ? '' : 'show-controls="false"' }}
-      type="fullwidth">
-        <div slot="items">
-            {% for slide in component.slides %}
-                <div class="swiper-slide w-full min-h-[300px] lg:min-h-[528px] bg-dark relative">
-					<div style="background-image: url({{ slide.image }});" class="{{ slide.without_overlay ? '' : 'overlay-bg' }} bg-cover bg-center absolute inset-0"></div>
-                    <div class="flex-center container pb-16 sm:pb-0 home-slider__content relative h-full">
-                        <div class=" w-4/6 text-center md:w-7/12 lg:w-5/12 text-white">
-                            <h2 data-swiper-parallax="-500" class="lg:text-title-size font-bold leading-tight mb-4">{{ slide.title }}</h2>
-                            <p data-swiper-parallax="-300" class="line-clamp-2 description">{{ slide.description }}</p>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
+<section component-id="{{ componentId }}" data-testid="store-home-slider" class="s-block s-block--hero-slider">
+  <salla-slider id="main-slider-{{ position }}" type="fullwidth" auto-play pagination static-when-single
+                {{ component.slides|length > 1 ? '' : 'show-controls="false"' }}>
+    <div slot="items">
+      {% for slide in component.slides %}
+        <div class="swiper-slide">
+          {% if slide.url %}<a href="{{ slide.url }}" aria-label="{{ slide.title|default(store.name) }}">{% endif %}
+            <img src="{{ slide.image }}" alt="{{ slide.title|default(store.name) }}"
+                 width="1440" height="488" loading="{{ loop.first ? 'eager' : 'lazy' }}"
+                 {% if loop.first %}fetchpriority="high"{% endif %}>
+          {% if slide.url %}</a>{% endif %}
         </div>
-    </salla-slider>
-</section> 
+      {% endfor %}
+    </div>
+  </salla-slider>
+</section>

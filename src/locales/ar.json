@@ -1,4 +1,15 @@
 {
+  "palace": {
+    "shipping_message": "شحن مجاني عند الطلب بـ 499",
+    "wishlist": "المفضلة",
+    "account": "الحساب",
+    "categories": "جميع الأقسام",
+    "view_all": "عرض الكل",
+    "product": "المنتج",
+    "quantity": "الكمية",
+    "price": "السعر",
+    "best_offers": "أفضل العروض"
+  },
   "blocks": {
     "header": {
       "cart": "السلة"

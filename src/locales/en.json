@@ -1,4 +1,15 @@
 {
+  "palace": {
+    "shipping_message": "Free shipping on qualifying orders",
+    "wishlist": "Wishlist",
+    "account": "Account",
+    "categories": "All categories",
+    "view_all": "View all",
+    "product": "Product",
+    "quantity": "Quantity",
+    "price": "Price",
+    "best_offers": "Best offers"
+  },
   "blocks": {
     "header": {
       "cart": "Cart"
