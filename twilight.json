@@ -35,6 +35,14 @@
             "value": null
         },
         {
+            "id": "palace_footer_logo",
+            "type": "string",
+            "format": "image",
+            "label": "شعار التذييل الفاتح",
+            "required": false,
+            "value": null
+        },
+        {
             "id": "squar_photo_bg_image_size",
             "type": "items",
             "format": "dropdown-list",
@@ -850,8 +858,8 @@
                     "format": "collection",
                     "required": true,
                     "minLength": 1,
-                    "maxLength": 5,
-                    "label": "قائمة الصور",
+                    "maxLength": 8,
+                    "label": "صور العروض (حتى صفين من أربع صور)",
                     "item_label": "صورة",
                     "value": [
                         {

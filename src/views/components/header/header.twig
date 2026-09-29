@@ -1,7 +1,7 @@
 <header data-testid="store-header" class="store-header palace-header">
   <div class="palace-announcement">
     <div class="container palace-announcement__inner">
-      <p>{{ theme.settings.get('palace_announcement')|default(trans('palace.shipping_message')) }}</p>
+      <p>{{ theme.settings.get('palace_announcement')|default(is_page('product.single') ? trans('palace.free_shipping_message') : trans('palace.shipping_message')) }}</p>
       <div class="palace-announcement__tools">
         {% if store.settings.is_multilingual or store.settings.currencies_enabled %}
           <salla-localization-modal data-testid="store-header-localization" show-trigger></salla-localization-modal>
@@ -23,14 +23,22 @@
 
       <div class="palace-actions">
         <span class="palace-action palace-action--wishlist">
-          <salla-wishlist-summary></salla-wishlist-summary><span>{{ trans('palace.wishlist') }}</span>
+          <a href="/account/wishlist" aria-label="{{ trans('palace.wishlist') }}">
+            <img src="{{ 'images/palace-heart.svg' | asset }}" alt="" width="25" height="25">
+            <span>{{ trans('palace.wishlist') }}</span>
+          </a>
         </span>
-        <salla-cart-summary data-testid="store-header-cart" class="palace-action palace-action--cart">
-          <i slot="icon" class="sicon-shopping-bag"></i>
-        </salla-cart-summary>
+        <span class="palace-action palace-action--cart">
+          <salla-cart-summary data-testid="store-header-cart">
+            <img slot="icon" src="{{ 'images/palace-cart.svg' | asset }}" alt="" width="25" height="25">
+          </salla-cart-summary>
+          <a href="/cart">{{ trans('blocks.header.cart') }}</a>
+        </span>
         <span class="palace-action palace-action--account">
-          <salla-user-menu data-testid="store-header-user-menu" avatar-only show-header show-trigger></salla-user-menu>
-          <span>{{ trans('palace.account') }}</span>
+          <salla-user-menu data-testid="store-header-user-menu" show-header show-trigger>
+            <span slot="trigger" class="palace-account-trigger"><img src="{{ 'images/palace-user.svg' | asset }}" alt="" width="25" height="25"><span>{{ trans('palace.account') }}</span></span>
+            <button slot="login-btn" class="palace-account-trigger" type="button" onclick="salla.event.dispatch('login::open')"><img src="{{ 'images/palace-user.svg' | asset }}" alt="" width="25" height="25"><span>{{ trans('palace.account') }}</span></button>
+          </salla-user-menu>
         </span>
       </div>
     </div>

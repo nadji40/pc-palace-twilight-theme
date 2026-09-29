@@ -1,6 +1,7 @@
 {
   "palace": {
-    "shipping_message": "Free shipping on qualifying orders",
+    "shipping_message": "Visit our showrooms in Jeddah and Riyadh",
+    "free_shipping_message": "Free shipping on orders over 499",
     "wishlist": "Wishlist",
     "account": "Account",
     "categories": "All categories",

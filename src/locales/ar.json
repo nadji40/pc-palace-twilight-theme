@@ -1,6 +1,7 @@
 {
   "palace": {
-    "shipping_message": "شحن مجاني عند الطلب بـ 499",
+    "shipping_message": "تفضل بزيارة معارضنا في جدة والرياض",
+    "free_shipping_message": "شحن مجاني عند الطلب بـ 499",
     "wishlist": "المفضلة",
     "account": "الحساب",
     "categories": "جميع الأقسام",

@@ -3,7 +3,6 @@
     {% for banner in component.banners %}
       {% if banner.url %}<a class="palace-promo-tile" href="{{ banner.url }}" aria-label="{{ banner.title|default(store.name) }}">{% else %}<div class="palace-promo-tile">{% endif %}
         <img src="{{ banner.image }}" alt="{{ banner.title|default(store.name) }}" width="340" height="210" loading="lazy">
-        {% if banner.title %}<span class="palace-promo-tile__title">{{ banner.title }}</span>{% endif %}
       {% if banner.url %}</a>{% else %}</div>{% endif %}
     {% endfor %}
   </div>

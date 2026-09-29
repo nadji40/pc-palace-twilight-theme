@@ -1,4 +1,7 @@
 /* PC Palace visual system. Data and checkout remain native to Salla. */
+@font-face { font-family: 'Palace Almarai'; src: url('./images/palace-almarai-regular.woff2') format('woff2'); font-style: normal; font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Palace Almarai'; src: url('./images/palace-almarai-bold.woff2') format('woff2'); font-style: normal; font-weight: 700; font-display: swap; }
+@font-face { font-family: 'Palace Almarai'; src: url('./images/palace-almarai-extrabold.woff2') format('woff2'); font-style: normal; font-weight: 800; font-display: swap; }
 :root {
   --palace-ink: #17191f;
   --palace-muted: #6c7180;
@@ -12,7 +15,7 @@
 body.theme-palace {
   color: var(--palace-ink);
   background: var(--palace-paper);
-  font-family: var(--font-main), Tahoma, Arial, sans-serif;
+  font-family: 'Palace Almarai', var(--font-main), Tahoma, Arial, sans-serif;
 }
 
 .theme-palace .container { max-width: 1320px; }
@@ -38,8 +41,16 @@ body.theme-palace {
 .palace-actions { display: flex; justify-content: flex-end; align-items: center; gap: 18px; white-space: nowrap; }
 .palace-action { display: inline-flex; align-items: center; gap: 4px; color: #252935; font-size: 14px; }
 .palace-action > i { font-size: 24px; }
+.palace-action img { display: block; width: 25px; height: 25px; object-fit: contain; }
+.palace-action--wishlist a, .palace-account-trigger { display: inline-flex; align-items: center; gap: 4px; color: inherit; font: inherit; white-space: nowrap; }
+.palace-account-trigger { background: transparent; border: 0; padding: 0; cursor: pointer; }
+.palace-action--cart .s-cart-summary-wrapper { display: inline-flex; align-items: center; gap: 1px; }
+.palace-action--cart .s-cart-summary-content { display: none; }
+.palace-action--cart #s-cart-icon { width: 25px; height: 25px; }
+.palace-action--cart > a { color: inherit; }
 .palace-action:hover { color: var(--palace-accent); }
-.palace-action--account salla-user-menu { display: inline-flex; }
+.palace-action--account salla-user-menu { display: inline-flex; align-items: center; }
+.palace-action--account .s-user-menu-trigger-slot { cursor: pointer; }
 .palace-action--cart { margin: 0; }
 .palace-action--cart .header-btn__icon { border: 0; margin: 0; font-size: 23px; }
 .palace-mobile-search { display: none; }
@@ -63,7 +74,7 @@ body.theme-palace {
 .theme-palace .s-block__title { border-bottom: 1px solid var(--palace-line); padding-bottom: 12px; }
 .theme-palace .s-block--hero-slider { margin-top: 28px; }
 .theme-palace .s-block--hero-slider .swiper-slide { min-height: auto; background: #fff; }
-.theme-palace .s-block--hero-slider .swiper-slide img { display: block; width: 100%; height: auto; aspect-ratio: 2.95/1; object-fit: cover; }
+.theme-palace .s-block--hero-slider .swiper-slide img { display: block; width: 100%; height: auto; aspect-ratio: 2.65/1; object-fit: cover; }
 .theme-palace .s-block--hero-slider .swiper-pagination-bullet-active { background: var(--palace-accent); }
 .theme-palace .s-block--categories .slide--cat-entry { border: 1px solid var(--palace-line); border-radius: 5px; background: #fff; padding: 15px 8px; min-height: 125px; box-shadow: none; }
 .theme-palace .s-block--categories .slide--cat-entry:hover { border-color: var(--palace-accent); }
@@ -124,10 +135,15 @@ body.theme-palace {
 .theme-palace .sidebar .menu-item.is-active { color: var(--palace-accent); background: #f3f5fc; }
 .theme-palace .main-content .form { padding: 26px; border: 1px solid var(--palace-line); border-radius: 5px; background: #fff; }
 .theme-palace .no-content-placeholder { border: 1px solid var(--palace-line); border-radius: 5px; background: #fff; }
-.theme-palace .store-footer { margin-top: 48px; background: #f7f8fb; color: #303642; border-top: 1px solid var(--palace-line); }
-.theme-palace .store-footer h3 { color: var(--palace-ink); font-weight: 800; }
+.theme-palace .store-footer { margin-top: 48px; background: #2d3e8e; color: #fff; border-top: 0; }
+.theme-palace .store-footer h3, .theme-palace .store-footer p, .theme-palace .store-footer b, .theme-palace .store-footer .copyright-text { color: #fff; }
+.theme-palace .store-footer h3 { font-weight: 800; font-size: 20px; }
+.theme-palace .store-footer a { color: #fff; }
+.theme-palace .store-footer__inner { padding-top: 48px; padding-bottom: 24px; }
+.theme-palace .store-footer > div:nth-of-type(2) { border-top: 1px solid #ffffff26; }
 .theme-palace .palace-footer-logo img { max-width: 175px; max-height: 72px; object-fit: contain; margin-bottom: 16px; }
-.theme-palace .store-footer a:hover { color: var(--palace-accent); }
+.theme-palace .palace-footer-logo__fallback { filter: grayscale(1) brightness(0) invert(1); }
+.theme-palace .store-footer a:hover { color: #dfe6ff; }
 
 @media (max-width: 1023px) {
   .palace-promo-tiles__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -137,7 +153,7 @@ body.theme-palace {
   .palace-logo img { width: 135px; height: 58px; }
   .palace-search { display: none; }
   .palace-actions { gap: 11px; }
-  .palace-actions .palace-action > span { display: none; }
+  .palace-actions .palace-action > span, .palace-action--wishlist a span, .palace-action--cart > a, .palace-account-trigger span { display: none; }
   .palace-action--wishlist salla-wishlist-summary { display: inline-flex; }
   .palace-mobile-search { display: block; padding-bottom: 14px; }
   .palace-nav, .palace-nav__inner { min-height: 48px; }
