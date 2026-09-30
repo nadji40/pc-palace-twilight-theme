@@ -95,7 +95,7 @@ See `local-preview/README.md` for the local preview.
 
 1. Connect a Salla Partners account to the private GitHub repository at
    `https://github.com/nadji40/pc-palace-twilight-theme`. The public support
-   address is `support@skylightad.com` in `twilight.json`.
+   address is `info@skylightad.com` (`author_email` and `support_url` in `twilight.json`).
 2. Import this repository as a theme in Partners Portal, or use the Salla CLI
    theme flow. Use `salla login`, then `salla theme preview --store=<demo-store>`.
 3. In the demo store set the main color to PC Palace blue (`#2d398f`), upload a
