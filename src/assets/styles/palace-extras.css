@@ -1,0 +1,238 @@
+/*
+ * Additions to the PC Palace reference design for blocks the reference page does not have
+ * (video, testimonials, account, notifications, blog filters) and dark mode coverage.
+ * Written with the reference's own tokens (--main-color, --light_main_color, --dark-mode-*).
+ */
+
+/* Footer logo shown in white on the coloured footer. */
+.palace-ref .palace-logo-white { filter: brightness(0) invert(1); }
+
+/* Video */
+.palace-ref .palace-video__frame { position: relative; aspect-ratio: 16 / 9; background: #000 center / cover no-repeat; border-radius: 15px; overflow: hidden; cursor: pointer; }
+.palace-ref .palace-video__frame::after { content: ""; position: absolute; inset: 0; background: rgba(0, 0, 0, .25); transition: background .3s; }
+.palace-ref .palace-video__frame:hover::after { background: rgba(0, 0, 0, .1); }
+.palace-ref .palace-video__play { position: absolute; z-index: 1; top: 50%; left: 50%; width: 76px; height: 76px; margin: -38px 0 0 -38px; border: 0; border-radius: 50%; background: var(--main-color); color: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 12px rgba(255, 255, 255, .25); transition: transform .3s; }
+.palace-ref .palace-video__frame:hover .palace-video__play { transform: scale(1.08); }
+.palace-ref .palace-video__frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; z-index: 2; }
+.palace-ref .palace-video__frame.is-playing::after { display: none; }
+
+/* Testimonials */
+.palace-ref .palace-testimonial { position: relative; height: 100%; padding: 30px 28px 26px; border: 1px solid #ececec; border-radius: 15px; background: #fff; transition: box-shadow .3s, transform .3s; }
+.palace-ref .palace-testimonial:hover { box-shadow: 5px 5px 15px rgba(0, 0, 0, .05); transform: translateY(-4px); }
+.palace-ref .palace-testimonial__quote { position: absolute; top: 6px; inset-inline-end: 22px; font-size: 64px; line-height: 1; color: var(--light_main_color); font-family: Georgia, serif; }
+.palace-ref .palace-testimonial p { margin: 14px 0 22px; color: #253d4e; font-size: 15px; line-height: 1.8; }
+.palace-ref .palace-testimonial__author { display: flex; align-items: center; gap: 12px; }
+.palace-ref .palace-testimonial__author img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; background: #f2f3f4; }
+.palace-ref .palace-testimonial__author h6 { margin: 0; font-size: 15px; }
+
+/* Features: brand-coloured icon tile */
+.palace-ref .palace-features .banner-icon { flex: 0 0 70px; }
+.palace-ref .palace-features .banner-icon img { width: 60px; height: 60px; object-fit: contain; }
+
+/* Blog category filter */
+.palace-ref .palace-blog-categories { display: flex; flex-wrap: wrap; gap: 10px; }
+.palace-ref .palace-blog-categories .btn-outline { background: transparent; color: var(--main-color); border: 1px solid var(--main-color); }
+.palace-ref .loop-grid .post-thumb img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
+
+/* Account */
+.palace-ref .palace-account__hello { display: flex; align-items: center; gap: 12px; padding: 15px; border: 1px solid #ececec; border-radius: 10px; }
+.palace-ref .palace-account__avatar { flex: 0 0 48px; width: 48px; height: 48px; border-radius: 50%; background: var(--light_main_color); color: var(--main-color); display: flex; align-items: center; justify-content: center; font-size: 20px; overflow: hidden; }
+.palace-ref .palace-account__avatar img { width: 100%; height: 100%; object-fit: cover; }
+.palace-ref .palace-account__hello h6 { margin: 0; }
+.palace-ref .palace-account__hello p { margin: 0; }
+.palace-ref .palace-order-status { display: inline-block; padding: 3px 12px; border-radius: 30px; font-size: 13px; font-weight: 700; color: var(--status); background: color-mix(in srgb, var(--status) 12%, transparent); }
+.palace-ref .palace-notifications { list-style: none; padding: 0; margin: 0; }
+.palace-ref .palace-notifications li { border-bottom: 1px solid #ececec; }
+.palace-ref .palace-notifications li a { display: flex; gap: 14px; padding: 16px 4px; color: inherit; }
+.palace-ref .palace-notifications li i { color: var(--main-color); font-size: 18px; }
+.palace-ref .palace-notifications li.is-new h6::after { content: ""; display: inline-block; width: 8px; height: 8px; margin-inline-start: 8px; border-radius: 50%; background: var(--main-color); }
+.palace-ref .palace-profile-form .form-group { margin-bottom: 20px; }
+.palace-ref .palace-profile-form label { display: block; margin-bottom: 6px; font-weight: 700; }
+
+/* Cart */
+.palace-ref .palace-busy { opacity: .45; pointer-events: none; transition: opacity .2s; }
+.palace-ref .template-cart .cart-product-delete a { display: inline-flex; padding: 6px; }
+.palace-ref .template-cart .cart-product-delete a:hover .icon-delete { color: #e53935; }
+.palace-ref .template-cart .cart-product-col-details h1 a { color: #253d4e; }
+.palace-ref .template-cart .cart-products-action select { width: 100%; padding: 0 10px; background-color: #fff; }
+.palace-ref .cart-empty { text-align: center; }
+.palace-ref .cart-empty svg { max-width: 100%; height: auto; margin: 0 auto 30px; display: block; }
+
+/* Product options: long option names (e.g. "hard 1TB HDD هارد تخزين 1 تيرابايت") grow the chip instead of overflowing it. */
+.palace-ref .product-option-container.select-view .scrollableList ul { flex-wrap: wrap; }
+.palace-ref .product-option-container.select-view .scrollableList ul li:not(.with-bg) { width: auto; max-width: 170px; height: auto; min-height: 45px; flex: none; padding: 6px 10px; }
+
+/* ------------------------------------------------------------- dark mode */
+.main--dark .palace-ref .palace-testimonial,
+.main--dark .palace-ref .palace-account__hello { background: var(--dark-mode-card); border-color: transparent; }
+.main--dark .palace-ref .palace-testimonial p,
+.main--dark .palace-ref .palace-notifications li a { color: #e6e6e6; }
+.main--dark .palace-ref .palace-notifications li { border-color: rgba(255, 255, 255, .1); }
+
+/* Product tabs: long or many category names scroll instead of squeezing the section title. */
+.palace-ref .featured-products-section .section-title .title h3 { white-space: nowrap; }
+.palace-ref .featured-products-section .tabs-wrapper { min-width: 0; overflow-x: auto; scrollbar-width: none; }
+.palace-ref .featured-products-section .tabs-wrapper::-webkit-scrollbar { display: none; }
+.palace-ref .featured-products-section .tabs-wrapper .nav-tabs { flex-wrap: nowrap; }
+.palace-ref .featured-products-section .tabs-wrapper .nav-link { white-space: nowrap; }
+
+/* Video: capped so a full-width frame does not fill the screen. */
+.palace-ref .palace-video__frame { max-width: 1000px; margin-inline: auto; }
+/* Testimonial cards share the tallest card's height. */
+.palace-ref .palace-testimonials .swiper-slide { height: auto; }
+
+/* Spacing around Salla components (islands keep Salla utility classes, so no reference margin classes on them). */
+.palace-island-gap > :not(:empty) { display: block; margin-bottom: 20px; }
+.palace-island-top { margin-top: 30px; }
+
+/* ------------------------------------------------------ dark mode, full site
+ * The reference dark mode stops at the page body: header, banners, cards, filters, cart and
+ * merchant content stayed light or kept dark text. This layer finishes it with the same tokens
+ * (--dark-mode-body #2e2f32, --dark-mode-card #4b4b4d) plus a light tint of the brand colour
+ * for brand-coloured text, which is unreadable on dark as-is.
+ */
+.main--dark { --palace-dark-header: #26272a; --palace-dark-line: #3d3e42; --palace-dark-text: #e6e6e6; --palace-dark-muted: #a9a9ad;
+  --palace-brand-on-dark: color-mix(in srgb, var(--main-color) 40%, #fff); color-scheme: dark; }
+
+/* Header */
+.main--dark .palace-ref .header-middle,
+.main--dark .palace-ref .header-bottom,
+.main--dark .palace-ref .header-bottom.stick,
+.main--dark .palace-ref .mobile-header-wrapper-style .mobile-header-top { background-color: var(--palace-dark-header) !important; border-color: var(--palace-dark-line) !important; }
+.main--dark .palace-ref .header-middle { border-bottom: 1px solid var(--palace-dark-line); }
+.main--dark .palace-ref .search-style-2 form,
+.main--dark .palace-ref .search-style-2 select,
+.main--dark .palace-ref .search-style-2 input,
+.main--dark .palace-ref .search-style-2 .select2-selection,
+.main--dark .palace-ref .mobile-search form,
+.main--dark .palace-ref .mobile-search input { background-color: var(--dark-mode-body) !important; border-color: var(--palace-dark-line) !important; color: var(--palace-dark-text); }
+.main--dark .palace-ref .search-style-2 input::placeholder { color: var(--palace-dark-muted); }
+.main--dark .palace-ref .header-action-2 .header-action-icon-2 > a,
+.main--dark .palace-ref .header-action-2 .lable,
+.main--dark .palace-ref .main-menu > nav > ul > li > a,
+.main--dark .palace-ref .hotline p,
+.main--dark .palace-ref .hotline a { color: var(--palace-dark-text) !important; }
+.main--dark .palace-ref .main-menu > nav > ul > li > a:hover,
+.main--dark .palace-ref .main-menu > nav > ul > li > a.active { color: var(--palace-brand-on-dark) !important; }
+.main--dark .palace-ref .dynamic-search-results,
+.main--dark .palace-ref .cart-dropdown-wrap,
+.main--dark .palace-ref .account-dropdown { background-color: var(--palace-dark-header); border-color: var(--palace-dark-line); color: var(--palace-dark-text); }
+.main--dark .palace-ref .dynamic-search-results a { color: var(--palace-dark-text); }
+
+/* Brand-coloured text */
+.main--dark .palace-ref .text-brand,
+.main--dark .palace-ref .breadcrumb a,
+.main--dark .palace-ref .section-title a,
+.main--dark .palace-ref .cart-continue-shopping,
+.main--dark .palace-ref .product-price span:not(.old-price),
+.main--dark .palace-ref .nav-tabs.links .nav-link.active,
+.main--dark .palace-ref .palace-account__hello h6,
+.main--dark .palace-ref table a { color: var(--palace-brand-on-dark) !important; }
+.main--dark .palace-ref .product-price .old-price { color: var(--palace-dark-muted); }
+
+/* Page headers and banners */
+.main--dark .palace-ref .page-header.breadcrumb-wrap { border-color: var(--palace-dark-line); }
+.main--dark .palace-ref .archive-header { background: var(--dark-mode-card) !important; }
+.main--dark .palace-ref .archive-header h1,
+.main--dark .palace-ref .page-content h1,
+.main--dark .palace-ref .heading-2 { color: #fff; }
+.main--dark .palace-ref .archive-header p,
+.main--dark .palace-ref .breadcrumb { color: var(--palace-dark-muted); }
+
+/* Category, sub-category and brand tiles: dark tile, the photo keeps a white pad */
+.main--dark .palace-ref .card-1,
+.main--dark .palace-ref .card-2 { background-color: var(--dark-mode-card) !important; border-color: transparent !important; }
+.main--dark .palace-ref .card-1 figure,
+.main--dark .palace-ref .card-2 figure { background: #fff; border-radius: 10px; }
+.main--dark .palace-ref .card-1 h6, .main--dark .palace-ref .card-1 h6 a,
+.main--dark .palace-ref .card-2 h6, .main--dark .palace-ref .card-2 h6 a { color: var(--palace-dark-text) !important; }
+
+/* Listing: sort and filters */
+.main--dark .palace-ref .sort-by-cover .sort-by-product-wrap,
+.main--dark .palace-ref .sort-by-dropdown { background-color: var(--dark-mode-card); border-color: var(--dark-mode-card); color: var(--palace-dark-text); }
+.main--dark .palace-ref .sort-by-product-wrap span,
+.main--dark .palace-ref .sort-by-dropdown ul li a { color: var(--palace-dark-text); }
+.main--dark .palace-ref .sort-by-dropdown ul li a:hover,
+.main--dark .palace-ref .sort-by-dropdown ul li a.active { background-color: var(--dark-mode-body); color: var(--palace-brand-on-dark); }
+.main--dark .palace-ref .product-attributes,
+.main--dark .palace-ref .product-attributes-light-box,
+.main--dark .palace-ref .products-filters-container,
+.main--dark .palace-ref .attribute,
+.main--dark .palace-ref .attribute-group,
+.main--dark .palace-ref .attribute-header,
+.main--dark .palace-ref .attribute-more,
+.main--dark .palace-ref .filtration-header { background-color: var(--dark-mode-card) !important; border-color: var(--palace-dark-line) !important; color: var(--palace-dark-text); }
+.main--dark .palace-ref .attribute-name,
+.main--dark .palace-ref .attribute-label,
+.main--dark .palace-ref .filtration-header span,
+.main--dark .palace-ref .attribute-body label,
+.main--dark .palace-ref .attribute-body h6 { color: var(--palace-dark-text) !important; }
+.main--dark .palace-ref .attribute-more { color: var(--palace-brand-on-dark); }
+
+/* Forms */
+.main--dark .palace-ref .form-control,
+.main--dark .palace-ref input[type="text"],
+.main--dark .palace-ref input[type="email"],
+.main--dark .palace-ref input[type="number"],
+.main--dark .palace-ref input[type="date"],
+.main--dark .palace-ref select,
+.main--dark .palace-ref textarea { background-color: var(--dark-mode-body); border-color: var(--palace-dark-line); color: var(--palace-dark-text); }
+.main--dark .palace-ref label { color: var(--palace-dark-text); }
+
+/* Cart */
+.main--dark .palace-ref .card-progress { background: transparent; border: 0; }
+.main--dark .palace-ref .card-progress .number h3,
+.main--dark .palace-ref .free-shipping-rule-message { color: var(--palace-dark-text); }
+.main--dark .palace-ref .template-cart .cart-product-row-wrapper { border-color: var(--palace-dark-line); }
+.main--dark .palace-ref .cart-product-col-details h1 a { color: var(--palace-dark-text); }
+.main--dark .palace-ref .cart-product-prices span { color: var(--palace-dark-muted); }
+.main--dark .palace-ref .cart-product-prices .cart-product-total-price { color: var(--palace-dark-text); }
+.main--dark .palace-ref .cart-products-action select { background-color: var(--dark-mode-body); color: #fff; border-color: var(--palace-brand-on-dark); }
+.main--dark .palace-ref .cart-totals { background-color: var(--dark-mode-card); border-color: transparent !important; }
+.main--dark .palace-ref .cart-totals strong { color: var(--palace-dark-muted); }
+.main--dark .palace-ref .cart_tot_price { color: var(--palace-brand-on-dark); }
+.main--dark .palace-ref .calculate-shiping { border-color: var(--palace-dark-line) !important; }
+.main--dark .palace-ref .cart-page-wrapper h6 { color: var(--palace-dark-muted); }
+
+/* Account */
+.main--dark .palace-ref .dashboard-menu .nav-link { background-color: var(--dark-mode-card); border-color: transparent; color: var(--palace-dark-text); }
+.main--dark .palace-ref .dashboard-menu .nav-link.active { background-color: var(--main-color); color: #fff; }
+.main--dark .palace-ref .table,
+.main--dark .palace-ref .table td,
+.main--dark .palace-ref .table th { color: var(--palace-dark-text); border-color: var(--palace-dark-line) !important; }
+.main--dark .palace-ref .palace-account__hello p { color: var(--palace-dark-muted); }
+
+/* Merchant content (articles, pages, product descriptions) often carries inline black text. */
+.main--dark .palace-ref .single-content,
+.main--dark .palace-ref .single-content-page,
+.main--dark .palace-ref .product-description,
+.main--dark .palace-ref .tab-content .tab-pane { color: var(--palace-dark-text); }
+.main--dark .palace-ref :is(.single-content, .single-content-page, .product-description) :is(p, span, li, strong, b, em, h1, h2, h3, h4, h5, h6, td, th, pre):not(salla-product-card-embed *) { color: var(--palace-dark-text) !important; background-color: transparent !important; }
+.main--dark .palace-ref :is(.single-content, .single-content-page) :is(table, td, th) { border-color: var(--palace-dark-line) !important; }
+.main--dark .palace-ref .single-content a { color: var(--palace-brand-on-dark); }
+
+/* Store features, blog cards, product tabs and quantity */
+.main--dark .palace-ref .banner-left-icon,
+.main--dark .palace-ref .loop-grid article,
+.main--dark .palace-ref .post-list article { background-color: var(--dark-mode-card) !important; border-color: transparent !important; }
+.main--dark .palace-ref .banner-left-icon .banner-text h3,
+.main--dark .palace-ref .loop-grid .post-title a,
+.main--dark .palace-ref .loop-grid .entry-content h2 a { color: var(--palace-dark-text) !important; }
+.main--dark .palace-ref .banner-left-icon .banner-text p,
+.main--dark .palace-ref .loop-grid .entry-meta,
+.main--dark .palace-ref .loop-grid p { color: var(--palace-dark-muted) !important; }
+.main--dark .palace-ref .product-info .nav-tabs .nav-link,
+.main--dark .palace-ref .tab-style3 .nav-tabs .nav-link { background-color: var(--dark-mode-card); border-color: transparent; color: var(--palace-dark-text); }
+.main--dark .palace-ref .product-info .nav-tabs .nav-link.active,
+.main--dark .palace-ref .tab-style3 .nav-tabs .nav-link.active { background-color: var(--main-color); color: #fff !important; }
+.main--dark .palace-ref .product-info .nav-tabs li { background: transparent; }
+.main--dark .palace-ref .detail-qty { background-color: var(--dark-mode-body); border-color: var(--palace-dark-line) !important; }
+.main--dark .palace-ref .detail-qty > a,
+.main--dark .palace-ref .detail-qty .qty-val { color: #fff !important; background: transparent; }
+.main--dark .palace-ref .product-info { border-color: var(--palace-dark-line); }
+
+.main--dark .palace-ref .search-style-2 .select2-selection__rendered { color: var(--palace-dark-text) !important; }
+.main--dark .palace-ref .btn-buy-now { color: var(--palace-brand-on-dark) !important; border-color: var(--palace-brand-on-dark) !important; }
+.main--dark .palace-ref .product-option-container.select-view .scrollableList ul li:not(.selected-option) { background-color: var(--dark-mode-card); color: var(--palace-dark-text); box-shadow: none; }
+.main--dark .palace-ref .product-option-container.select-view .scrollableList ul li:not(.selected-option) span.text-color-primary { color: var(--palace-brand-on-dark); }
+.main--dark .palace-ref .banner-left-icon .banner-icon img { filter: brightness(0) invert(.85); }

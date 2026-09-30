@@ -1,0 +1,25 @@
+{#
+  PC Palace weekly offers carousel (reference: products-offers). Offer cards show a countdown.
+  component.title | component.products[] | component.category | component.display_all_url
+  component.more_text | component.offer_end (e.g. 2026/10/02) | component.hide_offer_date | component.autoplay | component.limit
+#}
+{% set sid = 'palace-' ~ (position|default(0)) %}
+{% set ids = [] %}{% for product in component.products %}{% set ids = ids|merge([product.id is defined ? product.id : product]) %}{% endfor %}
+{% set category = component.category %}{% if category is iterable and category.id is not defined %}{% set category = category|first %}{% endif %}
+{% set source = ids|length ? 'selected' : (category ? 'categories' : 'offers') %}
+{% set value = ids|length ? ids : (category ? [category.id is defined ? category.id : category] : null) %}
+{% set more_url = component.display_all_url ?: (category.url is defined ? category.url : '') %}
+{% set config = {'source': source, 'value': value, 'limit': component.limit ?: 14, 'autoplay': component.autoplay is same as(false) ? false : true, 'slideClass': 'lg:w-1/4 w-72 px-2', 'endDate': component.offer_end, 'hideDate': component.hide_offer_date ? true : false} %}
+<section main-section-id="{{ sid }}" id="offers-section-{{ sid }}" class="palace-ref" component-id="{{ componentId }}">
+<section class="pb-5 section-padding offers-slider-first featured-products-section hide-main-arrows lazyloaded" section-id="{{ sid }}" data-palace-section="offers" data-palace-products="{{ config|json_encode }}">
+<div class="container container-padding-mobile">
+<div class="section-title wow animate__animated animate__fadeIn"><h3 class="">{{ component.title }}</h3>{% if more_url %}<a href="{{ more_url }}" class="fw-900">{{ component.more_text ?: trans('palace.view_all') }}</a>{% endif %}</div>
+<div class="row"><div class="col-md-12 wow animate__animated animate__fadeIn" data-wow-delay=".4s">
+<div class="carausel-4-columns-cover arrow-center position-relative">
+<div class="slider-arrow slider-arrow-2 carausel-4-columns-arrow"></div>
+<div class="swiper carausel-4-columns carausel-arrow-center"><div class="swiper-wrapper"></div></div>
+</div>
+</div></div>
+</div>
+</section>
+</section>

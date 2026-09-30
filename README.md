@@ -1,48 +1,80 @@
-# PC Palace Twilight theme
+# Moodyul Twilight theme
 
-Salla Twilight storefront theme built from the PC Palace visual reference in
-`../pcpalace-theme/`. The templates use Salla's data, web components, and
-storefront SDK. The Zid HTML/JS capture is a design reference only.
+Salla Twilight storefront theme for [Moodyul](https://moodyul.com/) (مودي يول). Its core is the
+PC Palace design (layout, components, animations and the blue `#2b3990` palette) reproduced from the
+visual reference in `../pcpalace-theme/`; the theme is branded Moodyul in `twilight.json`, the theme
+editor and `package.json`. The templates use Salla's data, web components, and storefront SDK. The
+Zid HTML/JS capture is a design reference only.
 
-## Implemented surfaces
+## How the PC Palace design is reproduced
 
-| Surface | Twilight template |
+The storefront reuses the reference's own markup and stylesheet instead of approximating them:
+
+- `scripts/import-reference.cjs` builds `src/assets/styles/pcpalace-reference.css` from the saved
+  Zid stylesheets (Bootstrap 5, Swiper, animate.css and the Nest template, plus the store's custom
+  and inline CSS) and copies the static icons, payment logos and fonts into `src/assets/images/palace/`.
+- `scripts/palace-scope.cjs` keeps the two stylesheets apart. Elements inside a `.palace-ref` region
+  (header, footer, every PC Palace home section) are styled only by the reference CSS; everything
+  else (Salla components, account/cart/product pages) only by `app.css`. The scope is added with
+  `:where()`, so specificity and cascade order are unchanged.
+- The Twig templates output the same DOM as the reference: `components/header/header.twig`,
+  `components/footer/footer.twig` and `components/home/palace-*.twig`.
+- `src/assets/js/palace-reference.js` rebuilds the reference behaviour on Salla's SDK: Swiper
+  carousels with the same settings, product cards rendered from `salla.product.fetch`, WOW.js
+  entrance animations, lazy images, the announcement ticker, sticky header, countdowns, cart
+  drawer, search suggestions, category dropdown, mobile drawer, dark mode and scroll-to-top.
+
+## Homepage sections (theme editor)
+
+| Component | Reference section |
 | --- | --- |
-| Shared shell, search, menu, login entry, cart/wishlist indicators | `src/views/layouts/master.twig`, `src/views/components/header/header.twig`, `src/views/components/footer/footer.twig` |
-| Home and merchant-editable image banners/tiles/products | `src/views/pages/index.twig`, `src/views/components/home/`, `twilight.json` |
-| Category, offers, search, filters, product cards | `src/views/pages/product/index.twig`, `src/assets/js/partials/product-card.js` |
-| Product gallery, variants, availability, add to cart | `src/views/pages/product/single.twig` |
-| Cart and native checkout handoff | `src/views/pages/cart.twig` |
-| Customer profile, orders, wishlist, notifications, loyalty | `src/views/layouts/customer.twig`, `src/views/pages/customer/`, `src/views/pages/loyalty.twig` |
-| Blog, information pages, order confirmation | `src/views/pages/blog/`, `src/views/pages/page-single.twig`, `src/views/pages/thank-you.twig` |
+| `home.palace-hero` | Full-width hero slider |
+| `home.palace-categories` | Category carousel (`تسوّق بالاقسام`) and the quick-links row |
+| `home.palace-banners` | Rows of four promo banners |
+| `home.palace-offers` | Weekly offers carousel with countdown |
+| `home.palace-tabs` | `عروض ماتتفوت` category tabs |
+| `home.palace-products` | Laptops, new arrivals and best-seller carousels |
+| `home.palace-columns` | Four product columns above the footer |
+| `home.palace-brands` | Brand tiles (`تصفح من خلال العلامات التجارية`), in the category-card style |
+| `home.palace-video` | YouTube video with a poster and play button (loads the player on click) |
+| `home.palace-testimonials` | Customer reviews carousel |
+| `home.palace-features` | Store features row (Nest `banner-left-icon` blocks) |
 
-The product and cart behavior uses Salla's forms, options, quantity handling,
-coupons, checkout submission, hooks, and account web components. The header
-SVGs and Arabic Almarai font are copied from the saved reference, and the
-footer uses the reference's dark blue layout. Set `palace_footer_logo` to a
-light version of the store logo in the theme editor.
+The last four were added for Moodyul's own homepage sections (brands, installation video, reviews,
+store features) and use the same reference markup and animations as the rest of the page.
 
-## Homepage component order for the PC Palace layout
+Salla's built-in product components (`fixed-products`, `products-slider`, `latest-products`)
+render the same carousel. Header/footer content comes from the store (logo, header and footer
+menus, social links, VAT number) and the `palace_*` theme settings (announcement messages, dark
+logo, footer logo and colour, working hours, app links, CR and e-commerce numbers). The footer's
+two link columns are the top-level items of the footer menu.
 
-The home page renders `{% component home %}`. In the Salla theme editor, add
-and arrange the components in this order; product and category data comes from
-the merchant's Salla catalog:
+## Pages
 
-1. `home.enhanced-slider` — wide hero carousel.
-2. `home.main-links` — category tiles, titled `تسوّق بالاقسام`.
-3. A second `home.main-links` — four quick category links.
-4. `home.enhanced-square-banners` — eight image tiles in two rows of four.
-5. `home.fixed-products` — `العروض الإسبوعية`, with selected offer products.
-6. `home.featured-products-style1` — tabbed `عروض ماتتفوت` products.
-7. `home.fixed-banner` — wide campaign banner.
-8. `home.fixed-products` — `الكمبيوتر المحمول | لابتوب`, linked to a laptop category.
-9. `home.latest-products` — `وصل حديثا`.
-10. `home.fixed-products` — `الأكثر طلباً`, sourced from top sellers.
-11. `home.brands` or `home.square-photos` — the final brand/category highlight.
+All pages share the reference header, footer and breadcrumb banner:
 
-The editor allows merchants to replace images and selections without changing
-Twig. The component order and actual merchant content have not yet been set in
-the `moodyul` demo store, so the built theme is not a verified pixel match.
+| Template | Page |
+| --- | --- |
+| `pages/index.twig` | Homepage (merchant-configured sections) |
+| `pages/product/index.twig` | Category, offers, search and all-products listing: sub-category row, sort, filters, load more |
+| `pages/product/single.twig` | Product page: gallery, options with prices, installments, tabs, questions, related products |
+| `pages/brands/index.twig`, `pages/brands/single.twig` | Brands grid and a brand's products (full width when there are no filters) |
+| `pages/blog/index.twig`, `pages/blog/single.twig` | Blog grid and article (merchant HTML, embedded product cards, comments, related articles) |
+| `pages/page-single.twig` | Content pages (about, policies) |
+| `pages/cart.twig` | Cart in the reference layout: item rows, quantity, remove, free-shipping progress, coupon, totals, checkout |
+| `pages/customer/*` (`layouts/customer.twig`) | Account: profile, orders, order details (reorder, cancel, rate), wishlist, notifications, wallet |
+
+Salla web components placed inside a PC Palace region (comments, loyalty, conditional offers, rating,
+wallet, phone input, embedded product cards) sit in a `.salla-island`, which gives them back Salla's
+own styling.
+
+## Dark mode
+
+The header toggle switches `main--light` / `main--dark` on the body and remembers the choice. The
+reference's own dark rules cover the page body and product cards; `src/assets/styles/palace-extras.css`
+completes them for the header, search, menus, banners, category and brand tiles, filters, sort,
+forms, cart, account pages, blog cards, product tabs and options, and merchant HTML (which often
+carries inline black text). Brand-coloured text uses a light tint of the store colour on dark.
 
 ## Local build
 
@@ -53,9 +85,11 @@ pnpm install --frozen-lockfile
 pnpm run production
 ```
 
-The compiled assets are in `public/`. Do not copy the 51 MB Zid reference into
+The compiled assets are in `public/`. Do not copy the Zid merchant media into
 this theme; merchant imagery is configured in Salla. Arabic and English theme
-strings are in `src/locales/`.
+strings are in `src/locales/`. After the reference capture changes, run
+`node scripts/import-reference.cjs`. The preview data comes from `node scripts/build-moodyul-fixture.cjs`.
+See `local-preview/README.md` for the local preview.
 
 ## Connect to Salla and preview
 

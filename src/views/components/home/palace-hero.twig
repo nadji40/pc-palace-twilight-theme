@@ -1,0 +1,42 @@
+{#
+  PC Palace hero slider (reference: main-slider). Swiper is started by palace-reference.js.
+  component.slides[]: image, mobile_image, url, title | component.autoplay | component.full_width
+#}
+{% set sid = 'palace-' ~ (position|default(0)) %}
+<section main-section-id="{{ sid }}" id="home-slider-{{ sid }}" class="palace-ref" component-id="{{ componentId }}">
+<section section-id="{{ sid }}" id="react-home-slider-{{ sid }}" class="home-slider style-1 position-relative mb-30 hide-main-arrows lazyloaded" data-palace-section="hero" data-autoplay="{{ component.autoplay is same as(false) ? 'false' : 'true' }}">
+<style>
+#react-home-slider-{{ sid }}.home-slider.style-1 .controlled-banner-height .video-player-main-wrapper{position:absolute;inset:0}
+@media only screen and (max-width: 1024px) {
+  #react-home-slider-{{ sid }}.home-slider.style-1 .hero-slider-1.style-4 .single-hero-slider .hero-slider-content-wrapper .slider-content{transform:scale(0.7) translateX(4%) translateY(-61%)}
+  #react-home-slider-{{ sid }}.home-slider.style-1 .hero-slider-1.style-4 .single-hero-slider{height:unset}
+  #react-home-slider-{{ sid }}.home-slider.style-1 .hero-slider-1.style-4 .single-hero-slider .hero-slider-content-wrapper{padding-top:33%;position:relative;width:100%}
+  #react-home-slider-{{ sid }}.home-slider.style-1 .hero-slider-1.style-4 .single-hero-slider .hero-slider-content-wrapper .video-player-main-wrapper{height:100%;position:absolute;top:0;left:0;right:0;bottom:0;border-radius:10px}
+  #react-home-slider-{{ sid }}.home-slider.style-1 .hero-slider-1.style-4 .single-hero-slider img{max-height:unset;height:100%;border-radius:10px}
+  #react-home-slider-{{ sid }}.home-slider.style-1 .hero-slider-1.style-4{height:auto}
+  #react-home-slider-{{ sid }}.home-slider.style-1 .hero-slider-1.style-4 .slick-dots{transform:scale(0.7) translateX(-73%) translateY(7px)}
+}
+</style>
+<div class="{{ component.full_width is same as(false) ? 'container' : 'wide-slider' }}">
+<div class="home-slide-cover mt-30">
+<div class="hero-slider-1 style-4 dot-style-1 dot-style-1-position-1 slick-initialized slick-slider slick-dotted">
+<div class="slick-list draggable"><div class="slick-track" style="opacity: 1; width: 0px;"></div></div>
+<ul class="slick-dots" role="tablist"><li class="slick-active" role="presentation"><button type="button" role="tab" aria-label="1 of 0" tabindex="0" aria-selected="true">1</button></li></ul>
+<div class="swiper">
+<div class="swiper-wrapper">
+{% for slide in component.slides %}
+{% set mobile = slide.mobile_image ?: slide.image %}
+<div class="swiper-slide"><div class="single-hero-slider single-animation-wrap  "><div class="hero-slider-content-wrapper">
+<picture><source data-srcset="{{ mobile }} 240w, {{ mobile }} 320w, {{ mobile }} 500w" media="(max-width: 550px)"><source data-srcset="{{ mobile }} 640w, {{ mobile }} 990w, {{ mobile }} 1024w" media="(max-width: 1024px)"><source data-srcset="{{ slide.image }} 1200w"><img width="1586" height="538" src="{{ slide.image }}" class="banner-bg-custom" {{ loop.first ? 'fetchpriority="high"' : 'loading="lazy"' }} alt="{{ slide.title ?: 'banner image' }}"></picture>
+<a href="{{ slide.url ?: '#' }}" class="absolute_href_banner" aria-label="{{ slide.title ?: 'link data' }}" title="{{ slide.title ?: 'link data' }}"></a>
+<div class="slider-content">{% if slide.title %}<h1 class="mb-40 display-2">{{ slide.title }}</h1>{% endif %}</div>
+</div></div></div>
+{% endfor %}
+</div>
+</div>
+</div>
+<div class="slider-arrow slider-arrow-2 carausel-4-columns-arrow"><div class="slider-arrow hero-slider-1-arrow"></div></div>
+</div>
+</div>
+</section>
+</section>

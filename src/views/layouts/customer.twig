@@ -1,47 +1,34 @@
+{#
+  PC Palace customer account layout (Nest dashboard: side menu + card).
+  Pages extend it and fill `inner_content` (and optionally `inner_title`).
+#}
 {% extends "layouts.master" %}
 {% block content %}
-    <div class="profile-header palace-account-header">
-        <div class="container relative flex justify-between h-full items-center">
-            {# add breadcumbs container in pages to make a space in case breadcrumbs is off #}
-            <nav class="breadcrumbs w-full py-5 self-start">
-                <salla-breadcrumb></salla-breadcrumb>
-            </nav>
-            <div class="palace-account-header__identity">
-                {% if user.first_name %}<span>{{ user.first_name }}</span>{% endif %}
-            </div>
-        </div>
-    </div>
-    <div class="container lg:mb-24">
-        <div class="flex items-start flex-col lg:flex-row justify-center">
-            <nav aria-label="Sidebar"
-                class="shrink-0 lg:sticky top-24 lg:-mt-28 lg:shadow-default rounded-md lg:bg-white w-full lg:w-72 rtl:lg:ml-8 ltr:lg:mr-8 lg:pt-8 lg:pb-11 sidebar space-y-px">
-                {% if is_page('customer.profile') %}
-                    <div class="text-center md:mb-9">
-                        <div class="h-20 w-20 m-auto avatar-wrap bg-gray-100 rounded-full">
-                            <salla-file-upload data-testid="store-profile-avatar-upload" profile-image value="{{ user.avatar }}">
-                                <span class='avatar-placeholder flex justify-center items-center flex-col'>
-                                    <span class='sicon-user'></span>
-                                    <span class='text'>{{ trans('common.uploader.choose_suitable_picture') }}</span>
-                                </span>
-                            </salla-file-upload>
-                        </div>
-                    </div>
-                {% endif %}
-                <div class="hidden lg:block">
-                    <salla-user-menu data-testid="store-sidebar-user-menu" inline></salla-user-menu>
-                </div>
-            </nav>
-            <div class="main-content w-full flex-1 lg:pt-10 max-w-3xl">
-                {% block inner_title %}
-                    <h1 class="font-bold text-lg text-center sm:rtl:text-right sm:ltr:text-left mb-2">{{ page.title }}</h1>
-                {% endblock %}
-                {#
-                All customer pages have same header, this layout will wrap the different content.
-                Use it like: `{% extends "layouts.customer" %}` instead of `{% extends "layouts.master" %}`
-                Then body: `{% block inner_content %}` instead of `{% block content %}`
-                #}
-                {% block inner_content %}{% endblock %}
-            </div>
-        </div>
-    </div>
+{% set account_links = [
+  ['customer.profile', trans('palace.profile'), 'fi-rs-user'],
+  ['customer.orders', trans('palace.orders'), 'fi-rs-shopping-bag'],
+  ['customer.wishlist', trans('palace.wishlist'), 'fi-rs-heart'],
+  ['customer.notifications', trans('palace.notifications'), 'fi-rs-bell']
+] %}
+{% if user.can_access_wallet %}{% set account_links = account_links|merge([['customer.wallet', trans('palace.wallet'), 'fi-rs-label']]) %}{% endif %}
+<div class="palace-ref palace-account">
+{% include 'pages.partials.palace-breadcrumb' with {crumbs: [[trans('palace.my_account'), link('customer.profile')], [page.title]]} %}
+<div class="page-content pt-50 pb-80"><div class="container"><div class="row"><div class="col-lg-11 m-auto"><div class="row">
+<div class="col-md-3">
+<div class="palace-account__hello mb-20"><span class="palace-account__avatar">{% if user.avatar %}<img src="{{ user.avatar }}" alt="">{% else %}<i class="fi-rs-user"></i>{% endif %}</span><div><h6>{{ trans('palace.hello') }} {{ user.first_name }}</h6><p class="font-xs text-muted">{{ user.email ?: user.mobile }}</p></div></div>
+<div class="dashboard-menu"><ul class="nav flex-column" role="tablist">
+{% for item in account_links %}
+<li class="nav-item"><a class="nav-link {{ is_page(item[0]) ? 'active' : '' }}" href="{{ link(item[0]) }}"><i class="{{ item[2] }} mr-10"></i>{{ item[1] }}</a></li>
+{% endfor %}
+<li class="nav-item"><a class="nav-link" href="#" data-palace-logout><i class="fi-rs-sign-out mr-10"></i>{{ trans('palace.logout') }}</a></li>
+</ul></div>
+</div>
+<div class="col-md-9"><div class="tab-content account dashboard-content pl-50"><div class="tab-pane fade active show" role="tabpanel">
+<div class="card">
+<div class="card-header"><h3 class="mb-0">{% block inner_title %}{{ page.title }}{% endblock %}</h3></div>
+<div class="card-body">{% block inner_content %}{% endblock %}</div>
+</div>
+</div></div></div>
+</div></div></div></div></div>
+</div>
 {% endblock %}

@@ -1,0 +1,20 @@
+{#
+  Brand carousel in the PC Palace category-card style.
+  component.title | component.brands[] (id, name, url, logo) | component.display_all_url
+#}
+{% set sid = 'palace-' ~ (position|default(0)) %}
+<section main-section-id="{{ sid }}" id="brands-section-{{ sid }}" class="palace-ref" component-id="{{ componentId }}">
+<section section-id="{{ sid }}" class="popular-categories section-padding small-categories hide-main-arrows palace-brands lazyloaded" data-palace-section="categories" data-autoplay="true">
+<div class="container wow animate__animated animate__fadeIn">
+<div class="section-title wow animate__animated animate__fadeIn"><div class="title"><h3>{{ component.title }}</h3></div>{% if component.display_all_url %}<a href="{{ component.display_all_url }}" class="fw-900">{{ trans('palace.view_all') }}</a>{% endif %}<div id="carausel-{{ sid }}-columns-arrows" class="slider-arrow slider-arrow-2 flex-right carausel-10-columns-arrow"></div></div>
+<div class="swiper"><div class="swiper-wrapper">
+{% for brand in component.brands %}
+<div class="swiper-slide lg:w-1/8 md:w-1/7 sm:w-1/4 w-32 filickity-item"><div><div class="wow animate__animated animate__fadeInUp"><a href="{{ brand.url }}" class="card-1 d-block category-card" style="background: rgb(255, 255, 255); --after-bg: #ffffff;">
+<figure class="overflow-hidden img-hover-scale"><div>{% if brand.logo %}<img class="lazyload" width="80" height="80" src="{{ 'images/palace/lazyloading_img.svg'|asset }}" data-src="{{ brand.logo }}" alt="{{ brand.name }}">{% endif %}</div></figure>
+<h6 class="truncate-2-lines">{{ brand.name }}</h6>
+</a></div></div></div>
+{% endfor %}
+</div></div>
+</div>
+</section>
+</section>

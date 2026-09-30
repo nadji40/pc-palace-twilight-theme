@@ -1,7 +1,7 @@
 {
-  "name": "pc-palace-twilight-theme",
+  "name": "moodyul-twilight-theme",
   "version": "0.1.0",
-  "description": "PC Palace-inspired public Salla Twilight theme",
+  "description": "Moodyul Salla Twilight theme, built on the PC Palace storefront design",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -13,7 +13,8 @@
     "production": "webpack --mode production",
     "prod": "webpack --mode production",
     "development": "webpack --mode development",
-    "watch": "webpack --mode development --watch"
+    "watch": "webpack --mode development --watch",
+    "preview:build": "node scripts/preview-build.cjs"
   },
   "author": "",
   "dependencies": {
@@ -22,7 +23,8 @@
     "fslightbox": "^3.7.5",
     "lite-youtube-embed": "^0.3.4",
     "mmenu-light": "^3.2.2",
-    "sweetalert2": "^11.26.25"
+    "sweetalert2": "^11.26.25",
+    "swiper": "12.2.0"
   },
   "devDependencies": {
     "@babel/core": "^8.0.1",
@@ -48,6 +50,7 @@
     "sass": "^1.101.0",
     "sass-loader": "^17.0.0",
     "tailwindcss": "^3.4.19",
+    "twig": "1.17.1",
     "webpack": "^5.108.4",
     "webpack-cli": "^7.2.1"
   },

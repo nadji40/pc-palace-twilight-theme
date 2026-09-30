@@ -5,75 +5,29 @@
 | page.title | string       |                                                            |
 | page.slug  | string       |                                                            |
 | brands     | Collection[] | Brands grouped by char, ex:{b:[{'name':'brand1',...},...]} |
+
+  PC Palace brands grid (same cards as reference: pcpalace-theme/pages/categories.html).
 #}
 {% extends "layouts.master" %}
 {% block content %}
-    <div class="container mb-20">
-
-        {# add breadcumbs container in pages to make a space in case breadcrumbs is off #}
-        <nav class="breadcrumbs w-full py-5">
-            <salla-breadcrumb></salla-breadcrumb>
-        </nav>
-
-        <div class="flex justify-between pt-2 pb-6">
-            <h2 class="font-bold mb-6 md:mb-0">{{ page.title }}</h2>
-        </div>
-
-        {% if brands|length %}
-            <!-- brands nav -->
-            <div class="brands-nav-wrap">
-                <ul id="brands-nav" class="brands-nav">
-                    <li></li>
-                    {% for char,brands_group in brands %}
-                        <li>
-                            <a class="brands-nav__item"
-                               href="#brand-section-{{ loop.index }}"
-                               data-id="{{ loop.index }}">
-                               <span class="fix-align">{{ char }}</span>
-                            </a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
-            <!-- end:: brands nav -->
-
-            <div class="px-8 xl:px-0">
-
-                {% hook 'brands:index.items.start' %}
-
-                {% for char,brandGroup in brands %}
-                    <section id="brand-section-{{ loop.index }}" class="pt-24 first:pt-16 md:first:pt-24">
-                        <!-- separator -->
-                        <div class="flex items-center mb-10">
-                            <span data-id="{{ loop.index }}" class="brand-char">
-                              <span class="fix-align">{{ char }}</span>
-                            </span>
-                            <div class="bg-border-color h-px flex-1"></div>
-                        </div>
-                        <div class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 grid-flow-row gap-4 md:gap-8">
-                            {% for brand in brandGroup %}
-                                <a data-testid="store-brand-item" href="{{ brand.url }}" class="brand-item">
-                                    <img class="max-h-full" width="400" height="300" src="{{ brand.logo }}" alt="{{ brand.name }}">
-                                </a>
-                            {% endfor %}
-                        </div>
-                    </section>
-                {% endfor %}
-
-                {% hook 'brands:index.items.end' %}
-
-            </div>
-        {% else %}
-            <div class="no-content-placeholder">
-                <span class="rounded-icon !w-36 !h-36 bg-gray-100 mb-6">
-                    <i class="sicon-award-ribbon text-6xl block text-gray-400"></i>
-                </span>
-                <h1 class="font-bold text-sm mb-1">{{ trans('pages.brands.non_brands') }}</h1>
-                <small>{{ trans('pages.brands.try_again') }}</small>
-            </div>
-        {% endif %}
-    </div>
-{% endblock %}
-{% block scripts %}
-    <script defer src="{{ 'pages.js' | asset }}"></script>
+<div class="palace-ref palace-brands-page">
+{% include 'pages.partials.palace-breadcrumb' with {crumbs: [[page.title ?: trans('palace.brands')]]} %}
+<div class="page-content pt-50"><div class="container">
+<div class="single-page pr-30 mb-lg-0 mb-sm-5">
+<div class="single-header style-2"><h2>{{ page.title ?: trans('palace.brands') }}</h2></div>
+<div class="single-content mb-50">
+<section class="popular-categories section-padding"><div class="container wow animate__animated animate__fadeIn"><div class="carausel-10-columns-cover position-relative"><div class="carausel-10-columns row">
+{% for char, group in brands %}{% for brand in group %}
+<div class="col-md-2 col-6"><div class="card-2 bg-9 wow animate__animated animate__fadeInUp" data-wow-delay="0.s"><a href="{{ brand.url }}">
+<figure class="img-hover-scale overflow-hidden"><div><img class="lazyload" src="{{ 'images/palace/lazyloading_img.svg'|asset }}" data-src="{{ brand.logo }}" alt="{{ brand.name }}"></div></figure>
+<h6 class="truncate">{{ brand.name }}</h6>
+</a></div></div>
+{% endfor %}{% else %}
+<p class="text-center">{{ trans('pages.brands.non_brands') }}</p>
+{% endfor %}
+</div></div></div></section>
+</div>
+</div>
+</div></div>
+</div>
 {% endblock %}

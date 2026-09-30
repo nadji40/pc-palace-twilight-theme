@@ -1,0 +1,22 @@
+{#
+  PC Palace category carousel (reference: categories-section, "small" cards).
+  component.title | component.categories[] (id, name, url, image) | component.autoplay
+#}
+{% set sid = 'palace-' ~ (position|default(0)) %}
+<section main-section-id="{{ sid }}" id="categories-section-{{ sid }}" class="palace-ref" component-id="{{ componentId }}">
+<section section-id="{{ sid }}" class="popular-categories section-padding small-categories hide-main-arrows lazyloaded" data-palace-section="categories" data-autoplay="{{ component.autoplay ? 'true' : 'false' }}">
+<div class="container wow animate__animated animate__fadeIn">
+<div class="section-title wow animate__animated animate__fadeIn"><div class="title"><h3>{{ component.title }}</h3></div><div id="carausel-{{ sid }}-columns-arrows" class="slider-arrow slider-arrow-2 flex-right carausel-10-columns-arrow"></div></div>
+<div class="swiper">
+<div class="swiper-wrapper">
+{% for category in component.categories %}
+<div class="swiper-slide lg:w-1/8 md:w-1/7 sm:w-1/4 w-32 filickity-item"><div><div class="wow animate__animated animate__fadeInUp"><a href="{{ category.url }}" class="card-1 d-block category-card" style="background: rgb(255, 255, 255); --after-bg: #ffffff;">
+<figure class="overflow-hidden img-hover-scale"><div>{% if category.image %}<img class="lazyload" width="80" height="80" src="{{ 'images/palace/lazyloading_img.svg'|asset }}" data-src="{{ category.image }}" alt="{{ category.name }}">{% endif %}</div></figure>
+<h6 class="truncate-2-lines">{{ category.name }}</h6>
+</a></div></div></div>
+{% endfor %}
+</div>
+</div>
+</div>
+</section>
+</section>

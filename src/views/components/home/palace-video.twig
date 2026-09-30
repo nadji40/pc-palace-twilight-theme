@@ -1,0 +1,18 @@
+{#
+  YouTube video block in the PC Palace style. The player loads on click.
+  component.title | component.youtube (video id or URL)
+#}
+{% set sid = 'palace-' ~ (position|default(0)) %}
+{% set video = component.youtube|split('v=')|last|split('youtu.be/')|last|split('&')|first %}
+{% if video %}
+<section main-section-id="{{ sid }}" id="video-section-{{ sid }}" class="palace-ref" component-id="{{ componentId }}">
+<section section-id="{{ sid }}" class="section-padding palace-video">
+<div class="container">
+{% if component.title %}<div class="section-title wow animate__animated animate__fadeIn"><h3>{{ component.title }}</h3></div>{% endif %}
+<div class="palace-video__frame border-radius-15 wow animate__animated animate__fadeInUp" data-palace-video="{{ video }}" style="background-image: url(https://i.ytimg.com/vi/{{ video }}/hqdefault.jpg)">
+<button type="button" class="palace-video__play" aria-label="{{ component.title ?: 'video' }}"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path fill="currentColor" d="M8 5v14l11-7z"/></svg></button>
+</div>
+</div>
+</section>
+</section>
+{% endif %}

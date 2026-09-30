@@ -1,0 +1,29 @@
+{#
+  PC Palace product carousel (reference: products-grids), e.g. laptops, new arrivals, best sellers.
+  component.title | component.products[] | component.category | component.source_type (latest|offers)
+  component.display_all_url | component.more_text | component.per_row (three|four|five) | component.autoplay | component.limit
+#}
+{% set sid = 'palace-' ~ (position|default(0)) %}
+{% set ids = [] %}{% for product in component.products %}{% set ids = ids|merge([product.id is defined ? product.id : product]) %}{% endfor %}
+{% set category = component.category %}{% if category is iterable and category.id is not defined %}{% set category = category|first %}{% endif %}
+{% set fallback = component.source_type ?: 'latest' %}{% if fallback is iterable %}{% set first_source = fallback|first %}{% set fallback = first_source.value is defined ? first_source.value : first_source %}{% endif %}
+{% set source = ids|length ? 'selected' : (category ? 'categories' : fallback) %}
+{% set value = ids|length ? ids : (category ? [category.id is defined ? category.id : category] : null) %}
+{% set per_row = component.per_row ?: 'five' %}{% if per_row is iterable %}{% set first_row = per_row|first %}{% set per_row = first_row.value is defined ? first_row.value : first_row %}{% endif %}
+{% set carousel = per_row == 'three' ? 'carausel-3-columns' : (per_row == 'four' ? 'carausel-4-columns' : 'carausel-5-columns') %}
+{% set slide = (per_row == 'three' ? ' sm:w-1/3  px-2' : (per_row == 'four' ? 'sm:w-1/4  px-2' : ' sm:w-1/5  px-2')) ~ ' w-1/2' %}
+{% set more_url = component.display_all_url ?: (category.url is defined ? category.url : '') %}
+{% set config = {'source': source, 'value': value, 'limit': component.limit ?: 24, 'autoplay': component.autoplay is same as(false) ? false : true, 'slideClass': slide} %}
+<section main-section-id="{{ sid }}" id="category-section-{{ sid }}" class="palace-ref" component-id="{{ componentId }}">
+<section class="pb-5 section-padding featured-products-section hide-main-arrows lazyloaded" section-id="{{ sid }}" data-palace-section="grid" data-palace-products="{{ config|json_encode }}">
+<div class="container container-padding-mobile">
+<div class="section-title wow animate__animated animate__fadeIn"><h3>{{ component.title }}</h3>{% if more_url %}<a href="{{ more_url }}" class="fw-900">{{ component.more_text ?: trans('palace.view_all') }}</a>{% endif %}</div>
+<div class="row"><div class="col-md-12 carausel-4-columns-cover wow animate__animated animate__fadeIn" data-wow-delay=".4s">
+<div class="arrow-center position-relative ">
+<div class="slider-arrow slider-arrow-2 carausel-4-columns-arrow"></div>
+<div class="swiper {{ carousel }} carausel-arrow-center"><div class="swiper-wrapper"></div></div>
+</div>
+</div></div>
+</div>
+</section>
+</section>

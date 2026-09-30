@@ -1,0 +1,22 @@
+{#
+  Customer testimonials carousel in the PC Palace style.
+  component.title | component.items[] (name, avatar, stars, text)
+#}
+{% set sid = 'palace-' ~ (position|default(0)) %}
+<section main-section-id="{{ sid }}" id="testimonials-section-{{ sid }}" class="palace-ref" component-id="{{ componentId }}">
+<section section-id="{{ sid }}" class="section-padding palace-testimonials hide-main-arrows" data-palace-section="categories" data-autoplay="true">
+<div class="container">
+<div class="section-title wow animate__animated animate__fadeIn"><div class="title"><h3>{{ component.title }}</h3></div><div id="carausel-{{ sid }}-columns-arrows" class="slider-arrow slider-arrow-2 flex-right carausel-10-columns-arrow"></div></div>
+<div class="swiper"><div class="swiper-wrapper">
+{% for item in component.items %}
+<div class="swiper-slide lg:w-1/3 md:w-1/2 w-full px-2"><div class="palace-testimonial wow animate__animated animate__fadeInUp" data-wow-delay="0.{{ loop.index0 }}s">
+<span class="palace-testimonial__quote">&#8221;</span>
+<div class="product-rate d-inline-block"><div class="product-rating" style="width: {{ (item.stars ?: 5) * 20 }}%"></div></div>
+<p>{{ item.text }}</p>
+<div class="palace-testimonial__author">{% if item.avatar %}<img class="lazyload" src="{{ 'images/palace/lazyloading_img.svg'|asset }}" data-src="{{ item.avatar }}" alt="{{ item.name }}" width="48" height="48">{% endif %}<h6>{{ item.name }}</h6></div>
+</div></div>
+{% endfor %}
+</div></div>
+</div>
+</section>
+</section>

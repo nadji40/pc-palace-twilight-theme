@@ -164,7 +164,38 @@ class ProductCard extends HTMLElement {
     .replace(/>/g, "&gt;");
   }
 
+  renderPalace() {
+    const p = this.product, e = value => this.escapeHTML(value ?? '');
+    this.classList.add('palace-reference', 'palace-product');
+    this.id = `product-${p.id}`;
+    const sale = p.is_on_sale && p.sale_price > 0;
+    const price = sale ? p.sale_price : p.price;
+    const regular = p.regular_price || p.price;
+    const discount = sale && regular > price ? Math.round((1 - price / regular) * 100) : 0;
+    const stars = `<div class="product-rate-cover"><salla-rating-stars size="small" value="${Number(p.rating?.stars || 0)}"></salla-rating-stars><span class="font-small ml-5 text-muted">(${Number(p.rating?.count || 0)})</span></div>`;
+    const image = `<a href="${e(p.url)}"><img class="default-img" src="${e(p.image?.url || p.thumbnail || this.placeholder)}" alt="${e(p.name)}" loading="lazy"></a>`;
+    const money = `<div class="product-price"><span>${salla.money(price)}</span>${sale ? `<span class="old-price">${salla.money(regular)}</span>` : ''}</div>`;
+    if (this.horizontal || this.closest('.palace-products-column')) {
+      this.innerHTML = `<article class="row align-items-center hover-up palace-small-product"><figure class="mb-0 col-md-4">${image}</figure><div class="mb-0 col-md-8"><h6 class="truncate-2-lines"><a href="${e(p.url)}">${e(p.name)}</a></h6>${stars}${money}</div></article>`;
+      return;
+    }
+    const offers = !!this.closest('.offers-slider-first');
+    this.innerHTML = `<div class="product-cart-wrap ${p.is_out_of_stock ? 'product-out-of-stock' : ''}">
+      <div class="product-img-action-wrap"><div class="product-img product-img-zoom">${image}</div>
+        <div class="product-action-1"><button type="button" data-palace-wishlist aria-label="${e(salla.lang.get('palace.wishlist'))}"><i class="fi-rs-heart"></i></button></div>
+        ${discount ? `<div class="product-badges product-badges-position product-badges-mrg"><span class="best">${discount}%</span></div>` : ''}
+        ${p.promotion_title ? `<div class="product-tags-wrapper"><div class="card product-tags"><span>${e(p.promotion_title)}</span></div></div>` : ''}
+      </div>
+      <div class="product-content-wrap ${offers ? 'offer-card' : ''}"><h2 class="truncate-2-lines"><a href="${e(p.url)}">${e(p.name)}</a></h2>
+        ${p.subtitle ? `<div class="card product-info-label">${e(p.subtitle)}</div>` : ''}${stars}
+        <div class="${offers ? 'mb-10' : 'product-card-bottom'}">${money}</div>
+        ${this.hideAddBtn ? '' : `<div class="add-to-cart-main-wrapper"><salla-add-product-button product-id="${e(p.id)}" product-status="${e(p.status)}" product-type="${e(p.type)}" fill="solid" width="wide">${e(this.getAddButtonLabel())}</salla-add-product-button></div>`}
+      </div></div>`;
+    this.querySelector('[data-palace-wishlist]')?.addEventListener('click', () => salla.wishlist.toggle(p.id));
+  }
+
   render(){
+    if (!this.product?.donation && !this.fullImage && !this.minimal) return this.renderPalace();
     this.classList.add('s-product-card-entry'); 
     this.setAttribute('id', this.product.id);
     !this.horizontal && !this.fullImage && !this.minimal? this.classList.add('s-product-card-vertical') : '';
