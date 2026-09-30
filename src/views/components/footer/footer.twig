@@ -1,73 +1,76 @@
-<footer data-testid="store-footer" class="store-footer">
-	<div aria-label="footer" class="store-footer__inner">
-		<div class="container grid grid-col-1 lg:grid-cols-6 gap-8 lg:gap-6">
-			<div class="lg:col-span-2 rtl:lg:pl-20 ltr:lg:pr-20">
-				<a href="{{ link('/') }}" class="flex items-center m-0 palace-footer-logo">
-					<img class="{{ theme.settings.get('palace_footer_logo') ? '' : 'palace-footer-logo__fallback' }}" src="{{ theme.settings.get('palace_footer_logo')|default(store.logo|cdn(175)) }}" loading="lazy" width="175" height="72" alt="{{ store.name }}">
-					<h3 class="sr-only">{{store.name}}</h3>
-				</a>
-				{% if store.description %}
-					<div class="max-w-sm leading-6 mb-6">
-						{{ store.description|striptags }}
-          </div>
-				{% endif %}
-
-				<div class="hidden lg:block">
-					<salla-social data-testid="store-footer-social" class="block mb-6"></salla-social>
-				</div>
-
-		<div class="flex gap-4">
-		  {# trust badges #}
-		  <salla-trust-badges data-testid="store-footer-trust-badges" {% if theme.settings.get('footer_is_dark') %} dark {% endif %}></salla-trust-badges>
-          {# vat #}
-          {% if store.settings.tax.number %}
-            <div class="flex rtl:space-x-reverse space-x-2 items-end">
-              {% if store.settings.tax.certificate %}
-                <a class="load-img-onclick" data-modal-id="modal-value-tax" href="#/" alt="{{ store.settings.tax.number }}">
-                  <img width="40" height="50" src="{{'images/tax.png' | cdn(70,70)}}" loading="lazy" class="w-10 rounded-sm hover:opacity-80 transition-opacity" alt="value added tax">
-                </a>
-              {% endif %}
-              <div>
-                <p class="text-sm text-text-grey mb-1">{{ trans('common.elements.tax_number') }}</p>
-                <b class="text-sm">{{ store.settings.tax.number }}</b>
-              </div>
-            </div>
-
-            {% if store.settings.tax.certificate %}
-              <salla-modal data-testid="store-footer-tax-modal" sub-title-first sub-title="{{ trans('common.elements.tax_number') }}" modal-title="{{ store.settings.tax.number }}" id="modal-value-tax">
-                <div class="flex justify-center max-w-full">
-                  <img class="w-full" loading="lazy"
-                  data-src="{{ store.settings.tax.certificate }}"
-                  alt="{{ store.settings.tax.number }}"/>
-                </div>
-              </salla-modal>
-            {% endif %}
-          {% endif %}
-        </div>
-        </div>
-
-			<div>
-				<h3>{{ trans('blocks.footer.pages_links') }}</h3>
-				<salla-menu data-testid="store-footer-menu" source="footer" with-cookie-preferences></salla-menu>
-			</div>
-
-			<div>
-				<salla-contacts data-testid="store-footer-contacts"></salla-contacts>
-
-				<div class="lg:hidden contact-social">
-					<salla-social data-testid="store-footer-social-mobile"></salla-social>
-				</div>
-			</div>
-
-			<salla-apps-icons data-testid="store-footer-apps" class="lg:col-span-2 rtl:lg:pr-20 ltr:lg:pl-20"></salla-apps-icons>
-
-		</div>
-	</div>
-
-	<div class="md:flex items-center justify-between py-4 container text-center">
-		<span class="text-sm copyright-text">{% hook copyright %}</span>
-		<salla-payments data-testid="store-footer-payments"></salla-payments>
-	</div>
+{#
+  PC Palace footer, matching the saved reference markup. The two link columns come from the
+  store's footer menu (top-level items with children become columns), loaded by palace-reference.js.
+#}
+{% set palace_img = 'images/palace/' %}
+{% set footer_logo = theme.settings.get('palace_footer_logo') ?: store.logo %}
+{% set payments = ['apple_pay.svg', 'mada-circle.png', 'visa-circle.png', 'mastercard-circle.png', 'tamara2.svg', 'tabby2.svg', 'mispay.png', 'madfu.svg', 'emkan_bnpl.svg', 'cod.png', 'bankTransfer.png'] %}
+{% set social = [
+  ['facebook', store.social.facebook, 'icon-facebook-white.svg'],
+  ['twitter', store.social.twitter, 'icon-twitter-white2_new.svg'],
+  ['instagram', store.social.instagram, 'icon-instagram-white.svg'],
+  ['snapchat', store.social.snapchat, 'icon-snapchat-white.svg'],
+  ['tiktok', store.social.tiktok, 'icon-tiktok-white.svg'],
+  ['youtube', store.social.youtube, 'icon-youtube-white.svg']
+] %}
+<div class="palace-ref palace-footer-region">
+<footer class="main" style="background-color: {{ theme.settings.get('palace_footer_color') ?: '#2b3990' }}">
+<section class="section-padding footer-mid">
+<div class="container pt-15">
+<div class="row">
+<div class="col-md col-12">
+<div class="widget-about font-md mb-md-3 mb-lg-3 mb-xl-0 wow animate__animated animate__fadeInUp" data-wow-delay="0">
+<div class="logo mb-30">
+<a href="{{ store.url }}" class="mb-15"><img height="70" width="300" class="main-header-logo logo-light lazyload {{ theme.settings.get('palace_footer_logo_white') ? 'palace-logo-white' : '' }}" src="{{ (palace_img ~ 'lazyloading_img.svg')|asset }}" data-src="{{ footer_logo }}" alt="{{ store.name }}"><img height="70" width="300" class="main-header-logo logo-dark lazyload {{ theme.settings.get('palace_footer_logo_white') ? 'palace-logo-white' : '' }}" src="{{ (palace_img ~ 'lazyloading_img.svg')|asset }}" data-src="{{ footer_logo }}" alt="{{ store.name }}"></a>
+<p class="font-lg text-heading">{{ store.description|striptags }}</p>
 </div>
-
-<span class="hidden bottom-2 rtl:pl-24 ltr:pr-24 md:grid-cols-3 opacity-40"></span></footer>
+<ul class="contact-infor"><li><svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0)"><path d="M7.39402 16.8696H0.727356V15.5363H7.39402V16.8696ZM6.06069 12.8696H0.727356V14.203H6.06069V12.8696ZM4.72736 10.203H0.727356V11.5363H4.72736V10.203ZM8.72736 0.869629C6.60633 0.871923 4.57283 1.71551 3.07304 3.21531C1.57324 4.7151 0.72965 6.7486 0.727356 8.86963H2.06069C2.06069 7.55109 2.45168 6.26216 3.18423 5.16583C3.91677 4.0695 4.95796 3.21502 6.17613 2.71043C7.39431 2.20585 8.73475 2.07383 10.028 2.33106C11.3212 2.5883 12.5091 3.22323 13.4414 4.15558C14.3738 5.08793 15.0087 6.27582 15.2659 7.56903C15.5232 8.86223 15.3911 10.2027 14.8866 11.4209C14.382 12.639 13.5275 13.6802 12.4312 14.4128C11.3348 15.1453 10.0459 15.5363 8.72736 15.5363V16.8696C10.8491 16.8696 12.8839 16.0268 14.3842 14.5265C15.8845 13.0262 16.7274 10.9914 16.7274 8.86963C16.7274 6.7479 15.8845 4.71307 14.3842 3.21277C12.8839 1.71248 10.8491 0.869629 8.72736 0.869629V0.869629ZM8.06069 5.5363V9.14563L10.256 11.341L11.1987 10.3983L9.39402 8.59363V5.5363H8.06069Z" fill="var(--main-color)"></path></g><defs><clipPath id="clip0"><rect width="16" height="16" fill="white" transform="translate(0.727356 0.869629)"></rect></clipPath></defs></svg><strong>{{ trans('palace.working_hours') }}</strong> <span>{{ theme.settings.get('palace_working_hours') ?: trans('palace.working_hours_value') }}</span></li></ul>
+</div>
+</div>
+<div class="footer-link-widget col wow animate__animated animate__fadeInUp" data-wow-delay=".2s" data-palace-footer-column="0"><h4 class="widget-title">{{ trans('palace.others') }}</h4><ul class="footer-list mb-sm-5 mb-md-0"></ul></div>
+<div class="footer-link-widget col wow animate__animated animate__fadeInUp" data-wow-delay=".3s" data-palace-footer-column="1"><h4 class="widget-title">{{ trans('palace.customer_service') }}</h4><ul class="footer-list mb-sm-5 mb-md-0"></ul></div>
+<div class="footer-link-widget widget-install-app col wow animate__animated animate__fadeInUp" data-wow-delay=".5s">
+<h4 class="widget-title"></h4>
+<p class=""></p>
+<div class="download-app">
+{% if theme.settings.get('palace_app_store_url') %}<a class="hover-up mb-sm-2 mb-lg-0" href="{{ theme.settings.get('palace_app_store_url') }}"><img class="hover-up mb-sm-2 mb-lg-0 lazyload" src="{{ (palace_img ~ 'lazyloading_img.svg')|asset }}" data-src="{{ (palace_img ~ 'app-store.png')|asset }}" alt="ios_app"></a>{% endif %}
+{% if theme.settings.get('palace_google_play_url') %}<a class="hover-up mb-sm-2" href="{{ theme.settings.get('palace_google_play_url') }}"><img class="hover-up mb-sm-2 lazyload" src="{{ (palace_img ~ 'lazyloading_img.svg')|asset }}" data-src="{{ (palace_img ~ 'google-play.png')|asset }}" alt="android_app"></a>{% endif %}
+</div>
+<p class="mb-20"></p>
+{% for payment in payments %}<img class="lz_op_ef payment_image lazyload" src="{{ (palace_img ~ 'lazyloading_img.svg')|asset }}" data-src="{{ (palace_img ~ payment)|asset }}" alt="payment">
+{% endfor %}
+</div>
+<div class="col-12">
+<ul class="all-legal-info">
+{% if store.settings.tax.number %}<li class="mt__20 vat-container d-flex align-items-center"><a href="{{ store.settings.tax.certificate ?: '#' }}"><img class="lz_op_ef vat_image lazyload" src="{{ (palace_img ~ 'lazyloading_img.svg')|asset }}" data-src="{{ (palace_img ~ 'vat-certificate.svg')|asset }}" alt="vat-certificate"></a><div class="ml__5"><div class="vat-number"><span>{{ trans('palace.tax_number') }}</span> <span>{{ store.settings.tax.number }}</span></div></div></li>{% endif %}
+{% if theme.settings.get('palace_cr_number') %}<li class="mt__20 vat-container d-flex align-items-center"><a href="https://mc.gov.sa/ar/eservices/Pages/Commercial-data.aspx"><img class="lz_op_ef vat_image lazyload" src="{{ (palace_img ~ 'lazyloading_img.svg')|asset }}" data-src="{{ (palace_img ~ 'commercial_logo.svg')|asset }}" alt="commercial_registration_number"></a><div class="ml__5"><div class="commercial_registration_number"><span>{{ trans('palace.cr_number') }}</span> <span>{{ theme.settings.get('palace_cr_number') }}</span></div></div></li>{% endif %}
+{% if theme.settings.get('palace_ecommerce_number') %}<li class="mt__20 vat-container d-flex align-items-center"><a href="https://eauthenticate.saudibusiness.gov.sa/inquiry?certificateRefID={{ theme.settings.get('palace_ecommerce_number') }}"><img src="{{ (palace_img ~ 'business_center.png')|asset }}" alt="vat-container" width="auto" height="30"></a><div><span> {{ trans('palace.ecommerce_number') }} </span> <span> {{ theme.settings.get('palace_ecommerce_number') }} </span></div></li>{% endif %}
+</ul>
+</div>
+</div>
+</div>
+</section>
+<div class="container pb-30 wow animate__animated animate__fadeInUp" data-wow-delay="0">
+<div class="row align-items-center">
+<div class="col-12 mb-30 max-md:order-1"><div class="footer-bottom"></div></div>
+<div class="col-xl-4 col-lg-6 col-md-6 max-md:order-3"><a href="{{ store.url }}"><p class="mb-0 font-sm">{{ trans('palace.rights') }}{{ store.name }}. © {{ "now"|date("Y") }}</p></a></div>
+<div class="text-center col-xl-4 col-lg-6 d-none d-xl-block"></div>
+<div class="col-xl-4 col-lg-6 col-md-6 text-end max-md:order-2 max-md:mb-3"><div class="mobile-social-icon"><h6>{{ trans('palace.follow_us') }}</h6>{% for item in social %}{% if item[1] %}<a href="{{ item[1] }}" target="_blank" rel="noopener"><img src="{{ (palace_img ~ item[2])|asset }}" alt="{{ item[0] }}"></a>{% endif %}{% endfor %}</div></div>
+</div>
+</div>
+</footer>
+<style>
+	footer.main * ,
+	footer.main a,
+	footer.main svg path{
+		color: #ffffff;
+	}
+	.footer-mid .widget-title{
+		color: #ffffff;
+	}
+</style>
+{% set whatsapp = store.contacts.whatsapp ?: store.social.whatsapp %}
+{% if whatsapp %}
+<div class="whatsappWrapper" style=" {{ theme.is_rtl ? 'right: 16px; left:unset' : 'left: 16px; right:unset' }} "><a href="https://api.whatsapp.com/send/?phone={{ whatsapp|replace({'+': '', ' ': '', 'https://wa.me/': ''}) }}&amp;text&amp;app_absent=0" target="_blank" rel="noopener"><img src="{{ (palace_img ~ 'icon-whatsapp-white.svg')|asset }}" alt="whatsapp" style="vertical-align: middle"></a></div>
+{% endif %}
+</div>

@@ -1,67 +1,152 @@
-<header data-testid="store-header" class="store-header palace-header">
-  <div class="palace-announcement">
-    <div class="container palace-announcement__inner">
-      <p>{{ theme.settings.get('palace_announcement')|default(is_page('product.single') ? trans('palace.free_shipping_message') : trans('palace.shipping_message')) }}</p>
-      <div class="palace-announcement__tools">
-        {% if store.settings.is_multilingual or store.settings.currencies_enabled %}
-          <salla-localization-modal data-testid="store-header-localization" show-trigger></salla-localization-modal>
-        {% endif %}
-      </div>
-    </div>
-  </div>
-
-  <div class="palace-masthead">
-    <div class="container palace-masthead__inner">
-      <a data-testid="store-header-logo" class="palace-logo" href="{{ store.url }}" aria-label="{{ store.name }}">
-        <img fetchpriority="high" loading="eager" src="{{ store.logo|cdn(175) }}" alt="{{ store.name }}" width="175" height="72">
-        {% if is_page('index') %}<h1 class="sr-only">{{ store.name }}</h1>{% endif %}
-      </a>
-
-      <div class="palace-search">
-        <salla-search data-testid="store-header-search" inline height="48"></salla-search>
-      </div>
-
-      <div class="palace-actions">
-        <span class="palace-action palace-action--wishlist">
-          <a href="/account/wishlist" aria-label="{{ trans('palace.wishlist') }}">
-            <img src="{{ 'images/palace-heart.svg' | asset }}" alt="" width="25" height="25">
-            <span>{{ trans('palace.wishlist') }}</span>
-          </a>
-        </span>
-        <span class="palace-action palace-action--cart">
-          <salla-cart-summary data-testid="store-header-cart">
-            <img slot="icon" src="{{ 'images/palace-cart.svg' | asset }}" alt="" width="25" height="25">
-          </salla-cart-summary>
-          <a href="/cart">{{ trans('blocks.header.cart') }}</a>
-        </span>
-        <span class="palace-action palace-action--account">
-          <salla-user-menu data-testid="store-header-user-menu" show-header show-trigger>
-            <span slot="trigger" class="palace-account-trigger"><img src="{{ 'images/palace-user.svg' | asset }}" alt="" width="25" height="25"><span>{{ trans('palace.account') }}</span></span>
-            <button slot="login-btn" class="palace-account-trigger" type="button" onclick="salla.event.dispatch('login::open')"><img src="{{ 'images/palace-user.svg' | asset }}" alt="" width="25" height="25"><span>{{ trans('palace.account') }}</span></button>
-          </salla-user-menu>
-        </span>
-      </div>
-    </div>
-    <div class="container palace-mobile-search">
-      <salla-search inline height="44"></salla-search>
-    </div>
-  </div>
-
-  <div id="mainnav" class="main-nav-container palace-nav">
-    <div class="inner w-full">
-      <div class="container palace-nav__inner">
-        <a data-testid="store-header-mobile-toggle" class="lg:hidden palace-menu-trigger" href="#mobile-menu" aria-label="{{ trans('palace.categories') }}">
-          <i class="sicon-menu"></i>
-        </a>
-        <span class="palace-nav__label hidden lg:inline-flex"><i class="sicon-menu"></i>{{ trans('palace.categories') }}</span>
-        <custom-main-menu></custom-main-menu>
-      </div>
-    </div>
-  </div>
-  <div class="palace-nav-extra">
-    <div class="container"><a href="{{ link('offers') }}"><i class="sicon-fire"></i>{{ trans('palace.best_offers') }}</a></div>
-  </div>
-  {% if store.scope %}
-    <salla-bullet-delivery-tag></salla-bullet-delivery-tag>
-  {% endif %}
+{#
+  PC Palace header. Markup follows the saved reference (../pcpalace-theme/index.html) so the
+  reference stylesheet applies unchanged; data comes from Salla. Menu items are loaded by
+  palace-reference.js from the store's header menu.
+#}
+{% set palace_img = 'images/palace/' %}
+{% set logo_dark = theme.settings.get('palace_logo_dark') ?: store.logo %}
+{% set messages = [] %}
+{% for line in (theme.settings.get('palace_announcements') ?: (trans('palace.shipping_message') ~ "\n" ~ trans('palace.free_shipping_message')))|split("\n") %}
+  {% if line|trim %}{% set messages = messages|merge([line|trim]) %}{% endif %}
+{% endfor %}
+{% set social = [
+  ['facebook', store.social.facebook, 'icon-facebook-white.svg'],
+  ['twitter', store.social.twitter, 'icon-twitter-white2_new.svg'],
+  ['instagram', store.social.instagram, 'icon-instagram-white.svg'],
+  ['snapchat', store.social.snapchat, 'icon-snapchat-white.svg'],
+  ['tiktok', store.social.tiktok, 'icon-tiktok-white.svg'],
+  ['youtube', store.social.youtube, 'icon-youtube-white.svg']
+] %}
+{% set is_user = user.type == 'user' %}
+{% set sun_icon %}<svg class="svg-icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M508.475476 777.927066a262.879 262.879 0 1 0 14.927684-525.546038 262.879 262.879 0 1 0-14.927684 525.546038Z"></path><path d="M512.119 213.154c17.673 0 32-14.327 32-32V95.896c0-17.673-14.327-32-32-32-17.673 0-32 14.327-32 32v85.258c0 17.673 14.327 32 32 32zM743.779 308.938c8.186 0.232 16.461-2.658 22.884-8.727l61.973-58.553c12.845-12.137 13.42-32.391 1.283-45.237-12.139-12.846-32.391-13.421-45.237-1.283l-61.973 58.553c-12.845 12.137-13.42 32.391-1.283 45.237 6.069 6.422 14.167 9.777 22.353 10.01zM936.04 487.929l-85.224-2.417c-17.666-0.501-32.393 13.414-32.894 31.08-0.501 17.666 13.414 32.394 31.08 32.895l85.224 2.417c17.666 0.501 32.393-13.415 32.894-31.08 0.501-17.667-13.414-32.394-31.08-32.895zM773.672 730.999c-12.137-12.846-32.391-13.42-45.237-1.284-12.846 12.138-13.421 32.391-1.284 45.237l58.552 61.972c6.069 6.424 14.166 9.779 22.353 10.011 8.185 0.232 16.462-2.659 22.884-8.727 12.846-12.138 13.421-32.391 1.284-45.237l-58.552-61.972zM514.455 817.14c-17.666-0.501-32.393 13.414-32.894 31.08l-2.417 85.224c-0.501 17.666 13.414 32.393 31.08 32.894 17.666 0.501 32.393-13.414 32.894-31.08l2.417-85.224c0.501-17.665-13.414-32.393-31.08-32.894zM256.094 726.369l-61.972 58.553c-12.846 12.138-13.42 32.391-1.283 45.237 6.069 6.425 14.165 9.779 22.353 10.011 8.185 0.232 16.461-2.659 22.884-8.727l61.972-58.553c12.846-12.138 13.42-32.391 1.283-45.237-12.138-12.848-32.391-13.42-45.237-1.284zM213.906 513.673c0.501-17.666-13.414-32.393-31.08-32.894l-85.224-2.417c-17.666-0.501-32.393 13.414-32.894 31.08-0.501 17.666 13.414 32.393 31.08 32.894l85.224 2.417c17.665 0.501 32.393-13.414 32.894-31.08zM258.157 299.266c6.069 6.423 14.166 9.778 22.353 10.01 8.186 0.232 16.461-2.658 22.884-8.727 12.846-12.137 13.42-32.39 1.283-45.237l-58.553-61.972c-12.138-12.846-32.39-13.421-45.237-1.283-12.846 12.137-13.42 32.391-1.283 45.237l58.553 61.972z"></path></svg>{% endset %}
+{% set moon_icon %}<svg class="svg-icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M524.8 938.666667h-4.266667a439.893333 439.893333 0 0 1-313.173333-134.4 446.293333 446.293333 0 0 1-11.093333-597.333334 432.213333 432.213333 0 0 1 170.666666-116.906666 42.666667 42.666667 0 0 1 45.226667 9.386666 42.666667 42.666667 0 0 1 10.24 42.666667 358.4 358.4 0 0 0 82.773333 375.893333 361.386667 361.386667 0 0 0 376.746667 82.773334 42.666667 42.666667 0 0 1 54.186667 55.04A433.493333 433.493333 0 0 1 836.266667 810.666667a438.613333 438.613333 0 0 1-311.466667 128z"></path></svg>{% endset %}
+{% set heart_icon %}<svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0)"><path d="M18.2753 1.28351C17.1493 1.30102 16.0478 1.61536 15.0821 2.19478C14.1164 2.7742 13.3207 3.59818 12.7753 4.58351C12.23 3.59818 11.4343 2.7742 10.4686 2.19478C9.50289 1.61536 8.4014 1.30102 7.27535 1.28351C5.48029 1.3615 3.78905 2.14676 2.57113 3.46774C1.35321 4.78872 0.707598 6.53803 0.775349 8.33351C0.775349 15.1085 11.7313 22.9335 12.1973 23.2655L12.7753 23.6745L13.3533 23.2655C13.8193 22.9355 24.7753 15.1085 24.7753 8.33351C24.8431 6.53803 24.1975 4.78872 22.9796 3.46774C21.7616 2.14676 20.0704 1.3615 18.2753 1.28351ZM12.7753 21.2125C9.52235 18.7825 2.77535 12.8125 2.77535 8.33351C2.70699 7.06822 3.14172 5.82724 3.98471 4.88121C4.82771 3.93518 6.01058 3.36086 7.27535 3.28351C8.54012 3.36086 9.72299 3.93518 10.566 4.88121C11.409 5.82724 11.8437 7.06822 11.7753 8.33351H13.7753C13.707 7.06822 14.1417 5.82724 14.9847 4.88121C15.8277 3.93518 17.0106 3.36086 18.2753 3.28351C19.5401 3.36086 20.723 3.93518 21.566 4.88121C22.409 5.82724 22.8437 7.06822 22.7753 8.33351C22.7753 12.8145 16.0283 18.7825 12.7753 21.2125Z" fill="#253D4E"></path></g><defs><clipPath id="clip0"><rect width="24" height="24" fill="white" transform="translate(0.775391 0.366516)"></rect></clipPath></defs></svg>{% endset %}
+{% set cart_icon %}<svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0)"><path d="M24.4941 3.36652H4.73614L4.69414 3.01552C4.60819 2.28593 4.25753 1.61325 3.70863 1.12499C3.15974 0.636739 2.45077 0.366858 1.71614 0.366516L0.494141 0.366516V2.36652H1.71614C1.96107 2.36655 2.19748 2.45647 2.38051 2.61923C2.56355 2.78199 2.68048 3.00626 2.70914 3.24952L4.29414 16.7175C4.38009 17.4471 4.73076 18.1198 5.27965 18.608C5.82855 19.0963 6.53751 19.3662 7.27214 19.3665H20.4941V17.3665H7.27214C7.02705 17.3665 6.79052 17.2764 6.60747 17.1134C6.42441 16.9505 6.30757 16.7259 6.27914 16.4825L6.14814 15.3665H22.3301L24.4941 3.36652ZM20.6581 13.3665H5.91314L4.97214 5.36652H22.1011L20.6581 13.3665Z" fill="#253D4E"></path><path d="M7.49414 24.3665C8.59871 24.3665 9.49414 23.4711 9.49414 22.3665C9.49414 21.2619 8.59871 20.3665 7.49414 20.3665C6.38957 20.3665 5.49414 21.2619 5.49414 22.3665C5.49414 23.4711 6.38957 24.3665 7.49414 24.3665Z" fill="#253D4E"></path><path d="M17.4941 24.3665C18.5987 24.3665 19.4941 23.4711 19.4941 22.3665C19.4941 21.2619 18.5987 20.3665 17.4941 20.3665C16.3896 20.3665 15.4941 21.2619 15.4941 22.3665C15.4941 23.4711 16.3896 24.3665 17.4941 24.3665Z" fill="#253D4E"></path></g><defs><clipPath id="clip0"><rect width="24" height="24" fill="white" transform="translate(0.494141 0.366516)"></rect></clipPath></defs></svg>{% endset %}
+{% set user_icon %}<svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0)"><path d="M21.4443 24.3665H19.4443V19.3235C19.4435 18.5395 19.1317 17.7879 18.5774 17.2335C18.023 16.6791 17.2713 16.3673 16.4873 16.3665H8.40134C7.61733 16.3673 6.86567 16.6791 6.3113 17.2335C5.75693 17.7879 5.44513 18.5395 5.44434 19.3235V24.3665H3.44434V19.3235C3.44592 18.0093 3.96869 16.7494 4.89796 15.8201C5.82723 14.8909 7.08714 14.3681 8.40134 14.3665H16.4873C17.8015 14.3681 19.0614 14.8909 19.9907 15.8201C20.92 16.7494 21.4427 18.0093 21.4443 19.3235V24.3665Z" fill="#253D4E"></path><path d="M12.4443 12.3665C11.2577 12.3665 10.0976 12.0146 9.11092 11.3553C8.12422 10.696 7.35519 9.75898 6.90106 8.66262C6.44694 7.56626 6.32812 6.35986 6.55963 5.19598C6.79114 4.03209 7.36258 2.96299 8.2017 2.12388C9.04081 1.28476 10.1099 0.713318 11.2738 0.481807C12.4377 0.250296 13.6441 0.369116 14.7404 0.823242C15.8368 1.27737 16.7739 2.0464 17.4332 3.0331C18.0924 4.01979 18.4443 5.17983 18.4443 6.36652C18.4427 7.95733 17.8101 9.48253 16.6852 10.6074C15.5604 11.7323 14.0352 12.3649 12.4443 12.3665ZM12.4443 2.36652C11.6532 2.36652 10.8799 2.60111 10.2221 3.04064C9.56426 3.48017 9.05157 4.10488 8.74882 4.83579C8.44607 5.56669 8.36686 6.37096 8.5212 7.14688C8.67554 7.9228 9.0565 8.63554 9.61591 9.19495C10.1753 9.75436 10.8881 10.1353 11.664 10.2897C12.4399 10.444 13.2442 10.3648 13.9751 10.062C14.706 9.75929 15.3307 9.2466 15.7702 8.5888C16.2097 7.931 16.4443 7.15764 16.4443 6.36652C16.4443 5.30565 16.0229 4.28824 15.2728 3.53809C14.5226 2.78795 13.5052 2.36652 12.4443 2.36652Z" fill="#253D4E"></path></g><defs><clipPath id="clip0"><rect width="24" height="24" fill="white" transform="translate(0.444336 0.366516)"></rect></clipPath></defs></svg>{% endset %}
+{% set flame_icon %}<svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0)"><path d="M13.6667 3.91049C12.6667 3.06299 11.6367 2.18382 10.5942 1.14466L10 0.554657L9.41667 1.14549C7.54 3.02716 6.65333 5.91632 6.26833 7.64966C5.97364 7.19291 5.75497 6.6914 5.62083 6.16466L5.26833 4.80382L4.24333 5.76716C2.4475 7.45299 1.25 9.12549 1.25 11.8038C1.23323 13.7357 1.86243 15.6178 3.03768 17.1512C4.21292 18.6845 5.86681 19.7813 7.73667 20.2672C8.30006 20.4042 8.87509 20.4879 9.45417 20.5172C9.63522 20.5401 9.8175 20.552 10 20.553C10.0958 20.553 10.1892 20.5447 10.2825 20.5388C12.5526 20.4705 14.7068 19.5203 16.2877 17.8897C17.8686 16.2591 18.7519 14.0766 18.75 11.8055C18.75 8.22716 16.3942 6.22716 13.6667 3.91049ZM10.1667 18.8722C10.0833 18.8722 10 18.8805 9.91166 18.8797C9.1616 18.8567 8.44982 18.5431 7.92671 18.0051C7.40361 17.4671 7.11014 16.7467 7.10833 15.9963C7.10833 14.9397 7.675 14.413 8.9575 13.3213C9.28083 13.0463 9.6325 12.7472 10.0025 12.4047C10.3267 12.6988 10.6417 12.9655 10.9325 13.213C12.2208 14.3063 12.8933 14.9272 12.8933 15.9938C12.8919 16.7309 12.6088 17.4396 12.1019 17.9747C11.5949 18.5098 10.9026 18.8309 10.1667 18.8722ZM14.35 17.3963L14.3333 17.408C14.4829 16.9523 14.5594 16.4759 14.56 15.9963C14.56 14.1088 13.3217 13.0572 12.0117 11.9447C11.5475 11.5513 11.0683 11.1447 10.59 10.6663L10 10.0772L9.41083 10.6663C8.87083 11.2055 8.3425 11.6555 7.87666 12.0522C6.57 13.1638 5.44083 14.1247 5.44083 15.9963C5.44261 16.4965 5.52708 16.9929 5.69083 17.4655C4.82338 16.7994 4.12164 15.9418 3.64041 14.9597C3.15918 13.9776 2.91148 12.8975 2.91667 11.8038C2.90296 10.3415 3.46895 8.93326 4.49083 7.88716C4.66685 8.24426 4.87552 8.58432 5.11417 8.90299C5.28847 9.13819 5.52778 9.31725 5.80261 9.41809C6.07744 9.51893 6.37577 9.53714 6.66083 9.47049C6.95082 9.40593 7.21608 9.25921 7.42489 9.04789C7.63371 8.83656 7.77724 8.56956 7.83833 8.27882C8.18726 6.36353 8.94193 4.54505 10.0517 2.94549C10.9308 3.77882 11.8017 4.51632 12.5875 5.18382C15.1975 7.40049 17.0875 9.00216 17.0875 11.8088C17.0895 12.8877 16.8437 13.9526 16.3689 14.9214C15.8941 15.8902 15.2031 16.7369 14.3492 17.3963H14.35Z" fill="var(--main-color)"></path></g><defs><clipPath id="clip0"><rect width="20" height="20" fill="white" transform="translate(0 0.517151)"></rect></clipPath></defs></svg>{% endset %}
+{% set cart_drawer %}
+<div class="cart-dropdown-wrap cart-dropdown-hm2 drawer-list ">
+<div class="cart-dropdown-top"><div class="close-style-wrap close-style-position-inherit"><span>{{ trans('palace.cart') }}</span><button class="close-cart close-style search-close" type="button"><i class="icon-top"></i><i class="icon-bottom"></i></button></div><div class="min-cart-progress cart-rules"></div></div>
+<div class="min-cart-scrollable-wrapper"><ul class="result-cart"></ul>
+<div class="shopping-cart-footer"><div class="shopping-cart-total"><h4>{{ trans('palace.total') }} <span class="summary-total-price">0</span></h4></div>
+<div class="shopping-cart-button"><a href="{{ link('cart') }}" class="outline">{{ trans('palace.cart') }}</a><a href="{{ link('cart') }}" id="gotoCheckout_button">{{ trans('palace.checkout') }}</a></div></div>
+</div></div>
+{% endset %}
+<div class="palace-ref palace-header-region">
+<div class="body-overlay-1"></div>
+<header class="header-area header-style-1 header-height-2">
+<div class="text-center"><div id="news-flash-mobile" class="mobile-promotion" style="overflow: hidden; position: relative; height: 0px;"><ul style="position: absolute; margin: 0px; padding: 0px; top: 0px;">{% for message in messages %}<li style="margin: 0px; padding: 0px; height: 0px;">{{ message }}</li>{% endfor %}</ul></div></div>
+<div class="header-top header-top-ptb-1 d-none d-lg-block">
+<div class="container"><div class="row align-items-center">
+<div class="col-xl-3 col-lg-4"></div>
+<div class="col-xl-6 col-lg-4"><div class="text-center"><div id="news-flash" class="d-inline-block" style="line-height: 20px !important; overflow: hidden; position: relative; height: 20px;"><ul style="position: absolute; margin: 0px; padding: 0px; top: 0px;">{% for message in messages %}<li style="margin: 0px; padding: 0px; height: 20px;">{{ message }}</li>{% endfor %}</ul></div></div></div>
+<div class="col-xl-3 col-lg-4"><div class="header-info header-info-right"><ul>
+<li><button type="button" class="language-dropdown-active country-dropdown" data-palace-localization><img class="lazyload" data-src="{{ (palace_img ~ 'sa.svg')|asset }}" src="{{ (palace_img ~ 'sa.svg')|asset }}" alt="flag"> {{ theme.settings.get('palace_country_code', 'SA') }}</button></li>
+{% if store.settings.is_multilingual %}
+<li><div class="nt_languages "><svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="25px" height="25px" viewBox="0 0 1286 1214.7" style="overflow:visible;enable-background:new 0 0 1286 1214.7;" xml:space="preserve"><g><path fill="var(--main-color)" d="M237.8,191.9c-29.8,11.6-58,23.9-80.4,37.4c-23.9,14.4-39.8,33.8-39.8,52.3c0,39.8,43.5,67,108.1,67 c23.4,0,44.7-2.8,60.3-6.9l1.7,4.3c-12.1,9-25.1,18.2-39.8,26.5c-7.6,4.3-21.5,6.9-40.5,6.9c-57.5,0-106-27.2-106-88.3 c0-31,16.6-56.6,39.3-76.4c-25.6-18.2-35.5-31-35.5-51.6c0-10.2,3.5-24.1,10.6-36.2c10.9-18,27-27.7,44-27.7 c20.8,0,36.4,10.4,50.9,29.8l-3.8,5c-12.3-5.7-24.1-7.8-36.7-7.8c-26.3,0-47.3,13.3-47.3,23c0,10.6,6.2,19.2,20.6,30.1 c8.5,6.2,20.3,12.8,25.1,12.8c4.7,0,9-2.4,13-4.3c21.3-10.2,42.6-19.4,63.9-27.4l1.2,0.7L237.8,191.9z"></path><path fill="var(--main-color)" d="M207.5,382.3c-30.8,0-57.2-7.5-76.3-21.8c-21.3-16-32.6-39.9-32.6-69.4c0-27.8,12.6-53.4,37.5-76.2 c-21.9-16-33.7-29.5-33.7-51.8c0-11.7,4.2-26.1,11.1-37.7c11.2-18.5,28.2-29.1,46.6-29.1c20.6,0,37.5,9.9,53.2,31l1.3,1.8l-6.6,8.6 l-2.2-1c-11.1-5.1-22.4-7.5-35.4-7.5c-26.1,0-44.4,13-44.4,20c0,9.4,5.4,17.2,19.4,27.7c9.1,6.6,19.8,12.2,23.3,12.2 c3.5,0,6.9-1.7,10.3-3.3c0.5-0.2,1-0.5,1.5-0.7c22-10.5,43.6-19.8,64.1-27.5l1.3-0.5l4.4,2.6l-10,34.6l-1.4,0.5 c-35,13.6-60.4,25.4-80,37.2c-24,14.5-38.3,33.1-38.3,49.8c0,18.5,9.8,34.3,28.4,45.9c19.1,11.9,45.6,18.1,76.7,18.1 c21.5,0,42.7-2.4,59.6-6.8l2.5-0.7l3.4,8.8l-1.8,1.3c-11.2,8.3-24.7,18-40.1,26.7C241.1,379.7,226.2,382.3,207.5,382.3 M160,102.1 c-16.3,0-31.4,9.6-41.5,26.3c-6.3,10.7-10.2,24-10.2,34.7c0,18.7,8.3,30.7,34.3,49.2l3,2.2l-2.8,2.5 c-25.4,22.2-38.3,47.2-38.3,74.2c0,62.9,53.2,85.3,103,85.3c17.7,0,31.6-2.3,39-6.5c14-7.9,26.5-16.7,37-24.5 c-16.8,4-37.2,6.2-57.8,6.2c-32.2,0-59.8-6.6-79.9-19c-20.1-12.5-31.2-30.6-31.2-50.9c0-18.8,15.4-39.2,41.2-54.8 c19.6-11.8,44.9-23.6,79.5-37.1l7.3-25.2c-19.1,7.4-39.2,16-59.7,25.8c-0.5,0.2-1,0.5-1.5,0.7c-3.7,1.8-8,3.8-12.8,3.8 c-6.6,0-20.4-8.7-26.8-13.3c-15.5-11.7-21.8-21.1-21.8-32.4c0-11.7,22.4-25.9,50.3-25.9c13.1,0,24.5,2.3,35.7,7.1l1-1.3 C192.8,110.4,178.2,102.1,160,102.1"></path><path fill="var(--main-color)" d="M618.5,982.2c-50.4,0-99.4-9.9-145.5-29.4c-44.5-18.8-84.5-45.8-118.8-80.1c-34.3-34.3-61.3-74.3-80.1-118.8 c-19.5-46.1-29.4-95-29.4-145.5c0-50.4,9.9-99.4,29.4-145.5c18.8-44.5,45.8-84.5,80.1-118.8c34.3-34.3,74.3-61.3,118.8-80.1 c46.1-19.5,95-29.4,145.5-29.4c50.4,0,99.4,9.9,145.5,29.4c44.5,18.8,84.5,45.8,118.8,80.1c34.3,34.3,61.3,74.3,80.1,118.8 c19.5,46.1,29.4,95,29.4,145.5c0,50.4-9.9,99.4-29.4,145.5c-18.8,44.5-45.8,84.5-80.1,118.8c-34.3,34.3-74.3,61.3-118.8,80.1 C717.9,972.3,668.9,982.2,618.5,982.2 M618.5,272.7c-185.1,0-335.7,150.6-335.7,335.7s150.6,335.7,335.7,335.7 c185.1,0,335.7-150.6,335.7-335.7S803.6,272.7,618.5,272.7"></path><path fill="var(--main-color)" d="M618.5,982.2c-53.5,0-102-38.9-136.6-109.6c-33.2-67.8-51.4-161.6-51.4-264.2c0-102.6,18.3-196.4,51.4-264.2 c34.5-70.7,83-109.6,136.6-109.6c53.5,0,102,38.9,136.6,109.6c33.2,67.8,51.4,161.6,51.4,264.2c0,102.6-18.3,196.4-51.4,264.2 C720.5,943.2,672,982.2,618.5,982.2 M618.5,272.7c-38.2,0-74.6,31.3-102.4,88.2c-30.7,62.7-47.6,150.6-47.6,247.5 c0,96.9,16.9,184.8,47.6,247.5c27.8,56.9,64.2,88.2,102.4,88.2c38.2,0,74.6-31.3,102.4-88.2c30.7-62.7,47.6-150.6,47.6-247.5 c0-96.9-16.9-184.8-47.6-247.5C693.1,304,656.7,272.7,618.5,272.7"></path><rect x="599.5" y="253.7" fill="var(--main-color)" width="38" height="709.5"></rect><rect x="263.8" y="590.2" fill="var(--main-color)" width="709.5" height="38"></rect><rect x="331.3" y="395.7" fill="var(--main-color)" width="574.4" height="38"></rect><rect x="331.3" y="784.8" fill="var(--main-color)" width="574.4" height="38"></rect><path fill="var(--main-color)" d="M1136.2,609.3h-38c0-264.5-215.2-479.7-479.7-479.7v-38c69.9,0,137.7,13.7,201.5,40.7 c61.7,26.1,117,63.4,164.6,110.9c47.5,47.5,84.9,102.9,110.9,164.6C1122.5,471.6,1136.2,539.4,1136.2,609.3"></path><path fill="var(--main-color)" d="M618.5,1125.2c-69.9,0-137.7-13.7-201.5-40.7c-61.6-26.1-117-63.4-164.6-110.9 c-47.5-47.5-84.9-102.9-110.9-164.6c-27-63.8-40.7-131.6-40.7-201.5h38c0,264.5,215.2,479.7,479.7,479.7V1125.2z"></path><polygon fill="var(--main-color)" points="1200.7,1101.7 1027.5,1101.7 1027.5,834.1 1200.7,834.1 1200.7,874.5 1075.4,874.5 1075.4,946.8 1193.8,946.8 1193.8,984.8 1075.4,984.8 1075.4,1061.2 1200.7,1061.2 "></polygon><polygon fill="var(--main-color)" points="520.1,109.8 627.2,154.4 627.7,67.6 "></polygon><polygon fill="var(--main-color)" points="717.2,1107.4 610.1,1062.9 609.6,1149.6 "></polygon></g></svg>
+<button type="button" class=" cg db" data-palace-localization>
+{{ trans('palace.switch_language') }}</button></div></li>
+{% endif %}
+<li class="darkmode-switch-item"><button type="button" class="switch-modes" data-palace-dark-mode><i class="bx bxs-sun">{{ sun_icon|raw }}</i><span class="btn-switch"></span><i class="bx bxs-moon">{{ moon_icon|raw }}</i></button></li>
+</ul></div></div>
+</div></div>
+</div>
+<div class="header-middle header-middle-ptb-1 d-none d-lg-block" style="background-color: #ffffff">
+<div class="container"><div class="header-wrap">
+<div class="logo logo-width-1"><a href="{{ store.url }}"><img height="55" width="150" class="main-header-logo logo-light" src="{{ store.logo }}" alt="{{ store.name }}"><img height="55" width="150" class="main-header-logo logo-dark lazyload" src="{{ (palace_img ~ 'lazyloading_img.svg')|asset }}" data-src="{{ logo_dark }}" alt="{{ store.name }}"></a></div>
+<div class="header-right">
+<div class="search-style-2" id="header-search-wrapper">
+<form id="search_form" action="{{ link('search') }}" style="display: flex; align-items: center; overflow: visible; position: relative">
+<select id="category-select" class="select-active select2-hidden-accessible" tabindex="-1" aria-hidden="true"><option selected value="">{{ trans('palace.categories') }}</option></select><span class="select2 select2-container select2-container--default" dir="ltr" style="width: 140px;"><span class="selection"><span class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0"><span class="select2-selection__rendered" role="textbox" aria-readonly="true" title="{{ trans('palace.categories') }}">{{ trans('palace.categories') }}</span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+<input name="q" type="text" class="header-search-input" placeholder="{{ trans('palace.search_placeholder') }}" autocomplete="off">
+<div class="dynamic-search-results" id="dynamic-search-results"></div>
+<button type="submit" value="Submit" class="search-btn"><img src="{{ (palace_img ~ 'search.png')|asset }}" alt="search"></button>
+</form>
+</div>
+<div class="header-action-right"><div class="header-action-2">
+<div class="header-action-icon-2"><a href="{{ link('customer.wishlist') }}">{{ heart_icon|raw }}<span class="pro-count blue fav-products-count d-none">0</span><span class="ml-0 mr-0 lable">{{ trans('palace.wishlist') }}</span></a></div>
+<div class="header-action-icon-2 center-content"><a class="mini-cart-icon" href="{{ link('cart') }}" style="cursor: pointer;">{{ cart_icon|raw }}<span class="pro-count blue cart-count" data-cart-count>0</span><span class="lable">{{ trans('palace.cart') }}</span></a>{{ cart_drawer|raw }}</div>
+<div class="header-action-icon-2 center-content account-list-icon">
+<span class="account-list-span">{{ user_icon|raw }}</span>
+<span>{% if is_user %}<span class="ml-0 lable account-span-margin">{{ trans('palace.hello') }} {{ user.first_name }}</span>{% else %}<span class="ml-0 lable account-span-margin">{{ trans('palace.account') }}</span>{% endif %}</span>
+<div class="account-dropdown">
+{% if is_user %}
+<ul>
+<li><a class="d-flex" href="{{ link('customer.profile') }}"><i class="mr-10 fi fi-rs-user"></i>{{ trans('palace.profile') }}</a></li>
+<li><a class="d-flex" href="{{ link('customer.orders') }}"><i class="mr-10 fi fi-rs-shopping-bag"></i>{{ trans('palace.orders') }}</a></li>
+<li><a class="d-flex" href="{{ link('customer.profile') }}"><i class="mr-10 fi fi-rs-location-alt"></i>{{ trans('palace.addresses') }}</a></li>
+<li><a class="d-flex logout-ptn" href="#" data-palace-logout><i class="mr-10 fi fi-rs-sign-out"></i>{{ trans('palace.logout') }}</a></li>
+</ul>
+{% else %}
+<ul><li><a class="d-flex" href="#" data-palace-login><i class="mr-10 fi fi-rs-sign-in"></i>{{ trans('palace.login') }}</a></li></ul>
+{% endif %}
+</div>
+</div>
+</div></div>
+</div>
+</div></div>
+</div>
+<div class="header-bottom header-bottom-bg-color sticky-bar" style="background-color: #ffffff">
+<div class="container"><div class="header-wrap header-space-between position-relative">
+<div class="order-2 logo logo-width-1 d-block d-lg-none max-lg:mx-0"><a href="{{ store.url }}"><img class="main-header-logo logo-light" src="{{ store.logo }}" alt="{{ store.name }}"><img class="main-header-logo logo-dark lazyload" src="{{ (palace_img ~ 'lazyloading_img.svg')|asset }}" data-src="{{ logo_dark }}" alt="{{ store.name }}"></a></div>
+<div class="header-nav d-none d-lg-flex">
+<div class="main-categori-wrap d-none d-lg-block">
+<a class="categories-button-active" href="#"><span class="fi-rs-apps"></span><span class="et">{{ trans('palace.categories') }}</span><i class="fi-rs-angle-down"></i></a>
+<div class="categories-dropdown-wrap categories-dropdown-active-large font-heading" id="selected_categories_inner" data-palace-categories></div>
+</div>
+<div class="main-menu main-menu-padding-1 main-menu-lh-2 d-none d-lg-block font-heading"><nav><ul data-palace-menu>
+<li class="hot-deals">
+{{ flame_icon|raw }}
+<a href="{{ link('offers') }}">{{ trans('palace.best_offers') }}</a></li>
+</ul></nav></div>
+</div>
+<div class="header-action-icon-2 d-block d-lg-none order-1 max-lg:min-w-[7rem]"><div class="burger-icon burger-icon-white"><span class="burger-icon-top"></span><span class="burger-icon-mid"></span><span class="burger-icon-bottom"></span></div></div>
+<div class="flex order-3 header-action-right lg:hidden">
+<div class="mobile-search"><a class="header-action-icon center-content md:px-3" href="{{ link('search') }}"><svg width="41" height="41" viewBox="0 0 41 41" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 cursor-pointer"><path d="M18.6666 31.7066C26.0303 31.7066 31.9999 25.737 31.9999 18.3733C31.9999 11.0095 26.0303 5.03992 18.6666 5.03992C11.3028 5.03992 5.33325 11.0095 5.33325 18.3733C5.33325 25.737 11.3028 31.7066 18.6666 31.7066Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M35.3333 35.0399L28.0833 27.7899" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="round"></path></svg></a></div>
+<div class="header-action-2"><div class="header-action-icon-2"><a class="mini-cart-icon" href="{{ link('cart') }}">{{ cart_icon|raw }}<span class="pro-count white cart-count" data-cart-count>0</span></a>{{ cart_drawer|raw }}</div></div>
+</div>
+</div></div>
+</div>
 </header>
+<div class="mobile-header-active mobile-header-wrapper-style">
+<div class="mobile-header-wrapper-inner">
+<div class="mobile-header-top">
+<div class="mobile-header-logo"><a href="{{ store.url }}"><img class="main-header-logo logo-light lazyload" src="{{ (palace_img ~ 'lazyloading_img.svg')|asset }}" data-src="{{ store.logo }}" alt="{{ store.name }}"><img class="main-header-logo logo-dark lazyload" src="{{ (palace_img ~ 'lazyloading_img.svg')|asset }}" data-src="{{ logo_dark }}" alt="{{ store.name }}"></a></div>
+<div class="mobile-menu-close close-style-wrap close-style-position-inherit"><button class="close-style search-close" type="button"><i class="icon-top"></i><i class="icon-bottom"></i></button></div>
+</div>
+<div class="mobile-header-content-area">
+<div style="position: relative;">
+{% if is_user %}
+<div class="mb-3 single-mobile-header-info"><a href="{{ link('customer.profile') }}"><i class="mr-10 fi fi-rs-user"></i>{{ trans('palace.profile') }}</a></div>
+<div class="mb-3 single-mobile-header-info"><a href="{{ link('customer.orders') }}"><i class="mr-10 fi fi-rs-shopping-bag"></i>{{ trans('palace.orders') }}</a></div>
+<div class="mb-3 single-mobile-header-info"><a class="logout-ptn" href="#" data-palace-logout><i class="mr-10 fi fi-rs-sign-out"></i>{{ trans('palace.logout') }}</a></div>
+{% else %}
+<div class="mb-3 single-mobile-header-info"><a href="#" data-palace-login><i class="mr-10 fi fi-rs-sign-in"></i>{{ trans('palace.login') }}</a></div>
+{% endif %}
+</div>
+<div class="mobile-search search-style-3 mobile-header-border"><form action="{{ link('search') }}"><input name="q" type="text" placeholder="{{ trans('palace.search_placeholder') }}"><button type="submit"><i class="fi-rs-search"></i></button></form></div>
+<div class="mobile-menu-wrap mobile-header-border">
+<nav><ul class="mobile-menu font-heading" data-palace-mobile-menu>
+<li data-palace-static><a href="{{ link('products') }}">{{ trans('palace.all_products') }}</a></li>
+<li data-palace-static><a href="{{ link('categories') }}">{{ trans('palace.all_categories') }}</a></li>
+<li data-palace-static>
+{{ flame_icon|raw }}
+<a href="{{ link('offers') }}">{{ trans('palace.best_offers') }}</a>
+</li>
+<li data-palace-static>
+<button class="open-fav-modal-mobile" type="button" data-palace-href="{{ link('customer.wishlist') }}">
+{{ heart_icon|raw }}			<span class="ml-0 mr-0 lable">{{ trans('palace.wishlist') }}</span>
+</button>
+</li>
+<ul class="mobile-lang-currency" data-palace-static>
+{% if store.settings.is_multilingual %}<li class="nt_languages "><span>{{ trans('palace.language') }}</span><div><button type="button" data-palace-localization>{{ trans('palace.switch_language') }}</button></div></li>{% endif %}
+<li class="menu-item-has-children nt_currencies">{{ trans('palace.country') }}<button type="button" data-palace-localization><img class="lazyload" src="{{ (palace_img ~ 'lazyloading_img.svg')|asset }}" data-src="{{ (palace_img ~ 'sa.svg')|asset }}" alt=""> {{ theme.settings.get('palace_country_code', 'SA') }}</button></li>
+<li class="darkmode-switch-item">{{ trans('palace.dark_mode') }}<button type="button" class="switch-modes" data-palace-dark-mode><i class="bx bxs-sun">{{ sun_icon|raw }}</i><span class="btn-switch"></span><i class="bx bxs-moon">{{ moon_icon|raw }}</i></button></li>
+</ul>
+</ul></nav>
+</div>
+<div class="mt-20 mobile-social-icon mb-30"><h6 class="mb-15">{{ trans('palace.follow_us') }}</h6>{% for item in social %}{% if item[1] %}<a href="{{ item[1] }}" target="_blank" rel="noopener"><img src="{{ (palace_img ~ item[2])|asset }}" alt="{{ item[0] }}"></a>{% endif %}{% endfor %}</div>
+</div>
+</div>
+</div>
+</div>

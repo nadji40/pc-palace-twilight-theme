@@ -1,0 +1,9 @@
+{#
+  PC Palace breadcrumb bar (reference: .page-header.breadcrumb-wrap).
+  crumbs: [[title, url], ...] (last item is the current page, url optional)
+#}
+<div class="page-header breadcrumb-wrap"><div class="container"><div class="breadcrumb">
+<a href="{{ store.url }}" rel="nofollow"><i class="mr-5 fi-rs-home"></i> {{ trans('palace.home') }}</a>
+{% for crumb in crumbs %}<span></span> {% if crumb[1] is defined and crumb[1] and not loop.last %}<a href="{{ crumb[1] }}" rel="nofollow"> {{ crumb[0] }}</a>{% else %}{{ crumb[0] }}{% endif %}
+{% endfor %}
+</div></div></div>

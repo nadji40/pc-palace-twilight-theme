@@ -1,0 +1,19 @@
+{#
+  PC Palace product columns (reference: products-columns): up to four categories, each with a
+  short list of products.
+  component.categories[] | component.limit (3)
+#}
+{% set sid = 'palace-' ~ (position|default(0)) %}
+<section main-section-id="{{ sid }}" id="columns-products-section-{{ sid }}" class="palace-ref" component-id="{{ componentId }}">
+<section class="section-padding mb-30 lazyloaded" section-id="{{ sid }}" data-palace-section="columns">
+<div class="container"><div class="row">
+{% for category in component.categories|slice(0, 4) %}
+{% set column = {'source': 'categories', 'value': [category.id], 'limit': component.limit ?: 3} %}
+<div class="col-xl-3 col-lg-4 col-md-6 mb-sm-5 mb-md-0 wow animate__animated animate__fadeInUp" data-wow-delay="0.{{ loop.index0 }}s" data-palace-column="{{ column|json_encode }}">
+<h4 class="section-title style-1 mb-30 animated">{{ category.name }}</h4>
+<div class="product-list-small animated"></div>
+</div>
+{% endfor %}
+</div></div>
+</section>
+</section>

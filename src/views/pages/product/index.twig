@@ -15,107 +15,27 @@
 | sort_options[].name        | string      |                                                                      |
 | sort_options[].is_selected | bool        | Is current page sorted by it                                         |
 | search_query               | ?string     |                                                                      |
+
+  PC Palace listing page (reference: pcpalace-theme/pages/category-laptops.html and products.html):
+  title banner, sub-category slider, filter sidebar, sort menu, 24-product grid and "load more".
+  Products, filters and paging come from Salla's products API (palace-reference.js, listing()).
 #}
 {% extends "layouts.master" %}
 {% block content %}
-	{% if category %}
-		<div class="container">
-			<div class="palace-category-hero">
-				<salla-breadcrumb></salla-breadcrumb>
-				<h1>{{ category.name }}</h1>
-				{% if category.description %}<p>{{ category.description|striptags }}</p>{% endif %}
-			</div>
-			{% if category.sub_categories|length %}
-				<div class="palace-subcategories">
-					{% for child in category.sub_categories %}
-						<a href="{{ child.url }}" class="palace-subcategory">
-							{% if child.image %}<img src="{{ child.image }}" loading="lazy" width="84" height="84" alt="{{ child.name }}">{% endif %}
-							<span>{{ child.name }}</span>
-						</a>
-					{% endfor %}
-				</div>
-			{% endif %}
-		</div>
-	{% elseif theme.settings.get('product_index_show_breadcrumbs', true) %}
-		<div
-			class="container container--breadcrumbs">
-			{# add breadcumbs container in pages to make a space in case breadcrumbs is off #}
-			<nav class="breadcrumbs w-full py-5">
-				<salla-breadcrumb></salla-breadcrumb>
-			</nav>
-		</div>
-	{% endif %}
+{% set source_map = {'product.index': 'categories', 'product.index.latest': 'latest', 'product.index.offers': 'offers', 'product.index.search': 'search', 'product.index.tag': 'tags', 'product.index.sales': 'sales'} %}
+{% set source = source_map[page.slug] is defined ? source_map[page.slug] : 'categories' %}
+{% set value = source == 'search' ? search_query : (source in ['latest', 'offers', 'sales'] ? null : page.id) %}
+{% set title = category ? category.name : (search_query ?: page.title|striptags) %}
+{% set sorts = sort_options|default([]) %}
+{% set current_sort = sorts|first %}
+{% for sort in sorts %}{% if sort.is_selected %}{% set current_sort = sort %}{% endif %}{% endfor %}
+{% set config = {'source': source, 'value': value, 'limit': 24, 'sort': current_sort ? current_sort.id : ''} %}
 
-	{#
-    Hook: product.index.before_products_group_with_filter
-    Fires before the products grid and filter sidebar wrapper.
-    Use this hook to inject content above the products listing area.
-  #}
-	<div class="s-blocks-wrapper s-before-products-list !mt-0">{% hook 'product.index.before_products_group_with_filter' %}</div>
+<div class="s-blocks-wrapper s-before-products-list">{% hook 'product.index.before_products_group_with_filter' %}</div>
 
-	<div class="container container--products-list flex items-start flex-col md:flex-row">
-		{% if filters %}
-			<button class="btn--close-sm close-filters sicon-cancel hidden"></button>
-			<salla-filters data-testid="store-products-filters" class="md:w-72 lg:sticky lg:top-20 flex-none" id="filters-menu"></salla-filters>
-		{% endif %}
+{% set listing_description = category ? category.description : '' %}
+{% set listing_children = category ? category.sub_categories : [] %}
+{% include 'pages.partials.palace-listing' %}
 
-		<div class="main-content flex-1 w-full {{ filters ? 'ltr:lg:ml-8 rtl:lg:mr-8' : '' }}">
-			<div class="mb-4 sm:mb-6 flex justify-between items-center">
-				{% if category %}<h2 class="font-bold text-xl rtl:pl-3 ltr:pr-3" id="page-main-title">{{ category.name }}</h2>{% else %}<h1 class="font-bold text-xl rtl:pl-3 ltr:pr-3" id="page-main-title">{{ page.title|striptags }}</h1>{% endif %}
-				<div class="flex items-center space-x-2 rtl:space-x-reverse">
-					{% if filters %}
-						<a data-testid="store-products-filters-mobile-trigger" href="#filters-menu" class="filters-trigger bg-border-color text-primary lg:hidden mt-2">
-							<i class="sicon-filter text-gray-text text-2xl me-2.5"></i>
-						</a>
-					{% endif %}
-					{% if sort_options|length %}
-						<div class="flex items-center">
-							<label class="hidden sm:block rtl:ml-3 ltr:mr-3 whitespace-nowrap" for="product-filter">{{ trans('pages.categories.sorting') }}</label>
-							<select id="product-filter" class="form-input pt-0 pb-1 rtl:md:pl-10 ltr:md:pr-10">
-								{% for sort in sort_options %}
-									<option value="{{ sort.id }}" {{ sort.is_selected?'selected':'' }}>{{ sort.name }}</option>
-								{% endfor %}
-							</select>
-						</div>
-					{% endif %}
-				</div>
-			</div>
-
-			{% hook 'product:index.items.start' %}
-
-			{# nothing is marked selected when the store default sort is disabled, so send the shown option with the first request #}
-			{% set sort_list = sort_options|default([]) %}
-			{% set first_sort = sort_list|first %}
-			{% set has_selected_sort = sort_list|filter(sort => sort.is_selected)|length %}
-			{% set fallback_sort = (sort_list|length and not has_selected_sort and first_sort.id != 'ourSuggest') ? first_sort.id : '' %}
-
-			<div class="flex">
-				<salla-products-list data-testid="store-products-list" class="flex-1 min-w-0" source="{{ page.slug }}" source-value="{{ page.id }}" sort-by="{{ fallback_sort }}" {{ filters ?'filters-Results':'' }}></salla-products-list>
-			</div>
-
-			{% hook 'product:index.items.end' %}
-		</div>
-	</div>
-
-	{#
-    Hook: product.index.after_products_group_with_filter
-    Fires after the products grid and filter sidebar wrapper.
-    Use this hook to inject content below the products listing area.
-  #}
-	<div class="s-blocks-wrapper s-after-products-list">{% hook 'product.index.after_products_group_with_filter' %}</div>
-
-	{% if store.settings.category.testimonial_enabled %}
-		{% component 'home.testimonials' %}
-	{% endif %}
-
-	{#
-    Hook: product.index.after_testimonials
-    Fires after the testimonials (store reviews) section.
-    Use this hook to inject content below the testimonials area.
-  #}
-	<div class="s-blocks-wrapper s-after-testimonials">{% hook 'product.index.after_testimonials' %}</div>
-{% endblock %}
-
-{% block scripts %}
-	<script defer src="{{ 'product.js' | asset }}"></script>
+<div class="s-blocks-wrapper s-after-products-list">{% hook 'product.index.after_products_group_with_filter' %}</div>
 {% endblock %}

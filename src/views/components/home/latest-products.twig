@@ -1,13 +1,19 @@
 {#
-| Variable        | Type       | Description                    |
-|-----------------|------------|--------------------------------|
-| products        | Products[] |                                |
-| position        | Int        | Sorting number start from zero |
+  Salla's built-in "latest products" component, rendered with the PC Palace product carousel
+  (same markup as palace-products.twig). Salla provides: position.
 #}
-<section component-id="{{ componentId }}" data-testid="store-home-products-section" class="s-block s-block--latest-products container mt-6 sm:mt-8">
-    <div class="s-block__title">
-      <h2>{{ trans('blocks.home.latest_products') }}</h2>
-    </div>
-    
-    <salla-products-list data-testid="store-home-latest-products-list" source="latest"></salla-products-list>
-</section> 
+{% set sid = 'palace-builtin-' ~ (position|default(0)) %}
+{% set config = {'source': 'latest', 'value': null, 'limit': 12, 'autoplay': true, 'slideClass': ' sm:w-1/5  px-2 w-1/2'} %}
+<section main-section-id="{{ sid }}" id="category-section-{{ sid }}" class="palace-ref" component-id="{{ componentId }}">
+<section class="pb-5 section-padding featured-products-section hide-main-arrows lazyloaded" section-id="{{ sid }}" data-palace-section="grid" data-palace-products="{{ config|json_encode }}">
+<div class="container container-padding-mobile">
+<div class="section-title wow animate__animated animate__fadeIn"><h3>{{ trans('blocks.home.latest_products') }}</h3></div>
+<div class="row"><div class="col-md-12 carausel-4-columns-cover wow animate__animated animate__fadeIn" data-wow-delay=".4s">
+<div class="arrow-center position-relative ">
+<div class="slider-arrow slider-arrow-2 carausel-4-columns-arrow"></div>
+<div class="swiper carausel-5-columns carausel-arrow-center"><div class="swiper-wrapper"></div></div>
+</div>
+</div></div>
+</div>
+</section>
+</section>

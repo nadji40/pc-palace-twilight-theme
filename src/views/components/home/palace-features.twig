@@ -1,0 +1,21 @@
+{#
+  Store features row (Nest "banner-left-icon" boxes).
+  component.items[] (title, text, image, icon: brands|team|delivery)
+#}
+{% set sid = 'palace-' ~ (position|default(0)) %}
+{% set icons = {'brands': 'feature-original.png', 'team': 'feature-exchange.png', 'delivery': 'feature-delivery.png'} %}
+<section main-section-id="{{ sid }}" id="features-section-{{ sid }}" class="palace-ref" component-id="{{ componentId }}">
+<section section-id="{{ sid }}" class="featured section-padding palace-features">
+<div class="container"><div class="row">
+{% for item in component.items %}
+{% set icon = item.image ?: ('images/palace/' ~ (icons[item.icon] is defined ? icons[item.icon] : 'feature-original.png'))|asset %}
+<div class="col-lg-4 col-md-6 mb-md-4 mb-xl-0">
+<div class="banner-left-icon d-flex align-items-center wow animate__animated animate__fadeInUp" data-wow-delay="0.{{ loop.index0 }}s">
+<div class="banner-icon"><img class="lazyload" src="{{ 'images/palace/lazyloading_img.svg'|asset }}" data-src="{{ icon }}" alt="{{ item.title }}"></div>
+<div class="banner-text"><h3 class="icon-box-title">{{ item.title }}</h3><p>{{ item.text }}</p></div>
+</div>
+</div>
+{% endfor %}
+</div></div>
+</section>
+</section>

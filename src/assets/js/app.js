@@ -23,7 +23,7 @@ class App extends AppHelpers {
     this.initiateCollapse();
     
     // Ensure #more-menu-dropdown exists before running changeMenuDirection
-    const menuDirInterval = setInterval(() => {
+    const menuDirInterval = document.querySelector('custom-main-menu') && setInterval(() => {
       if (document.querySelector('#more-menu-dropdown')) {
         this.changeMenuDirection();
         clearInterval(menuDirInterval);
@@ -151,6 +151,7 @@ isElementLoaded(selector){
 
 
   initiateMobileMenu() {
+  if (document.querySelector('.mobile-header-active')) return; // PC Palace header has its own drawer
 
   this.isElementLoaded('#mobile-menu').then((menu) => {
 
@@ -279,7 +280,7 @@ isElementLoaded(selector){
     });
 
     salla.cart.event.onItemAdded((response, prodId) => {
-      app.element('salla-cart-summary').animateToCart(app.element(`#product-${prodId} img`));
+      app.element('salla-cart-summary')?.animateToCart(app.element(`#product-${prodId} img`));
     });
   }
 }

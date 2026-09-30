@@ -1,36 +1,19 @@
 {#
-| Variable              | Type      | Description                                                      |
-|-----------------------|-----------|------------------------------------------------------------------|
-| products.source       | string    |                                                                  |
-| products.source_value | ?int[]    | ids of sources (product_ids, categories_ids, brands_id..etc)     |
-| title                 | string    | Section title                                                    |
-| display_all_url       | ?string   | If it's existed, mean should show load more link to this url     |
-| position              | Int       | Sorting number start from zero                                   |
-| limit                 | int       | Number of products to be shown                                   |
+  Salla's built-in "fixed products" component, rendered with the PC Palace product carousel
+  (same markup as palace-products.twig). Salla provides: title, products.source, products.source_value, display_all_url, limit, position.
 #}
-{% set is_vertical = theme.settings.get('vertical_fixed_products', true) %}
-<section component-id="{{ componentId }}" data-testid="store-home-fixed-products" class="s-block container">
-    {% if title %}
-      <div class="s-block__title">
-        <div class="right-side">
-          <h2>{{ title }}</h2>
-          {# <p>عنوان فرعي توصيفي صغير</p> #}
-        </div>
-        {% if display_all_url %}
-            <a href="{{ display_all_url }}" class="s-block__display-all">{{ trans('blocks.home.display_all') }} <i class="sicon-arrow-left"></i></a>
-        {% endif %}
-      </div>
-    {% endif %}
-
-    <salla-products-list
-      data-testid="store-home-fixed-products-list"
-      source="{{ products.source }}"
-      limit="{{ limit }}"
-      source-value="{{ products.source_value|json_encode }}"
-      class="{{is_vertical ? 'vertical-products' : 'horizontal-products'}}"
-      {{is_vertical ? '' : 'horizontal-cards'}}
-      >
-    </salla-products-list>
+{% set sid = 'palace-builtin-' ~ (position|default(0)) %}
+{% set config = {'source': products.source, 'value': products.source_value, 'limit': limit|default(10), 'autoplay': true, 'slideClass': ' sm:w-1/5  px-2 w-1/2'} %}
+<section main-section-id="{{ sid }}" id="category-section-{{ sid }}" class="palace-ref" component-id="{{ componentId }}">
+<section class="pb-5 section-padding featured-products-section hide-main-arrows lazyloaded" section-id="{{ sid }}" data-palace-section="grid" data-palace-products="{{ config|json_encode }}">
+<div class="container container-padding-mobile">
+<div class="section-title wow animate__animated animate__fadeIn"><h3>{{ title }}</h3>{% if display_all_url %}<a href="{{ display_all_url }}" class="fw-900">{{ trans('palace.view_all') }}</a>{% endif %}</div>
+<div class="row"><div class="col-md-12 carausel-4-columns-cover wow animate__animated animate__fadeIn" data-wow-delay=".4s">
+<div class="arrow-center position-relative ">
+<div class="slider-arrow slider-arrow-2 carausel-4-columns-arrow"></div>
+<div class="swiper carausel-5-columns carausel-arrow-center"><div class="swiper-wrapper"></div></div>
+</div>
+</div></div>
+</div>
 </section>
-
-
+</section>

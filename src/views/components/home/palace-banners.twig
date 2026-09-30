@@ -1,0 +1,32 @@
+{#
+  PC Palace promo banners (reference: banners-section, four columns).
+  component.banners[]: image, url, title, subtitle | component.columns (4|3|2|1) | component.horizontal_mobile
+#}
+{% set sid = 'palace-' ~ (position|default(0)) %}
+{% set columns = component.columns ?: 4 %}
+{% if columns is iterable %}{% set first_column = columns|first %}{% set columns = first_column.value is defined ? first_column.value : first_column %}{% endif %}
+{% set col = columns == 1 ? 'col-lg-12' : (columns == 2 ? 'col-lg-6' : (columns == 3 ? 'col-lg-4 col-md-6' : 'col-lg-3 col-md-6')) %}
+{% set horizontal = component.horizontal_mobile is same as(false) ? false : true %}
+<section main-section-id="{{ sid }}" id="banners-section-{{ sid }}" class="palace-ref" component-id="{{ componentId }}">
+<section id="react-banners-{{ sid }}" class="banners section-padding lazyloaded" section-id="{{ sid }}">
+{% if horizontal %}<style>
+#react-banners-{{ sid }}.banners > .container > .row{flex-wrap:nowrap;overflow-x:auto;--bs-gutter-x:0.6rem}
+#react-banners-{{ sid }}.banners > .container > .row >div{max-width:85%}
+</style>{% endif %}
+<div class="container"><div class="row">
+{% for banner in component.banners %}
+<div class="{{ col }}"><div class="banner-img wow animate__animated animate__fadeInUp" data-wow-delay="0">
+<a class="link" href="{{ banner.url ?: '#' }}"></a>
+<img width="512" height="300" class="lazyload" src="{{ 'images/palace/lazyloading_img.svg'|asset }}" data-src="{{ banner.image }}" alt="{{ banner.title ?: 'banner image' }}">
+<div class="banner-text"><h4>{{ banner.title }}<br>{% if banner.subtitle %}<span>{{ banner.subtitle }}</span>{% endif %}</h4></div>
+</div></div>
+{% endfor %}
+</div></div>
+</section>
+{% if horizontal %}<style>
+@media only screen and (max-width: 768px) {
+  #banners-section-{{ sid }} > .container > .row{flex-wrap:nowrap;overflow-x:auto;--bs-gutter-x:0.6rem}
+  #banners-section-{{ sid }} > .container > .row >div{max-width:85%}
+}
+</style>{% endif %}
+</section>

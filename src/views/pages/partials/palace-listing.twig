@@ -1,0 +1,66 @@
+{#
+  PC Palace product listing (reference: category-laptops.html / products.html), shared by
+  category, offers, search, tag and brand pages. Expects: title, config, sorts, current_sort,
+  filters, and optionally listing_description and listing_children (sub-categories or similar).
+#}
+<div class="palace-ref palace-listing" data-palace-section="listing" data-palace-listing="{{ config|json_encode }}">
+<div class="page-header mt-30 {{ listing_description is defined and listing_description ? ' ' : 'mb-50' }}">
+<div class="container"><div class="archive-header position-relative"><div class="row align-items-center position-relative">
+<div class="col-xl-5">
+<div class="breadcrumb"><div class=""><div class="breadcrumb"><a href="{{ store.url }}" rel="nofollow"><i class="mr-5 fi-rs-home"></i> {{ trans('palace.home') }}</a><span></span> {{ title }} </div></div></div>
+<h1 class="mb-15">{{ title }}</h1>
+{% if listing_description is defined and listing_description %}<p> {{ listing_description|striptags }} </p>{% endif %}
+</div>
+<div class="col-xl-7 text-end filter-results-wrapper"></div>
+</div></div></div>
+</div>
+
+{% if listing_children is defined and listing_children|length %}
+<div class="popular-categories section-padding"><div class="container">
+<div class="section-title"><div class="slider-arrow slider-arrow-2 flex-right carausel-8-columns-arrow" id="carausel-8-columns-arrows"></div></div>
+<div class="carausel-8-columns-cover position-relative">
+<div class="carausel-8-columns" id="carausel-8-columns" data-autoplay="false" data-palace-slick>
+{% for child in listing_children %}
+<div class="card-1"><figure class="overflow-hidden img-hover-scale"><a href="{{ child.url }}"><img class="lazyload" src="{{ 'images/palace/lazyloading_img.svg'|asset }}" data-src="{{ child.image }}" alt="{{ child.name }}"></a></figure><h6><a href="{{ child.url }}">{{ child.name }}</a></h6></div>
+{% endfor %}
+</div>
+</div>
+</div></div>
+{% endif %}
+
+<div class="container mb-30"><div class="flex-row-reverse row">
+<div class="{{ filters ? 'col-lg-4-5' : 'col-12' }}">
+<div class="shop-product-fillter">
+<div class="totall-product"><p><strong class="text-brand" data-palace-total></strong> {{ trans('palace.products') }}</p></div>
+{% if sorts|length %}
+<div class="sort-by-product-area"><div class="sort-by-cover">
+<div class="sort-by-product-wrap">
+<div class="sort-by"><span><i class="fi-rs-apps-sort"></i> {{ trans('palace.sort_by') }}: </span></div>
+<div class="sort-by-dropdown-wrap"><span> {{ current_sort.name }} <i class="fi-rs-angle-small-down"></i></span></div>
+</div>
+<div class="sort-by-dropdown"><ul>
+<li class="header-sortby"><span>{{ trans('palace.sort_by') }}</span><button type="button" class="btn-close" aria-label="Close"></button></li>
+{% for sort in sorts %}<li><a class="truncate {{ sort.is_selected ? 'active' : '' }}" href="?sort={{ sort.id }}"> {{ sort.name }} </a></li>{% endfor %}
+</ul></div>
+</div></div>
+{% endif %}
+</div>
+{% hook 'product:index.items.start' %}
+<div class="row product-grid" id="category_more_wrapper"></div>
+<button id="load-more-button" class="btn primary-btn mt-[25px] mx-auto block" type="button" hidden>{{ trans('palace.more') }}</button>
+{% hook 'product:index.items.end' %}
+</div>
+{% if filters %}
+<div class="col-lg-1-5 primary-sidebar sticky-sidebar">
+<div class="theiaStickySidebar"><div class="product-attributes {{ theme.is_rtl ? 'rtl' : 'ltr' }}"><div class="product-attributes-light-box">
+<div class="product-attributes-light-box-top-section"></div>
+<div class="products-filters-container mt-4"><div class="attribute">
+<div class="filtration-header"><span>{{ trans('palace.filter_results') }}</span><a class="d-none" href="?">{{ trans('palace.clear') }}</a></div>
+<div class="products-filters-attribute-form"><form id="attribute_form" data-palace-filters></form></div>
+</div></div>
+</div></div></div>
+</div>
+{% endif %}
+</div></div>
+</div>
+

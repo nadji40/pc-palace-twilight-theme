@@ -11,6 +11,7 @@ module.exports = {
     entry  : {
         app     : [asset('styles/app.scss'), asset('js/wishlist.js'), asset('js/app.js'), asset('js/blog.js')],
         home    : asset('js/home.js'),
+        'palace-reference': [asset('styles/pcpalace-reference.css'), asset('styles/palace-extras.css'), asset('js/palace-reference.js')],
         'product-card' : asset('js/partials/product-card.js'),
         'main-menu' : asset('js/partials/main-menu.js'),
         'wishlist-card': asset('js/partials/wishlist-card.js'),
@@ -30,6 +31,7 @@ module.exports = {
     stats  : {modules: false, assetsSort: "size", assetsSpace: 50},
     module : {
         rules: [
+            {test: /\.css$/, use: [MiniCssExtractPlugin.loader, {loader: 'css-loader', options: {url: false}}]},
             {
                 test   : /\.js$/,
                 exclude: [
