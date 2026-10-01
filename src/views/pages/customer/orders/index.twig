@@ -13,19 +13,7 @@
 {% block inner_content %}
 {% hook 'customer:orders.index.items.start' %}
 {% if orders|length %}
-<div class="table-responsive"><table class="table">
-<thead><tr><th>{{ trans('palace.order_number') }}</th><th>{{ trans('palace.date') }}</th><th>{{ trans('palace.status') }}</th><th>{{ trans('palace.total') }}</th><th></th></tr></thead>
-<tbody>
-{% for order in orders %}
-<tr>
-<td>#{{ order.reference_id ?: order.id }}</td>
-<td>{{ order.created_at|date }}</td>
-<td><span class="palace-order-status" style="--status: {{ order.status.color ?: 'var(--main-color)' }}">{{ order.status.name }}</span></td>
-<td data-palace-money="{{ order.total.amount is defined ? order.total.amount : order.total }}"></td>
-<td><a href="{{ order.url }}" class="btn-small d-block">{{ trans('palace.view') }}</a></td>
-</tr>
-{% endfor %}
-</tbody></table></div>
+<div class="salla-island palace-orders"><salla-orders></salla-orders></div>
 {% else %}
 <div class="text-center pt-30 pb-30"><i class="fi-rs-shopping-bag font-xxl text-muted"></i><p class="mt-15">{{ trans('pages.orders.non_orders') }}</p><a href="{{ store.url }}" class="btn mt-20">{{ trans('palace.continue_shopping') }}</a></div>
 {% endif %}

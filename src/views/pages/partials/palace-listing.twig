@@ -1,7 +1,8 @@
 {#
   PC Palace product listing (reference: category-laptops.html / products.html), shared by
   category, offers, search, tag and brand pages. Expects: title, config, sorts, current_sort,
-  filters, and optionally listing_description and listing_children (sub-categories or similar).
+  filters, and optionally listing_description, listing_children (sub-categories or similar) and
+  listing_filters (the filters sidebar markup, Salla's <salla-filters>).
 #}
 <div class="palace-ref palace-listing" data-palace-section="listing" data-palace-listing="{{ config|json_encode }}">
 <div class="page-header mt-30 {{ listing_description is defined and listing_description ? ' ' : 'mb-50' }}">
@@ -55,8 +56,8 @@
 <div class="theiaStickySidebar"><div class="product-attributes {{ theme.is_rtl ? 'rtl' : 'ltr' }}"><div class="product-attributes-light-box">
 <div class="product-attributes-light-box-top-section"></div>
 <div class="products-filters-container mt-4"><div class="attribute">
-<div class="filtration-header"><span>{{ trans('palace.filter_results') }}</span><a class="d-none" href="?">{{ trans('palace.clear') }}</a></div>
-<div class="products-filters-attribute-form"><form id="attribute_form" data-palace-filters></form></div>
+<div class="filtration-header"><span>{{ trans('palace.filter_results') }}</span></div>
+{% if listing_filters is defined %}{{ listing_filters|raw }}{% endif %}
 </div></div>
 </div></div></div>
 </div>

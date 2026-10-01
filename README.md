@@ -44,10 +44,12 @@ The last four were added for Moodyul's own homepage sections (brands, installati
 store features) and use the same reference markup and animations as the rest of the page.
 
 Salla's built-in product components (`fixed-products`, `products-slider`, `latest-products`)
-render the same carousel. Header/footer content comes from the store (logo, header and footer
-menus, social links, VAT number) and the `palace_*` theme settings (announcement messages, dark
-logo, footer logo and colour, working hours, app links, CR and e-commerce numbers). The footer's
-two link columns are the top-level items of the footer menu.
+render the same carousel; `fixed-products` and `products-slider` read their products from Salla's
+`source` / `source-value` attributes. Header/footer content comes from the store (logo, header and
+footer menus, social links, VAT number, and the commercial registration / freelance document and
+e-commerce certificate through `salla-trust-badges`, always shown when the store has them) and the
+`palace_*` theme settings (announcement messages, dark logo, footer logo and colour, working hours,
+app links). The footer's two link columns are the top-level items of the footer menu.
 
 ## Pages
 
@@ -64,9 +66,24 @@ All pages share the reference header, footer and breadcrumb banner:
 | `pages/cart.twig` | Cart in the reference layout: item rows, quantity, remove, free-shipping progress, coupon, totals, checkout |
 | `pages/customer/*` (`layouts/customer.twig`) | Account: profile, orders, order details (reorder, cancel, rate), wishlist, notifications, wallet |
 
-Salla web components placed inside a PC Palace region (comments, loyalty, conditional offers, rating,
-wallet, phone input, embedded product cards) sit in a `.salla-island`, which gives them back Salla's
-own styling.
+The pages use Salla's Twilight components where Salla expects them, inside the PC Palace layout:
+
+| Where | Components |
+| --- | --- |
+| Header | `salla-cart-summary`, `salla-user-menu` |
+| Footer | `salla-trust-badges` |
+| Listing | `salla-filters` (the PC Palace grid sends it each fetch's filters and reloads on `salla-filters::changed`) |
+| Product page | `salla-quantity-input`, `salla-installment`, `salla-metadata`, `salla-gifting`, `salla-quick-order`, `salla-comments` |
+| Cart | `salla-cart-item-offers`, `salla-cart-coupons`, `salla-cart-summary-card`, `salla-tiered-offer`, `salla-gifting`, `salla-loyalty-panel`, `salla-conditional-offer` |
+| Orders | `salla-orders`, `salla-edit-order-button`, `salla-order-details`, `salla-review-order-item`, `salla-order-totals-card`, `salla-rating-modal` |
+| Account | `salla-notifications`, `salla-wallet`, `salla-tel-input`, `salla-user-settings` |
+
+Hooks include `product.single.before_customer_reviews`, `product.index.after_testimonials` and
+`information_page.information_page` (pages built with Salla's page builder). Each component sits in a
+`.salla-island`, which gives it back Salla's own styling inside a PC Palace region.
+
+Theme zip limit: a private theme must stay under 2 MB zipped, so the preview data
+(`local-preview/data/`, `local-preview/fixture.json`) is not committed.
 
 ## Dark mode
 
@@ -95,7 +112,7 @@ See `local-preview/README.md` for the local preview.
 
 1. Connect a Salla Partners account to the private GitHub repository at
    `https://github.com/nadji40/pc-palace-twilight-theme`. The public support
-   email is `info@skylightad.com` (`author_email`) and the support website is https://skylightad.com/ (`support_url`), both in `twilight.json`.
+   email is `support@skylightad.com` (`author_email`) and the support website is https://skylightchat.com/ (`support_url`), both in `twilight.json` (set from the Partners Portal support details).
 2. Import this repository as a theme in Partners Portal, or use the Salla CLI
    theme flow. Use `salla login`, then `salla theme preview --store=<demo-store>`.
 3. In the demo store set the main color to PC Palace blue (`#2d398f`), upload a

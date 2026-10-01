@@ -116,24 +116,6 @@
             "value": null
         },
         {
-            "id": "palace_cr_number",
-            "type": "string",
-            "format": "text",
-            "label": "رقم السجل التجاري",
-            "multilanguage": false,
-            "required": false,
-            "value": null
-        },
-        {
-            "id": "palace_ecommerce_number",
-            "type": "string",
-            "format": "text",
-            "label": "رقم شهادة التجارة الإلكترونية",
-            "multilanguage": false,
-            "required": false,
-            "value": null
-        },
-        {
             "id": "squar_photo_bg_image_size",
             "type": "items",
             "format": "dropdown-list",

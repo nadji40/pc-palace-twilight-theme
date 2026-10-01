@@ -33,3 +33,7 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 local-preview/store/
 local-preview/index.html
 local-preview/render-report.json
+
+# Moodyul preview data (kept out of the theme zip; rebuilt by scripts/moodyul-dump-*.cjs and build-moodyul-fixture.cjs)
+local-preview/data/
+local-preview/fixture.json

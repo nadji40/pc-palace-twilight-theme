@@ -149,6 +149,8 @@ const fixture = {
     social: {twitter: src.store.social?.twitter, youtube: src.store.social?.youtube},
     contacts: {whatsapp: src.store.contacts?.whatsapp, mobile: src.store.contacts?.mobile, email: src.store.contacts?.email},
     tax: {number: src.store.settings?.tax?.number, certificate: src.store.settings?.tax?.certificate},
+    // Shown by <salla-trust-badges> on Salla; the preview stand-in reads them from here.
+    trust: {commercial_number: src.store.settings?.commercial_number || '', ecommerce_number: src.store.settings?.certificate?.id || ''},
   },
   settings: {
     palace_announcements: ['مرخص من الهيئة العليا للأمن الصناعي', 'توصيل لكل المناطق داخل المملكة', 'ضمان معتمد على جميع الأنظمة'].join('\n'),
@@ -158,8 +160,6 @@ const fixture = {
     palace_footer_color: '#2b3990',
     palace_working_hours: '9 صباحاً حتى 11 مساءً',
     palace_country_code: 'SA',
-    palace_cr_number: src.store.settings?.commercial_number || '',
-    palace_ecommerce_number: src.store.settings?.certificate?.id || '',
   },
   menus: {header, footer},
   components,

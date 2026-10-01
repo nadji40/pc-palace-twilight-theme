@@ -236,3 +236,9 @@
 .main--dark .palace-ref .product-option-container.select-view .scrollableList ul li:not(.selected-option) { background-color: var(--dark-mode-card); color: var(--palace-dark-text); box-shadow: none; }
 .main--dark .palace-ref .product-option-container.select-view .scrollableList ul li:not(.selected-option) span.text-color-primary { color: var(--palace-brand-on-dark); }
 .main--dark .palace-ref .banner-left-icon .banner-icon img { filter: brightness(0) invert(.85); }
+
+/* Salla components placed in the PC Palace header and product buttons. */
+.palace-ref .palace-header-cart { display: flex; align-items: center; gap: 8px; }
+.palace-ref .palace-header-user { display: flex; align-items: center; }
+.palace-qty { flex: 0 0 auto; max-width: 120px; }
+.palace-ref .palace-filters { padding: 0 16px 10px; }

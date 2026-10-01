@@ -247,6 +247,11 @@ const sections = {
   },
   async grid(section) {
     const cfg = JSON.parse(section.dataset.palaceProducts || '{}');
+    // Salla's product components pass the source as source / source-value attributes.
+    if (section.hasAttribute('source')) {
+      cfg.source = section.getAttribute('source');
+      try { cfg.value = JSON.parse(section.getAttribute('source-value') || 'null'); } catch (e) { cfg.value = section.getAttribute('source-value'); }
+    }
     const products = await fetchProducts(cfg);
     if (!products.length) { section.hidden = true; return; }
     const wrapper = section.querySelector('.swiper-wrapper');
@@ -754,8 +759,6 @@ function stickySidebar(column) {
   update();
 }
 
-const FILTER_ARROW = '<svg width="11" height="8" viewBox="0 0 11 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.444716 3.12066L4.32972 7.00566C4.91472 7.59066 5.85972 7.59066 6.44472 7.00566L10.3297 3.12066C11.2747 2.17566 10.5997 0.555664 9.26472 0.555664H1.49472C0.159716 0.555664 -0.500284 2.17566 0.444716 3.12066Z" fill="#494949"></path></svg>';
-
 function readFilters(params) {
   const filters = {};
   for (const [name, value] of params) {
@@ -769,50 +772,12 @@ function readFilters(params) {
   return filters;
 }
 
-function writeFilters(filters) {
-  const url = new URL(window.location.href);
-  [...url.searchParams.keys()].filter(k => k.startsWith('filters[')).forEach(k => url.searchParams.delete(k));
-  for (const [key, value] of Object.entries(filters)) {
-    if (Array.isArray(value)) value.forEach(v => url.searchParams.append(`filters[${key}][]`, v));
-    else if (value && typeof value === 'object') Object.entries(value).forEach(([k, v]) => url.searchParams.append(`filters[${key}][${k}]`, v));
-    else if (value !== '' && value != null) url.searchParams.append(`filters[${key}]`, value);
-  }
-  window.history.replaceState(null, '', url);
-}
-
-function filterGroupsHTML(filters, selected) {
-  const ar = lang() === 'ar';
-  const names = {category_id: ar ? 'التصنيفات' : 'Categories', brand_id: ar ? 'الماركات' : 'Brands'};
-  const ids = new Set();
-  let price = null;
-  const groups = (filters || []).map((filter, gi) => {
-    if (filter.key === 'price' || filter.type === 'range') { price = filter; return ''; }
-    if (filter.key === 'rating' || !Array.isArray(filter.values) || !filter.values.length) return '';
-    const variant = filter.type === 'variants';
-    const current = variant ? (selected.variants || {})[filter.key] : selected[filter.key];
-    const chosen = [].concat(current ?? []).map(String);
-    const rows = filter.values.map((option, i) => {
-      const value = typeof option === 'object' ? (option.key ?? option.value) : option;
-      const label = typeof option === 'object' ? option.value : option;
-      let id = String(label);
-      if (ids.has(id)) id = `${filter.key}-${label}`;
-      ids.add(id);
-      return `<div class="filter-row ${i >= 4 ? 'attribute-label-hidden' : ''}" data-attribute-index="${gi}"><input class="checkbox checkbox-async" type="checkbox" name="${esc(filter.key)}" id="${esc(id)}" value="${esc(value)}" data-variant="${variant ? '1' : ''}" ${chosen.includes(String(value)) ? 'checked' : ''}><label class="attribute-label" for="${esc(id)}"><div class="attribute-label-extra"></div><div><span>${esc(label)}</span>
-${option.count != null ? `<span class="filter-count">(${option.count})</span>` : ''}</div></label></div>`;
-    }).join('');
-    return `<div class="attribute-group"><div class="attribute-header"><span class="attribute-name">${esc(names[filter.key] || filter.label)}</span><span class="attribute-arrow attribute-arrow-expand" data-palace-attr-toggle="${gi}">${FILTER_ARROW}</span></div><div class="filter-content" style=""><div class="attribute-body attribute-body-${gi}">${rows}${filter.values.length > 4 ? `<div class="attribute-more"><span data-palace-attr-more="${gi}">${ar ? 'عرض المزيد' : 'Show more'}</span></div>` : ''}</div></div></div>`;
-  }).join('');
-  const range = price?.values || {};
-  const chosenPrice = selected.price || {};
-  const priceGroup = `<div class="attribute-group"><div class="attribute-header"><span class="attribute-name">${ar ? 'السعر' : 'Price'}</span></div><div class="filter-content"><div class="attribute-body attribute-price-body"><div class="form-row"><div class="form-group col-md-6"><label><h6>${ar ? 'من' : 'From'}</h6></label><input name="from_price" class="form-control" placeholder="${Math.floor(range.min ?? 0)} ${currency()}" value="${esc(chosenPrice.min ?? '')}" type="number"></div><div class="form-group text-right col-md-6"><label><span>${ar ? 'الي' : 'To'}</span></label><input name="to_price" class="form-control" placeholder="${Math.ceil(range.max ?? 1000)} ${currency()}" value="${esc(chosenPrice.max ?? '')}" type="number"></div></div><div class="attribute-footer"><button type="submit" class="highlight-button btn btn-sm" data-abc="true">${ar ? 'حفظ' : 'Save'}</button></div></div></div></div>`;
-  return groups + priceGroup;
-}
-
+// Filters come from Salla's <salla-filters>: the listing hands it the filters of each fetch
+// ('filters::fetched') and reloads the grid when the shopper changes them ('salla-filters::changed').
 async function listing(section) {
   const cfg = JSON.parse(section.dataset.palaceListing || '{}');
   const grid = section.querySelector('#category_more_wrapper');
   const more = section.querySelector('#load-more-button');
-  const form = section.querySelector('[data-palace-filters]');
   const total = section.querySelector('[data-palace-total]');
   const params = new URLSearchParams(window.location.search);
   const sort = params.get('sort') || params.get('by') || cfg.sort || '';
@@ -844,52 +809,16 @@ async function listing(section) {
     next = response?.cursor?.next || null;
     more.hidden = !next;
     if (total && response?.cursor?.total != null) total.textContent = response.cursor.total;
-    if (reset && form && response?.filters) {
-      form.innerHTML = filterGroupsHTML(response.filters, filters);
+    if (reset && response?.filters) {
+      window.salla?.event?.emit?.('filters::fetched', {filters: response.filters});
       stickySidebar(section.querySelector('.sticky-sidebar'));
     }
   };
 
   more.addEventListener('click', () => page(false));
 
-  if (form) {
-    form.addEventListener('click', e => {
-      const toggle = e.target.closest('[data-palace-attr-toggle]');
-      if (toggle) {
-        const body = form.querySelector('.attribute-body-' + toggle.dataset.palaceAttrToggle);
-        const collapse = !body.classList.contains('attribute-body-collapse');
-        body.classList.toggle('attribute-body-collapse', collapse);
-        toggle.classList.toggle('attribute-arrow-collapse', collapse);
-        toggle.classList.toggle('attribute-arrow-expand', !collapse);
-      }
-      const showMore = e.target.closest('[data-palace-attr-more]');
-      if (showMore) {
-        form.querySelectorAll(`.filter-row[data-attribute-index="${showMore.dataset.palaceAttrMore}"]`).forEach(row => row.classList.remove('attribute-label-hidden'));
-        showMore.parentElement.remove();
-      }
-    });
-    form.addEventListener('change', e => {
-      const input = e.target;
-      if (!input.matches('.checkbox')) return;
-      if (input.dataset.variant) {
-        filters.variants = {...(filters.variants || {})};
-        if (input.checked) filters.variants[input.name] = input.value; else delete filters.variants[input.name];
-        form.querySelectorAll(`input[name="${CSS.escape(input.name)}"]`).forEach(other => { if (other !== input) other.checked = false; });
-      } else {
-        const values = [...form.querySelectorAll(`input[name="${CSS.escape(input.name)}"]:checked`)].map(i => i.value);
-        if (values.length) filters[input.name] = values; else delete filters[input.name];
-      }
-      writeFilters(filters);
-      page(true);
-    });
-    form.addEventListener('submit', e => {
-      e.preventDefault();
-      const min = form.querySelector('[name=from_price]').value, max = form.querySelector('[name=to_price]').value;
-      if (min || max) filters.price = {min: min || 0, max: max || 999999}; else delete filters.price;
-      writeFilters(filters);
-      page(true);
-    });
-  }
+  await sallaReady();
+  window.salla?.event?.on?.('salla-filters::changed', data => { filters = {...(data || {})}; page(true); });
 
   const sortArea = section.querySelector('.sort-by-product-area');
   if (sortArea) {
@@ -959,15 +888,17 @@ function product(section) {
     }));
   });
 
-  // Quantity (both button bars stay in sync).
-  const qtys = [...section.querySelectorAll('[data-palace-qty]')];
-  section.querySelectorAll('.detail-qty').forEach(box => {
-    const input = box.querySelector('[data-palace-qty]');
-    const set = v => { const n = Math.max(1, Math.min(Number(input.max) || 99, v)); qtys.forEach(q => { q.value = n; }); };
-    box.querySelector('.qty-down').addEventListener('click', e => { e.preventDefault(); set(Number(input.value) - 1); });
-    box.querySelector('.qty-up').addEventListener('click', e => { e.preventDefault(); set(Number(input.value) + 1); });
-    input.addEventListener('change', () => set(Number(input.value) || 1));
-  });
+  // Quantity: Salla's <salla-quantity-input> in both button bars (main and sticky), kept in sync.
+  const qtys = [...section.querySelectorAll('salla-quantity-input[data-palace-qty]')];
+  const quantity = () => Number(qtys[0]?.querySelector('input')?.value || qtys[0]?.getAttribute('value') || 1);
+  qtys.forEach(box => box.addEventListener('change', () => {
+    const value = box.querySelector('input')?.value;
+    qtys.forEach(other => {
+      if (other === box) return;
+      if (other.setValue) other.setValue(value, false);
+      else if (other.querySelector('input')) other.querySelector('input').value = value;
+    });
+  }));
 
   const payload = () => {
     const options = {};
@@ -983,7 +914,7 @@ function product(section) {
     form.querySelectorAll('#product-custom-user-input-fields [name^="options["]').forEach(field => {
       if (field.value) options[field.name.slice(8, -1)] = field.value;
     });
-    return {id: Number(cfg.id), quantity: Number(qtys[0]?.value || 1), options};
+    return {id: Number(cfg.id), quantity: quantity() || 1, options};
   };
   const add = async (button, checkout) => {
     const data = payload();

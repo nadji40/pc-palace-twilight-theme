@@ -75,7 +75,7 @@
       const riyal = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="11" height="12" style="display:inline-block;vertical-align:-0.1em"><path fill="currentColor" d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z"/><path fill="currentColor" d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z"/></svg>';
       const fmt = v => v.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
       const box = 'border:1px solid #dcdcdc;border-radius:10px;padding:18px 20px;display:flex;justify-content:space-between;align-items:center;gap:14px;font:14px/1.6 Almarai,sans-serif;color:inherit;text-align:right';
-      this.innerHTML = `<div style="${box};margin-top:0"><div>بدءًا من <b>${fmt(price * 1.17 / 24)} ${riyal}</b><br>شهريًا حتى 24 شهر، بدون رسوم تأخير، متوافق مع الشريعة الإسلامية.<br><u>تعرف على خياراتك</u></div><img src="/salla-pcpalace-theme/public/images/palace/tamara2.svg" alt="tamara" style="width:92px;flex:none"></div>`
+      this.innerHTML = `<div style="${box};margin-top:0"><div>بدءًا من <b>${fmt(price * 1.17 / 24)} ${riyal}</b><br>شهريًا حتى 24 شهر، بدون رسوم تأخير، متوافق مع الشريعة الإسلامية.<br><u>تعرف على خياراتك</u></div><img src="/salla-pcpalace-theme/public/images/palace/tamara2.png" alt="tamara" style="width:92px;flex:none"></div>`
         + `<div style="${box};margin-top:15px"><div>ابتداءً من <b>${fmt(price / 12)} ${riyal}/شهر</b> على ما يصل إلى 12 دفعة شهرية. متوافق مع أحكام الشريعة.<br><span style="color:#3167eb">لمعرفة المزيد</span></div><img src="/salla-pcpalace-theme/public/images/palace/tabby2.svg" alt="tabby" style="width:70px;flex:none"></div>`;
     }
   });
@@ -117,6 +117,137 @@
     }
   });
 
+  // ------------------------------------------------------------------------------------------
+  // Preview stand-ins for Salla web components. On a Salla store the real components load from
+  // Salla; here they draw a simplified version so the pages can be seen.
+  const listeners = {};
+  const bus = {
+    on: (name, cb) => { (listeners[name] ||= []).push(cb); },
+    emit: (name, data) => { (listeners[name] || []).forEach(cb => cb(data)); },
+  };
+  const css = (el, text) => { el.style.cssText = text; return el; };
+  const brand = 'var(--main-color, #2b3990)';
+  const riyal = v => Number(v || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' ر.س';
+  const define = (name, cls) => { if (!customElements.get(name)) customElements.define(name, cls); };
+
+  define('salla-quantity-input', class extends HTMLElement {
+    connectedCallback() {
+      if (this.querySelector('input')) return;
+      const max = Number(this.getAttribute('max')) || 99;
+      this.className += ' s-quantity-input';
+      this.innerHTML = `<div style="display:flex;align-items:center;border:1px solid #d9d9d9;border-radius:10px;height:50px;overflow:hidden;background:#fff">
+        <button type="button" data-up style="width:40px;height:100%;font-size:20px;color:${brand}">+</button>
+        <input class="s-quantity-input-input" name="${this.getAttribute('name') || 'quantity'}" value="${this.getAttribute('value') || 1}" inputmode="numeric" style="width:44px;text-align:center;border:0;font-weight:700;color:${brand};background:transparent">
+        <button type="button" data-down style="width:40px;height:100%;font-size:20px;color:${brand}">−</button></div>`;
+      const input = this.querySelector('input');
+      const set = v => { input.value = Math.max(1, Math.min(max, Number(v) || 1)); this.dispatchEvent(new Event('change', {bubbles: true})); };
+      this.querySelector('[data-up]').onclick = () => set(Number(input.value) + 1);
+      this.querySelector('[data-down]').onclick = () => set(Number(input.value) - 1);
+      input.onchange = () => set(input.value);
+    }
+    async setValue(v) { const input = this.querySelector('input'); if (input) input.value = v; return this; }
+  });
+
+  define('salla-cart-summary', class extends HTMLElement {
+    async connectedCallback() {
+      const icon = this.querySelector('[slot=icon]');
+      css(this, 'position:relative;display:inline-flex;align-items:center;cursor:pointer');
+      const badge = css(document.createElement('span'), `position:absolute;top:-8px;inset-inline-end:-8px;min-width:18px;height:18px;padding:0 4px;border-radius:9px;background:${brand};color:#fff;font-size:11px;line-height:18px;text-align:center`);
+      this.append(badge);
+      const draw = cart => { badge.textContent = cart.items.reduce((n, i) => n + i.quantity, 0); };
+      draw(await sampleCart());
+      bus.on('cart::updated', draw);
+      this.onclick = () => { window.location.href = '/salla-pcpalace-theme/local-preview/store/cart/'; };
+      if (icon) icon.style.display = 'inline-flex';
+    }
+  });
+
+  define('salla-user-menu', class extends HTMLElement {
+    connectedCallback() {
+      const signedIn = /\/(profile|orders|wishlist|notifications)\//.test(location.pathname);
+      this.innerHTML = `<button type="button" title="${signedIn ? 'حسابي' : 'تسجيل الدخول'}" style="width:38px;height:38px;border-radius:50%;background:#eef0f8;color:${brand};display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg></button>`;
+      this.querySelector('button').onclick = () => (signedIn ? (location.href = '/salla-pcpalace-theme/local-preview/store/profile/') : local('تسجيل الدخول'));
+    }
+  });
+
+  define('salla-filters', class extends HTMLElement {
+    connectedCallback() {
+      bus.on('filters::fetched', ({filters}) => this.draw(filters || []));
+      this.addEventListener('change', () => this.apply());
+    }
+    draw(filters) {
+      const chosen = this.read();
+      this.innerHTML = filters.map(f => {
+        if (f.key === 'price' || f.type === 'range') return `<div style="padding:14px 0;border-bottom:1px solid #eee"><b style="display:block;margin-bottom:10px">${f.label || 'السعر'}</b><div style="display:flex;gap:8px"><input data-min type="number" placeholder="${Math.floor(f.values?.min || 0)}" style="width:50%;height:38px;border:1px solid #ddd;border-radius:8px;padding:0 8px"><input data-max type="number" placeholder="${Math.ceil(f.values?.max || 1000)}" style="width:50%;height:38px;border:1px solid #ddd;border-radius:8px;padding:0 8px"></div></div>`;
+        if (!Array.isArray(f.values) || !f.values.length) return '';
+        return `<div style="padding:14px 0;border-bottom:1px solid #eee"><b style="display:block;margin-bottom:10px">${f.label}</b>${f.values.slice(0, 8).map(v => {
+          const value = typeof v === 'object' ? (v.key ?? v.value) : v;
+          const label = typeof v === 'object' ? v.value : v;
+          return `<label style="display:flex;gap:8px;align-items:center;margin:6px 0;cursor:pointer"><input type="checkbox" data-key="${f.key}" value="${value}" ${(chosen[f.key] || []).includes(String(value)) ? 'checked' : ''}><span>${label}</span>${v.count != null ? `<small style="color:#999">(${v.count})</small>` : ''}</label>`;
+        }).join('')}</div>`;
+      }).join('');
+    }
+    read() {
+      const data = {};
+      this.querySelectorAll('input[type=checkbox]:checked').forEach(i => (data[i.dataset.key] ||= []).push(i.value));
+      const min = this.querySelector('[data-min]')?.value, max = this.querySelector('[data-max]')?.value;
+      if (min || max) data.price = {min: min || 0, max: max || 999999};
+      return data;
+    }
+    apply() { bus.emit('salla-filters::changed', this.read()); }
+  });
+
+  define('salla-cart-coupons', class extends HTMLElement {
+    connectedCallback() {
+      this.innerHTML = `<b style="display:block;margin-bottom:10px">كوبون الخصم</b><div style="display:flex;gap:8px"><input placeholder="أضف كوبون الخصم" style="flex:1;height:44px;border:1px solid #ddd;border-radius:10px;padding:0 12px;background:transparent;color:inherit"><button type="button" style="padding:0 18px;border-radius:10px;background:${brand};color:#fff">تفعيل</button></div>`;
+      this.querySelector('button').onclick = () => local('كوبون الخصم');
+    }
+  });
+
+  define('salla-cart-summary-card', class extends HTMLElement {
+    async connectedCallback() {
+      const draw = cart => {
+        const total = cart.items.reduce((n, i) => n + i.price * i.quantity, 0);
+        const row = (label, value, strong) => `<div style="display:flex;justify-content:space-between;margin:10px 0;${strong ? `font-size:18px;font-weight:700;color:${brand}` : ''}"><span>${label}</span><span>${riyal(value)}</span></div>`;
+        this.innerHTML = `<div style="margin:18px 0">${row('مجموع المنتجات', total)}${row('الإجمالي', total, true)}</div><button type="button" style="width:100%;height:50px;border-radius:10px;background:${brand};color:#fff;font-weight:700">إتمام الطلب</button>`;
+        this.querySelector('button').onclick = () => local('إتمام الطلب');
+      };
+      draw(await sampleCart());
+      bus.on('cart::updated', draw);
+    }
+  });
+
+  define('salla-orders', class extends HTMLElement {
+    async connectedCallback() {
+      const orders = (await ready).customer?.orders || [];
+      this.innerHTML = `<table style="width:100%;border-collapse:collapse"><thead><tr>${['رقم الطلب', 'التاريخ', 'الحالة', 'الإجمالي', ''].map(h => `<th style="text-align:start;padding:12px;border-bottom:1px solid #eee">${h}</th>`).join('')}</tr></thead><tbody>${orders.map(o => `<tr><td style="padding:12px">#${o.reference_id}</td><td style="padding:12px">${o.created_at}</td><td style="padding:12px"><span style="color:${o.status.color};font-weight:700">${o.status.name}</span></td><td style="padding:12px">${riyal(o.total.amount)}</td><td style="padding:12px"><a href="${o.url}" style="color:${brand}">عرض</a></td></tr>`).join('')}</tbody></table>`;
+    }
+  });
+
+  define('salla-notifications', class extends HTMLElement {
+    async connectedCallback() {
+      const orders = (await ready).customer?.orders || [];
+      this.innerHTML = orders.map((o, i) => `<a href="${o.url}" style="display:block;padding:16px 4px;border-bottom:1px solid #eee;color:inherit"><b>${i ? 'تم تنفيذ طلبك' : 'تم شحن طلبك'} #${o.reference_id}</b><div style="color:#888;font-size:13px">${i ? 'منذ 12 يوم' : 'منذ ساعتين'}</div></a>`).join('');
+    }
+  });
+
+  define('salla-order-totals-card', class extends HTMLElement {
+    async connectedCallback() {
+      const id = (location.pathname.match(/order\/(\d+)/) || [])[1];
+      const order = ((await ready).customer?.orders || []).find(o => String(o.id) === id);
+      if (!order) return;
+      this.innerHTML = `<div style="border:1px solid #eee;border-radius:15px;padding:20px"><div style="display:flex;justify-content:space-between;margin-bottom:10px"><span>مجموع المنتجات</span><span>${riyal(order.total.amount)}</span></div><div style="display:flex;justify-content:space-between;font-weight:700;font-size:18px;color:${brand}"><span>الإجمالي</span><span>${riyal(order.total.amount)}</span></div></div>`;
+    }
+  });
+
+  define('salla-trust-badges', class extends HTMLElement {
+    async connectedCallback() {
+      const trust = (await ready).store.trust || {};
+      const badge = (label, value) => value ? `<div style="display:flex;align-items:center;gap:8px;font-size:13px"><span style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.15);display:inline-flex;align-items:center;justify-content:center">✓</span><div><div style="opacity:.8">${label}</div><b>${value}</b></div></div>` : '';
+      this.innerHTML = `<div style="display:flex;gap:24px;flex-wrap:wrap;color:${this.hasAttribute('dark') ? '#fff' : 'inherit'}">${badge('السجل التجاري', trust.commercial_number)}${badge('التجارة الإلكترونية', trust.ecommerce_number)}</div>`;
+    }
+  });
+
   const productApi = {fetch: products};
   window.salla = {
     onReady: () => ready.then(sampleCart).then(() => undefined),
@@ -130,8 +261,8 @@
     cart: {
       details: async () => cartResponse(await sampleCart()),
       addItem: () => { local('الإضافة إلى السلة'); return Promise.resolve(); },
-      updateItem: async ({id, quantity}) => { const cart = await sampleCart(); const item = cart.items.find(i => i.id === id); if (item) item.quantity = quantity; return cartResponse(cart); },
-      deleteItem: async id => { const cart = await sampleCart(); cart.items = cart.items.filter(i => i.id !== id); return cartResponse(cart); },
+      updateItem: async ({id, quantity}) => { const cart = await sampleCart(); const item = cart.items.find(i => i.id === id); if (item) item.quantity = quantity; bus.emit('cart::updated', cart); return cartResponse(cart); },
+      deleteItem: async id => { const cart = await sampleCart(); cart.items = cart.items.filter(i => i.id !== id); bus.emit('cart::updated', cart); return cartResponse(cart); },
       addCoupon: () => { local('كوبون الخصم'); return Promise.reject(new Error('preview')); },
       deleteCoupon: () => Promise.reject(new Error('preview')),
       submit: () => local('إتمام الطلب'),
@@ -145,7 +276,7 @@
     form: {onSubmit: (action, event) => { event?.preventDefault(); local('حفظ البيانات'); return false; }},
     url: {get: name => (name === 'cart' ? '/salla-pcpalace-theme/local-preview/store/cart' : '/salla-pcpalace-theme/local-preview/store/')},
     wishlist: {toggle: () => { local('المفضلة'); return Promise.reject(new Error('preview')); }},
-    event: {dispatch: name => local(name === 'login::open' ? 'تسجيل الدخول' : 'تغيير اللغة والدولة')},
+    event: {...bus, dispatch: name => local(name === 'login::open' ? 'تسجيل الدخول' : 'تغيير اللغة والدولة')},
     storage: {get: (key, fallback) => (key === 'cart.summary.count' && cartState ? cartState.items.reduce((n, item) => n + item.quantity, 0) : fallback)},
     auth: {logout: () => Promise.resolve()},
     order: {

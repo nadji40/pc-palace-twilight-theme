@@ -1,7 +1,5 @@
-/* PC Palace visual system. Data and checkout remain native to Salla. */
-@font-face { font-family: 'Palace Almarai'; src: url('./images/palace-almarai-regular.woff2') format('woff2'); font-style: normal; font-weight: 400; font-display: swap; }
-@font-face { font-family: 'Palace Almarai'; src: url('./images/palace-almarai-bold.woff2') format('woff2'); font-style: normal; font-weight: 700; font-display: swap; }
-@font-face { font-family: 'Palace Almarai'; src: url('./images/palace-almarai-extrabold.woff2') format('woff2'); font-style: normal; font-weight: 800; font-display: swap; }
+/* PC Palace visual system. Data and checkout remain native to Salla.
+   Almarai is declared once, by the reference stylesheet (palace-reference.css). */
 :root {
   --palace-ink: #17191f;
   --palace-muted: #6c7180;
@@ -15,7 +13,7 @@
 body.theme-palace {
   color: var(--palace-ink);
   background: var(--palace-paper);
-  font-family: 'Palace Almarai', var(--font-main), Tahoma, Arial, sans-serif;
+  font-family: 'Almarai', var(--font-main), Tahoma, Arial, sans-serif;
 }
 
 .theme-palace .container { max-width: 1320px; }

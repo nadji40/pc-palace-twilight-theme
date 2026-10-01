@@ -97,7 +97,7 @@
 {% set discount = on_sale ? (product.discount_percentage ? product.discount_percentage|replace({'%': ''})|trim : ((product.regular_price - product.price) / product.regular_price * 100)|round) : 0 %}
 {% set stars = product.rating ? product.rating.stars : 0 %}
 {% set buttons %}
-<div class="border detail-qty radius"><a href="#" class="qty-down"><i class="fi-rs-minus-small"></i></a><input type="number" value="1" min="1" max="{{ product.max_quantity ?: 99 }}" class="qty-val no-arrows" data-palace-qty><a href="#" class="qty-up"><i class="fi-rs-plus-small"></i></a></div>
+{% if not product.is_hidden_quantity %}<div class="salla-island palace-qty"><salla-quantity-input max="{{ product.max_quantity }}" value="1" name="quantity" aria-label="{{ trans('palace.quantity') }}" data-palace-qty></salla-quantity-input></div>{% endif %}
 <div class="product-extra-link2">
 <button type="button" class="button button-add-to-cart" style="opacity: 1;" data-palace-add-product><i class="fi-rs-shopping-cart"></i><span>{{ trans('palace.add_to_cart_long') }}</span></button>
 <button type="button" class="button button-add-to-cart btn-buy-now" style="opacity: 1;" data-palace-buy-now><i class="fi-rs-shopping-bag"></i><span>{{ trans('palace.buy_now') }}</span></button>
@@ -185,12 +185,14 @@
 </div></div>
 {% endif %}
 
-<salla-installment price="{{ product.price }}"></salla-installment>
+<div class="salla-island"><salla-installment price="{{ product.price }}"></salla-installment>
+{% if product.has_metadata %}<salla-metadata></salla-metadata>{% endif %}</div>
 {% hook 'product:single.description' %}
 
 <div class="all-product-btns ">
 <div class="detail-extralink mb-10 mt-20 checkout-buttons {{ product.is_out_of_stock ? 'd-none' : '' }}">{{ buttons|raw }}</div>
 </div>
+{% if product.is_giftable %}<div class="salla-island"><salla-gifting class="mt-5 block" product-id="{{ product.id }}" {{ product.is_require_shipping ? 'physical-products' : '' }}></salla-gifting></div>{% endif %}
 {% if product.is_out_of_stock %}
 <div class="section-out-of-stock-notify-me mb-3">
 <h4 class="notify_me">{{ trans('palace.notify_me_title') }}</h4>
@@ -216,12 +218,19 @@
 {% endfor %}
 </ul>
 {% hook 'product:single.description.end' %}
+<div class="salla-island"><salla-quick-order class="mt-5 block"></salla-quick-order></div>
 </div>
 </div>
 </div>
 {% if not product.is_out_of_stock %}<div class="all-product-btns sticky-btn"><div class="detail-extralink mb-10 mt-20 checkout-buttons ">{{ buttons|raw }}</div></div>{% endif %}
 {% hook 'product:single.form.end' %}
 </form>
+
+{#
+    Hook: product.single.before_customer_reviews
+    Fires before the customer reviews section (the description / reviews / questions tabs).
+#}
+<div class="s-blocks-wrapper s-before-reviews">{% hook 'product.single.before_customer_reviews' %}</div>
 
 <div class="product-info">
 <div class="tab-style3">

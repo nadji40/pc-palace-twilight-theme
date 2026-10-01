@@ -35,7 +35,15 @@
 
 {% set listing_description = category ? category.description : '' %}
 {% set listing_children = category ? category.sub_categories : [] %}
+{# Salla's filters component, shown in the listing's sidebar #}
+{% set listing_filters %}<div class="salla-island palace-filters"><salla-filters id="filters-menu"></salla-filters></div>{% endset %}
 {% include 'pages.partials.palace-listing' %}
 
 <div class="s-blocks-wrapper s-after-products-list">{% hook 'product.index.after_products_group_with_filter' %}</div>
+
+{#
+    Hook: product.index.after_testimonials
+    Fires after the testimonials (store reviews) section.
+#}
+<div class="s-blocks-wrapper s-after-testimonials">{% hook 'product.index.after_testimonials' %}</div>
 {% endblock %}
