@@ -4,7 +4,7 @@
 #}
 {% set palace_img = 'images/palace/' %}
 {% set footer_logo = theme.settings.get('palace_footer_logo') ?: store.logo %}
-{% set payments = ['apple_pay.svg', 'mada-circle.png', 'visa-circle.png', 'mastercard-circle.png', 'tamara2.svg', 'tabby2.svg', 'mispay.png', 'madfu.svg', 'emkan_bnpl.svg', 'cod.png', 'bankTransfer.png'] %}
+{% set payments = ['apple_pay.svg', 'mada-circle.png', 'visa-circle.png', 'mastercard-circle.png', 'tamara2.png', 'tabby2.svg', 'mispay.png', 'madfu.svg', 'emkan_bnpl.svg', 'cod.png', 'bankTransfer.png'] %}
 {% set social = [
   ['facebook', store.social.facebook, 'icon-facebook-white.svg'],
   ['twitter', store.social.twitter, 'icon-twitter-white2_new.svg'],
@@ -43,8 +43,8 @@
 <div class="col-12">
 <ul class="all-legal-info">
 {% if store.settings.tax.number %}<li class="mt__20 vat-container d-flex align-items-center"><a href="{{ store.settings.tax.certificate ?: '#' }}"><img class="lz_op_ef vat_image lazyload" src="{{ (palace_img ~ 'lazyloading_img.svg')|asset }}" data-src="{{ (palace_img ~ 'vat-certificate.svg')|asset }}" alt="vat-certificate"></a><div class="ml__5"><div class="vat-number"><span>{{ trans('palace.tax_number') }}</span> <span>{{ store.settings.tax.number }}</span></div></div></li>{% endif %}
-{% if theme.settings.get('palace_cr_number') %}<li class="mt__20 vat-container d-flex align-items-center"><a href="https://mc.gov.sa/ar/eservices/Pages/Commercial-data.aspx"><img class="lz_op_ef vat_image lazyload" src="{{ (palace_img ~ 'lazyloading_img.svg')|asset }}" data-src="{{ (palace_img ~ 'commercial_logo.svg')|asset }}" alt="commercial_registration_number"></a><div class="ml__5"><div class="commercial_registration_number"><span>{{ trans('palace.cr_number') }}</span> <span>{{ theme.settings.get('palace_cr_number') }}</span></div></div></li>{% endif %}
-{% if theme.settings.get('palace_ecommerce_number') %}<li class="mt__20 vat-container d-flex align-items-center"><a href="https://eauthenticate.saudibusiness.gov.sa/inquiry?certificateRefID={{ theme.settings.get('palace_ecommerce_number') }}"><img src="{{ (palace_img ~ 'business_center.png')|asset }}" alt="vat-container" width="auto" height="30"></a><div><span> {{ trans('palace.ecommerce_number') }} </span> <span> {{ theme.settings.get('palace_ecommerce_number') }} </span></div></li>{% endif %}
+{# Commercial registration / freelance document and e-commerce certificate, always shown when the store has them (Salla trust badges). #}
+<li class="mt__20 palace-trust-badges"><div class="salla-island"><salla-trust-badges dark></salla-trust-badges></div></li>
 </ul>
 </div>
 </div>

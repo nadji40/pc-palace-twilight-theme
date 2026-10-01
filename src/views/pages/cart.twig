@@ -89,7 +89,8 @@
 <div class="cart-product-col-details">
 <div class="product-title-row"><h1><a class="cart-product-image-link" href="{{ item.url }}">{{ item.product_name }}</a></h1></div>
 {% if item.options|length %}<div class="custom-options-summary">{% for option in item.options %}<p class="cart_meta_variant">{{ option.name }}: {{ option.value }}</p>{% endfor %}</div>{% endif %}
-{% if item.offer and item.offer.names %}<div class="cart-product-discount-messages"><span class="message">{{ item.offer.names }}</span></div>{% endif %}
+{% if item.offer and item.offer.names and not item.detailed_offers %}<div class="cart-product-discount-messages"><span class="message">{{ item.offer.names }}</span></div>{% endif %}
+<div class="salla-island"><salla-cart-item-offers quantity="{{ item.quantity }}" item-id="{{ item.id }}" product-price="{{ item.product_price }}" offers="{{ item.detailed_offers|json_encode }}"></salla-cart-item-offers></div>
 {% if item.is_available is same as(false) %}<p class="text-danger font-xs">{{ trans('palace.out_of_stock') }}</p>{% endif %}
 </div>
 <div class="cart-products-action"><div class="cart-product-quantity-dropdown form-group"><div>
@@ -108,33 +109,22 @@
 </div></div>
 <a href="{{ store.url }}" class="cart-continue-shopping"><i class="fi-rs-arrow-left"></i> {{ trans('palace.continue_shopping') }}</a>
 <div class="divider-2 mb-30"></div>
-{% if store.settings.cart.apply_coupon_enabled %}
-<div class="row mt-50"><div class="col-lg-12"><div class="p-40 border calculate-shiping border-radius-15">
-<h4 class="mb-10">{{ trans('palace.add_coupon') }}</h4>
-<div class="add-copoun-wrapper"><div class="d-flex justify-content-between">
-<input type="text" name="coupon_code" class="mb-4 font-medium mr-15 coupon input-text form-control text-grey ls-m" value="{{ cart.coupon }}" placeholder="{{ trans('palace.add_coupon') }}" data-palace-coupon-code>
-<button type="button" class="btn justify-content-center apply-coupon" data-palace-coupon="{{ cart.coupon ? 'remove' : 'add' }}"><i class="mr-10 fi-rs-label"></i> {{ cart.coupon ? trans('palace.remove_coupon') : trans('palace.apply_coupon') }}</button>
-</div></div>
-</div></div></div>
-{% endif %}
 </div>
 <div class="col-lg-4">
 <div class="border p-md-4 cart-totals ml-30">
-<div class="cart-totals-wrapper">
-<div class="total row in_flex fl_between al_center cd fs__18 nt_full tu cart_total_sub_total"><div class="col-auto"><strong>{{ trans('palace.subtotal') }}:</strong></div><div class="col-auto tr js_cat_ttprice fs__20 fwm"><div class="cart_tot_price"><span data-palace-money="{{ cart.sub_total }}" data-palace-total="sub_total"></span></div></div></div>
-<br>
-{% if cart.discount %}<div class="total row in_flex fl_between al_center cd fs__18 nt_full tu cart_total_discount"><div class="col-auto"><strong>{{ trans('palace.discount') }}:</strong></div><div class="col-auto tr js_cat_ttprice fs__20 fwm"><div class="cart_tot_price">- <span data-palace-money="{{ cart.discount }}" data-palace-total="discount"></span></div></div></div>
-<br>{% endif %}
-{% if cart.is_require_shipping and cart.has_shipping %}<div class="total row in_flex fl_between al_center cd fs__18 nt_full tu cart_total_shipping"><div class="col-auto"><strong>{{ trans('palace.shipping') }}:</strong></div><div class="col-auto tr js_cat_ttprice fs__20 fwm"><div class="cart_tot_price"><span data-palace-money="{{ cart.real_shipping_cost }}" data-palace-total="shipping"></span></div></div></div>
-<br>{% endif %}
-{% if cart.tax_amount %}<div class="total row in_flex fl_between al_center cd fs__18 nt_full tu cart_total_tax_amount"><div class="col-auto"><strong>{{ trans('palace.tax') }}:</strong></div><div class="col-auto tr js_cat_ttprice fs__20 fwm"><div class="cart_tot_price"><span data-palace-money="{{ cart.tax_amount }}" data-palace-total="tax_amount"></span></div></div></div>
-<br>{% endif %}
-<div class="total row in_flex fl_between al_center cd fs__18 nt_full tu cart_total_total"><div class="col-auto"><strong>{{ trans('palace.total') }}:</strong></div><div class="col-auto tr js_cat_ttprice fs__20 fwm"><div class="cart_tot_price"><span data-palace-money="{{ cart.total }}" data-palace-total="total"></span></div></div></div>
-<br>
-</div>
-<div class="salla-island palace-island-gap"><salla-loyalty-panel></salla-loyalty-panel></div>
-<a href="#" class="mb-20 btn w-100 btn_checkout" data-palace-checkout><i class="fi-rs-sign-out ml-15"></i> {{ trans('palace.checkout') }}</a>
+<div class="salla-island palace-cart-summary">
+{% if loyalty %}<salla-loyalty-panel prize-points="{{ loyalty.prize.points }}" prize-title="{{ loyalty.prize.title }}"></salla-loyalty-panel>{% endif %}
+<div id="cart-gifting" class="palace-cart-block {{ gift.enabled ? '' : 'hidden' }}"><salla-gifting id="salla-gifting" widget-title="{{ trans('pages.cart.gift_widget_title') }}" widget-subtitle="{{ gift.text }}" {{ gift.type }}-products vertical></salla-gifting></div>
+{% if store.settings.cart.apply_coupon_enabled %}
+<div class="palace-cart-block">{% hook 'cart:coupon.start' %}<salla-cart-coupons></salla-cart-coupons>{% hook 'cart:coupon.end' %}</div>
+{% endif %}
+{% hook 'cart:summary-card.start' %}
+<salla-cart-summary-card></salla-cart-summary-card>
+{% hook 'cart:summary-card.end' %}
+{% hook 'cart:summary.end' %}
+<salla-tiered-offer></salla-tiered-offer>
 <salla-installment price="{{ cart.total }}"></salla-installment>
+</div>
 </div>
 </div>
 </div>

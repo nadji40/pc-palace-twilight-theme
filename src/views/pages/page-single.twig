@@ -12,6 +12,13 @@
 #}
 {% extends "layouts.master" %}
 {% block content %}
+{% if page.type == 'customised' %}
+{#
+    Hook: information_page.information_page
+    A page built with Salla's page builder: its blocks are rendered by this hook.
+#}
+<div class="s-blocks-wrapper s-information-page !mt-0">{% hook 'information_page.information_page' %}</div>
+{% else %}
 <div class="palace-ref palace-page">
 {% include 'pages.partials.palace-breadcrumb' with {crumbs: [[page.title]]} %}
 <div class="page-content pt-50"><div class="container">
@@ -21,4 +28,5 @@
 </div>
 </div></div>
 </div>
+{% endif %}
 {% endblock %}

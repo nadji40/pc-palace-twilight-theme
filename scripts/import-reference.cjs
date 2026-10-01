@@ -19,11 +19,15 @@ fs.mkdirSync(palaceImages, {recursive: true});
 // Captured files carry a content hash suffix: name-0123456789.ext -> name.ext
 const unhash = file => file.replace(/-[0-9a-f]{9}(\.[a-z0-9]+)$/i, '$1');
 const copied = new Map();
+// Not used by the theme (the footer shows Salla's trust badges), or replaced by a lighter file
+// (tamara2.svg embeds a 250 KB bitmap; the theme ships tamara2.png). Keeps the theme zip under 2 MB.
+const SKIP = new Set(['business_center.png', 'commercial_logo.svg', 'tamara2.svg']);
 for (const dir of ['assets/icons', 'assets/fonts', 'assets/images']) {
   for (const file of fs.readdirSync(path.join(ref, dir))) {
     const clean = unhash(file);
     if (dir === 'assets/images' && /^[0-9a-f]{8}-[0-9a-f]{4}-/.test(clean)) continue; // merchant media
     if (/^(tsso|tsst|uicons|regular|medium)/.test(clean)) continue; // fonts handled below
+    if (SKIP.has(clean)) continue;
     fs.copyFileSync(path.join(ref, dir, file), path.join(palaceImages, clean));
     copied.set(clean, `./images/palace/${clean}`);
   }
@@ -69,6 +73,10 @@ function scoped(file) {
     // `body { ... }` becomes the region root; drop document scrolling/sizing from it.
     if (rule.selectors.every(s => /^body$/i.test(s.trim()))) rule.walkDecls(d => { if (DOCUMENT_ONLY.test(d.prop)) d.remove(); });
   });
+  // Tailwind arbitrary-content classes such as `.before\:content-\[\'\(\'\]` escape quotes in the
+  // selector. They are valid CSS but unused here, and Salla's theme check reads the escaped quote
+  // as an open string (then reports unbalanced braces), so they are left out.
+  ast.walkRules(rule => { if (/\\['"]/.test(rule.selector)) rule.remove(); });
   scopeIntoRegions(ast);
   ast.walkRules(rule => { if (!rule.nodes.length) rule.remove(); });
   return `/* ${file} */\n` + ast.toString();

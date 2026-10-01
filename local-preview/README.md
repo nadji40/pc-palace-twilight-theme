@@ -41,9 +41,9 @@ the top bar (remembered in `localStorage`).
 
 | File | Purpose |
 | --- | --- |
-| `data/moodyul/*.json` | Raw dump of the public moodyul.com storefront (`scripts/moodyul-dump-*.cjs`, puppeteer): store, menus, categories, products, homepage sections, blog and pages. |
-| `fixture.json` | Built from the dump by `scripts/build-moodyul-fixture.cjs` in Salla's data model: homepage component settings, menus, theme settings, categories, products, brands, articles, pages and the sample customer. |
-| `sdk-fixture.js` | Local stand-in for `window.salla`: `product.api.fetch` (categories, brands, offers, search, wishlist sources, Salla sort ids, `filters[...]`, cursor paging), menus, the sample cart (quantity and remove update totals), and preview versions of `<salla-installment>`, `<salla-tel-input>` and `<salla-product-card-embed>`. Checkout, coupons, wishlist, login, reorder and cancel show a notice; they need a Salla store. |
+| `data/moodyul/*.json` | Not committed (keeps the theme zip under Salla's 2 MB limit). Raw dump of the public moodyul.com storefront (`scripts/moodyul-dump-*.cjs`, puppeteer): store, menus, categories, products, homepage sections, blog and pages. |
+| `fixture.json` | Not committed. Built from the dump by `scripts/build-moodyul-fixture.cjs` in Salla's data model: homepage component settings, menus, theme settings, categories, products, brands, articles, pages and the sample customer. |
+| `sdk-fixture.js` | Local stand-in for `window.salla`: `product.api.fetch` (categories, brands, offers, search, wishlist sources, Salla sort ids, `filters[...]`, cursor paging), menus, the sample cart (quantity and remove update totals), and simplified preview versions of Salla components (installment, phone input, embedded product card, quantity input, filters, cart summary, user menu, coupons, cart summary card, orders, notifications, order totals and trust badges). Other Salla components render nothing in the preview. Checkout, coupons, wishlist, login, reorder and cancel show a notice; they need a Salla store. |
 | `store/` | Generated pages (rebuilt by `pnpm preview:build`). |
 | `render-report.json` | Which templates, styles and data produced the pages. |
 

@@ -18,14 +18,7 @@
 #}
 {% extends "layouts.customer" %}
 {% block inner_content %}
-{% if notifications|length %}
-<ul class="palace-notifications">
-{% for notification in notifications %}
-<li class="{{ notification.is_new ? 'is-new' : '' }}"><a href="{{ notification.url }}"><i class="fi-rs-bell"></i><div><h6>{{ notification.title }}</h6>{% if notification.sub_title %}<p class="font-sm">{{ notification.sub_title }}</p>{% endif %}<span class="font-xs text-muted">{{ notification.date }}</span></div></a></li>
-{% endfor %}
-</ul>
-{% if notifications.next_page %}<div class="text-center mt-30"><a class="btn" href="{{ notifications.next_page }}">{{ trans('palace.more') }}</a></div>{% endif %}
-{% else %}
-<div class="text-center pt-30 pb-30"><i class="fi-rs-bell font-xxl text-muted"></i><p class="mt-15">{{ trans('palace.no_notifications') }}</p></div>
-{% endif %}
+{% hook 'customer:notifications.items.start' %}
+<div class="salla-island palace-notifications-list"><salla-notifications></salla-notifications></div>
+{% hook 'customer:notifications.items.end' %}
 {% endblock %}
