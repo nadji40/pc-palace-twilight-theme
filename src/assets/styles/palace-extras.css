@@ -245,6 +245,9 @@
 .palace-ref .palace-header-cart { display: flex; align-items: center; gap: 8px; }
 /* Mobile header: Salla's cart count badge sticks out beside the cart icon; keep it clear of the search icon. */
 .palace-ref .header-action-right.lg\:hidden { align-items: center; gap: 16px; }
+/* The closed mobile menu was only shifted 200px and hidden, leaving its edge inside the window: on the
+   store, its country and dark-mode rows still showed at the right edge. Closed, it sits fully outside. */
+.palace-ref .mobile-header-active:not(.sidebar-visible) { transform: translateX(100%); }
 .palace-ref .palace-header-user { display: flex; align-items: center; }
 .palace-qty { flex: 0 0 auto; max-width: 120px; }
 .palace-ref .palace-filters { padding: 0 16px 10px; }
