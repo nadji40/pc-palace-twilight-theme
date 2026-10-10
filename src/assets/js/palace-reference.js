@@ -211,19 +211,36 @@ function arrows(container, swiper, hero) {
   if (swiper.allowSlideNext) target.append(button('next', hero ? 'fi-rs-angle-right' : 'fi-rs-arrow-small-right'));
 }
 
-function slider(el, {autoplay = false, pagination = false, arrowsEl = null, hero = false} = {}) {
+// Swiper's loop with slidesPerView 'auto' does not recover when the slide widths change on a resize
+// (desktop five per row -> mobile two): the slider stops on one card or runs into empty space.
+// Each slider is built again once its width has changed.
+const sliderSetups = new Map();
+let sliderResize;
+window.addEventListener('resize', () => {
+  clearTimeout(sliderResize);
+  sliderResize = setTimeout(() => sliderSetups.forEach((setup, el) => {
+    if (!el.isConnected) { sliderSetups.delete(el); return; }
+    if (Math.abs(el.clientWidth - setup.width) < 2) return;
+    el.swiper?.destroy(true, true);
+    slider(el, setup.options);
+  }), 250);
+});
+
+function slider(el, options = {}) {
   if (!el || el.swiper) return el?.swiper;
+  sliderSetups.set(el, {options, width: el.clientWidth});
+  const {autoplay = false, pagination = false, arrowsEl = null, hero = false} = options;
   const modules = [];
-  const options = {spaceBetween: 0, loop: true, slidesPerView: 'auto'};
-  if (autoplay) { modules.push(Autoplay); options.autoplay = {delay: 2500, disableOnInteraction: false, pauseOnMouseEnter: true}; }
+  const params = {spaceBetween: 0, loop: true, slidesPerView: 'auto'};
+  if (autoplay) { modules.push(Autoplay); params.autoplay = {delay: 2500, disableOnInteraction: false, pauseOnMouseEnter: true}; }
   if (pagination) {
     modules.push(Pagination);
     let dots = el.querySelector(':scope > .swiper-pagination');
     if (!dots) { dots = document.createElement('div'); dots.className = 'swiper-pagination'; el.append(dots); }
-    options.pagination = {el: dots, clickable: true};
+    params.pagination = {el: dots, clickable: true};
   }
-  options.modules = modules;
-  const swiper = new Swiper(el, options);
+  params.modules = modules;
+  const swiper = new Swiper(el, params);
   el.classList.toggle('center-items-slider', !(swiper.allowSlideNext || swiper.allowSlidePrev));
   arrows(arrowsEl, swiper, hero);
   swiper.on('lock unlock', () => {
