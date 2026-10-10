@@ -32,7 +32,9 @@
 <div class="footer-link-widget widget-install-app col wow animate__animated animate__fadeInUp" data-wow-delay=".5s">
 {# The store's own apps and payment methods (Salla settings) #}
 <div class="salla-island palace-apps"><salla-apps-icons></salla-apps-icons></div>
-<div class="salla-island palace-payments"><salla-payments exclude='["sbc"]'></salla-payments></div>
+{# The e-commerce certificate is shown below with its number, so the payment icons leave it out: an
+   (almost) empty "sbc" slot replaces Salla's certificate icon (the exclude attribute is not applied). #}
+<div class="salla-island palace-payments"><salla-payments><span slot="sbc" hidden>&#8203;</span></salla-payments></div>
 </div>
 <div class="col-12">
 <ul class="all-legal-info">
