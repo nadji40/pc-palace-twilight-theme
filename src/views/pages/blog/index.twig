@@ -23,6 +23,7 @@
 {% if categories|length %}
 <div class="palace-blog-categories mb-30">{% for category in categories %}<a href="{{ category.url }}" class="btn btn-sm {{ category.is_current ? '' : 'btn-outline' }}">{{ category.name }}</a>{% endfor %}</div>
 {% endif %}
+{% hook 'blog:index.items.start' %}
 <div class="loop-grid pr-30"><div class="row">
 {% for article in articles %}
 <article class="col-xl-4 col-lg-6 col-md-6 text-center hover-up mb-30 wow animate__animated animate__fadeInUp" data-wow-delay="0.{{ loop.index0 % 3 }}s">
@@ -38,6 +39,7 @@
 <p class="text-center">{{ trans('palace.no_articles') }}</p>
 {% endfor %}
 </div></div>
+{% hook 'blog:index.items.end' %}
 {% if articles.next_page %}<div class="text-center mb-50"><a class="btn" href="{{ articles.next_page }}">{{ trans('palace.more') }}</a></div>{% endif %}
 </div>
 </div></div>

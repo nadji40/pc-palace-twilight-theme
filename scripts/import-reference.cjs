@@ -28,20 +28,16 @@ for (const dir of ['assets/icons', 'assets/fonts', 'assets/images']) {
     if (dir === 'assets/images' && /^[0-9a-f]{8}-[0-9a-f]{4}-/.test(clean)) continue; // merchant media
     if (/^(tsso|tsst|uicons|regular|medium)/.test(clean)) continue; // fonts handled below
     if (SKIP.has(clean)) continue;
-    fs.copyFileSync(path.join(ref, dir, file), path.join(palaceImages, clean));
+    // Existing files are kept: the PNGs in the theme are palette-optimised copies (size limit).
+    if (!fs.existsSync(path.join(palaceImages, clean))) fs.copyFileSync(path.join(ref, dir, file), path.join(palaceImages, clean));
     copied.set(clean, `./images/palace/${clean}`);
   }
 }
 
-// Google Fonts Almarai, served from the theme.
+// Almarai is loaded from Google Fonts by layouts/master.twig (a <link>), not bundled: public
+// Salla themes must stay under 1 MB zipped.
 const fontFiles = fs.readdirSync(path.join(ref, 'assets/fonts'));
-const fonts = fs.readFileSync(path.join(ref, 'css/original/css2-d88fa8faa.css'), 'utf8')
-  .replace(/url\([^)]*\/([^/)]*)\.woff2\)/g, (match, stem) => {
-    const file = fontFiles.find(f => f.startsWith(stem + '-'));
-    if (!file) return match;
-    fs.copyFileSync(path.join(ref, 'assets/fonts', file), path.join(images, file));
-    return `url('./images/${file}')`;
-  });
+const fonts = '/* Almarai: loaded from Google Fonts in layouts/master.twig */';
 const icons = fontFiles.find(f => f.startsWith('uicons-regular-straight'));
 fs.copyFileSync(path.join(ref, 'assets/fonts', icons), path.join(images, icons));
 

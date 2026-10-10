@@ -33,16 +33,16 @@
 <h4 class="widget-title"></h4>
 <p class=""></p>
 <div class="download-app">
-{% if theme.settings.get('palace_app_store_url') %}<a class="hover-up mb-sm-2 mb-lg-0" href="{{ theme.settings.get('palace_app_store_url') }}"><img class="hover-up mb-sm-2 mb-lg-0 lazyload" src="{{ (palace_img ~ 'lazyloading_img.svg')|asset }}" data-src="{{ (palace_img ~ 'app-store.png')|asset }}" alt="ios_app"></a>{% endif %}
-{% if theme.settings.get('palace_google_play_url') %}<a class="hover-up mb-sm-2" href="{{ theme.settings.get('palace_google_play_url') }}"><img class="hover-up mb-sm-2 lazyload" src="{{ (palace_img ~ 'lazyloading_img.svg')|asset }}" data-src="{{ (palace_img ~ 'google-play.png')|asset }}" alt="android_app"></a>{% endif %}
+{% if theme.settings.get('palace_app_store_url') %}<a class="hover-up mb-sm-2 mb-lg-0" href="{{ theme.settings.get('palace_app_store_url') }}"><img class="hover-up mb-sm-2 mb-lg-0 lazyload" src="{{ (palace_img ~ 'lazyloading_img.svg')|asset }}" data-src="{{ (palace_img ~ 'app-store.png')|asset }}" alt="{{ trans('palace.ios_app') }}"></a>{% endif %}
+{% if theme.settings.get('palace_google_play_url') %}<a class="hover-up mb-sm-2" href="{{ theme.settings.get('palace_google_play_url') }}"><img class="hover-up mb-sm-2 lazyload" src="{{ (palace_img ~ 'lazyloading_img.svg')|asset }}" data-src="{{ (palace_img ~ 'google-play.png')|asset }}" alt="{{ trans('palace.android_app') }}"></a>{% endif %}
 </div>
 <p class="mb-20"></p>
-{% for payment in payments %}<img class="lz_op_ef payment_image lazyload" src="{{ (palace_img ~ 'lazyloading_img.svg')|asset }}" data-src="{{ (palace_img ~ payment)|asset }}" alt="payment">
+{% for payment in payments %}<img class="lz_op_ef payment_image lazyload" src="{{ (palace_img ~ 'lazyloading_img.svg')|asset }}" data-src="{{ (palace_img ~ payment)|asset }}" alt="{{ trans('palace.payment_method') }}">
 {% endfor %}
 </div>
 <div class="col-12">
 <ul class="all-legal-info">
-{% if store.settings.tax.number %}<li class="mt__20 vat-container d-flex align-items-center"><a href="{{ store.settings.tax.certificate ?: '#' }}"><img class="lz_op_ef vat_image lazyload" src="{{ (palace_img ~ 'lazyloading_img.svg')|asset }}" data-src="{{ (palace_img ~ 'vat-certificate.svg')|asset }}" alt="vat-certificate"></a><div class="ml__5"><div class="vat-number"><span>{{ trans('palace.tax_number') }}</span> <span>{{ store.settings.tax.number }}</span></div></div></li>{% endif %}
+{% if store.settings.tax.number %}<li class="mt__20 vat-container d-flex align-items-center"><a href="{{ store.settings.tax.certificate ?: '#' }}"><img class="lz_op_ef vat_image lazyload" src="{{ (palace_img ~ 'lazyloading_img.svg')|asset }}" data-src="{{ (palace_img ~ 'vat-certificate.svg')|asset }}" alt="{{ trans('palace.vat_certificate') }}"></a><div class="ml__5"><div class="vat-number"><span>{{ trans('palace.tax_number') }}</span> <span>{{ store.settings.tax.number }}</span></div></div></li>{% endif %}
 {# Commercial registration / freelance document and e-commerce certificate, always shown when the store has them (Salla trust badges). #}
 <li class="mt__20 palace-trust-badges"><div class="salla-island"><salla-trust-badges dark></salla-trust-badges></div></li>
 </ul>
@@ -71,6 +71,6 @@
 </style>
 {% set whatsapp = store.contacts.whatsapp ?: store.social.whatsapp %}
 {% if whatsapp %}
-<div class="whatsappWrapper" style=" {{ theme.is_rtl ? 'right: 16px; left:unset' : 'left: 16px; right:unset' }} "><a href="https://api.whatsapp.com/send/?phone={{ whatsapp|replace({'+': '', ' ': '', 'https://wa.me/': ''}) }}&amp;text&amp;app_absent=0" target="_blank" rel="noopener"><img src="{{ (palace_img ~ 'icon-whatsapp-white.svg')|asset }}" alt="whatsapp" style="vertical-align: middle"></a></div>
+<div class="whatsappWrapper" style=" {{ theme.is_rtl ? 'right: 16px; left:unset' : 'left: 16px; right:unset' }} "><a href="https://api.whatsapp.com/send/?phone={{ whatsapp|replace({'+': '', ' ': '', 'https://wa.me/': ''}) }}&amp;text&amp;app_absent=0" target="_blank" rel="noopener"><img src="{{ (palace_img ~ 'icon-whatsapp-white.svg')|asset }}" alt="{{ trans('palace.whatsapp') }}" style="vertical-align: middle"></a></div>
 {% endif %}
 </div>

@@ -12,7 +12,8 @@ The storefront reuses the reference's own markup and stylesheet instead of appro
 
 - `scripts/import-reference.cjs` builds `src/assets/styles/pcpalace-reference.css` from the saved
   Zid stylesheets (Bootstrap 5, Swiper, animate.css and the Nest template, plus the store's custom
-  and inline CSS) and copies the static icons, payment logos and fonts into `src/assets/images/palace/`.
+  and inline CSS) and copies the static icons, payment logos and the icon font into `src/assets/images/palace/`.
+  Almarai, the PC Palace typeface, is loaded from Google Fonts by `layouts/master.twig`.
 - `scripts/palace-scope.cjs` keeps the two stylesheets apart. Elements inside a `.palace-ref` region
   (header, footer, every PC Palace home section) are styled only by the reference CSS; everything
   else (Salla components, account/cart/product pages) only by `app.css`. The scope is added with
@@ -82,8 +83,12 @@ Hooks include `product.single.before_customer_reviews`, `product.index.after_tes
 `information_page.information_page` (pages built with Salla's page builder). Each component sits in a
 `.salla-island`, which gives it back Salla's own styling inside a PC Palace region.
 
-Theme zip limit: a private theme must stay under 2 MB zipped, so the preview data
-(`local-preview/data/`, `local-preview/fixture.json`) is not committed.
+Salla's publishing checklist is followed for a public theme: the zip stays under 1 MB (fonts from
+Google Fonts, palette-optimised PNGs, no lock file or preview tooling in the repository), the three
+Twilight packages are in `package.json`, every Raed hook is present, product options use
+`salla-product-options` (button mode, styled as the PC Palace option chips), and UI text comes from
+`src/locales/` (`trans()` in Twig; `window.palace.i18n`, written by `layouts/master.twig`, in
+`palace-reference.js`).
 
 ## Dark mode
 
@@ -105,8 +110,8 @@ pnpm run production
 The compiled assets are in `public/`. Do not copy the Zid merchant media into
 this theme; merchant imagery is configured in Salla. Arabic and English theme
 strings are in `src/locales/`. After the reference capture changes, run
-`node scripts/import-reference.cjs`. The preview data comes from `node scripts/build-moodyul-fixture.cjs`.
-See `local-preview/README.md` for the local preview.
+`node scripts/import-reference.cjs`. The local preview (`local-preview/`, `scripts/preview-build.cjs` and
+the Moodyul data scripts) stays on the developer machine and is not part of the theme package.
 
 ## Connect to Salla and preview
 

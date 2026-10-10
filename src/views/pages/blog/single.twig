@@ -40,12 +40,14 @@
 </div>
 {% if article.related|length %}
 <div class="loop-grid pt-50"><h3 class="section-title style-1 mb-30">{{ trans('palace.related_articles') }}</h3><div class="row">
+{% hook 'blog:single.items.start' %}
 {% for item in article.related %}
 <article class="col-xl-4 col-lg-6 col-md-6 text-center hover-up mb-30">
 <div class="post-thumb"><a href="{{ item.url }}"><img class="border-radius-15 lazyload" src="{{ 'images/palace/lazyloading_img.svg'|asset }}" data-src="{{ item.has_image ? item.image.url : ('images/placeholder.png'|asset) }}" alt="{{ item.title }}"></a></div>
 <div class="entry-content-2"><h4 class="post-title mb-15"><a href="{{ item.url }}">{{ item.title }}</a></h4><div class="entry-meta font-xs color-grey mt-10 pb-10"><span class="post-on">{{ item.created_at|date }}</span></div></div>
 </article>
 {% endfor %}
+{% hook 'blog:single.items.end' %}
 </div></div>
 {% endif %}
 </div></div></div></div>

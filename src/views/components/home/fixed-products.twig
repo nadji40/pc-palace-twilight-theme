@@ -6,7 +6,7 @@
 {% set sid = 'palace-builtin-' ~ (position|default(0)) %}
 {% set config = {'limit': limit|default(10), 'autoplay': true, 'slideClass': ' sm:w-1/5  px-2 w-1/2'} %}
 <section main-section-id="{{ sid }}" id="category-section-{{ sid }}" class="palace-ref" component-id="{{ componentId }}">
-<section class="pb-5 section-padding featured-products-section hide-main-arrows lazyloaded" section-id="{{ sid }}" data-palace-section="grid" data-palace-products="{{ config|json_encode }}" source="{{ products.source }}" source-value="{{ products.source_value|json_encode }}">
+<section class="pb-5 section-padding featured-products-section hide-main-arrows lazyloaded" section-id="{{ sid }}" data-palace-section="grid" data-palace-products="{{ config|json_encode }}" source="{{ products.source }}" limit="{{ limit }}" source-value="{{ products.source_value|json_encode }}">
 <div class="container container-padding-mobile">
 <div class="section-title wow animate__animated animate__fadeIn"><h3>{{ title }}</h3>{% if display_all_url %}<a href="{{ display_all_url }}" class="fw-900">{{ trans('palace.view_all') }}</a>{% endif %}</div>
 <div class="row"><div class="col-md-12 carausel-4-columns-cover wow animate__animated animate__fadeIn" data-wow-delay=".4s">

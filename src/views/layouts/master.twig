@@ -75,6 +75,8 @@
     </script>
     <script data-palace-keep>
         window.palace = {loader: "{{ 'images/palace/lazyloading_img.svg'|asset }}"};
+        // UI strings for palace-reference.js, translated by the theme locales.
+        window.palace.i18n = {{ {'palace.add_to_cart': trans('palace.add_to_cart'), 'palace.multiple_options': trans('palace.multiple_options'), 'palace.out_of_stock': trans('palace.out_of_stock'), 'palace.notify_me': trans('palace.notify_me'), 'palace.quick_view': trans('palace.quick_view'), 'palace.add_to_wishlist': trans('palace.add_to_wishlist'), 'palace.day': trans('palace.day'), 'palace.hour': trans('palace.hour'), 'palace.minutes': trans('palace.minutes'), 'palace.seconds': trans('palace.seconds'), 'palace.no_search_results': trans('palace.no_search_results'), 'palace.view_all_results': trans('palace.view_all_results'), 'palace.no_products': trans('palace.no_products'), 'palace.cancel_confirm': trans('palace.cancel_confirm')}|json_encode|raw }};
         // Same accent shades as the reference: 85% towards white, and 10% darker.
         (function (hex) {
             var m = String(hex).replace('#', ''); if (m.length === 3) m = m.replace(/./g, '$&$&');
@@ -91,6 +93,10 @@
     <link rel="stylesheet" href="{{ 'palace-reference.css' | asset }}">
     <script defer src="{{ 'palace-reference.js' | asset }}"></script>
     <link rel="stylesheet" href="{{ theme.font.path|cdn }}"/>
+    {# Almarai, the PC Palace typeface (weights used by the design: 300, 400, 700, 800) #}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap">
     <link rel="stylesheet" href="{{ 'fonts/sallaicons.css'|cdn }}"/>
 
     <style>
@@ -116,9 +122,9 @@
   {{ theme.settings.get('sticky_add_to_cart') ? ' is-sticky-product-bar' : '' }}
   ">
 <noscript>
-    To get full functionality of this site you need to enable JavaScript. Here is how
+    {{ trans('palace.noscript') }}
     <a href="https://www.enable-javascript.com/" rel="noreferrer"
-       target="_blank">To enable JavaScript on webpage</a>.
+       target="_blank">{{ trans('palace.noscript_link') }}</a>.
 </noscript>
 <div class="app-inner">
     {% hook 'body:start' %}
@@ -138,7 +144,6 @@
 <salla-offer-modal data-testid="store-offer-modal"></salla-offer-modal>
 <salla-search data-testid="store-search-modal"></salla-search>
 <salla-login-modal data-testid="store-login-modal"></salla-login-modal>
-<salla-localization-modal data-testid="store-localization-modal"></salla-localization-modal>
 {% if store.scope %}
     <salla-scopes data-testid="store-scopes" selection="{{ store.scope.display_as == 'popup' ? 'mandatory' : 'optional' }}"></salla-scopes>
 {% endif %}

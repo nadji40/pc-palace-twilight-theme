@@ -9,8 +9,10 @@
 <div class="container"><div class="archive-header position-relative"><div class="row align-items-center position-relative">
 <div class="col-xl-5">
 <div class="breadcrumb"><div class=""><div class="breadcrumb"><a href="{{ store.url }}" rel="nofollow"><i class="mr-5 fi-rs-home"></i> {{ trans('palace.home') }}</a><span></span> {{ title }} </div></div></div>
+{% if listing_details_start is defined %}{{ listing_details_start|raw }}{% endif %}
 <h1 class="mb-15">{{ title }}</h1>
 {% if listing_description is defined and listing_description %}<p> {{ listing_description|striptags }} </p>{% endif %}
+{% if listing_details_end is defined %}{{ listing_details_end|raw }}{% endif %}
 </div>
 <div class="col-xl-7 text-end filter-results-wrapper"></div>
 </div></div></div>
@@ -40,16 +42,16 @@
 <div class="sort-by-dropdown-wrap"><span> {{ current_sort.name }} <i class="fi-rs-angle-small-down"></i></span></div>
 </div>
 <div class="sort-by-dropdown"><ul>
-<li class="header-sortby"><span>{{ trans('palace.sort_by') }}</span><button type="button" class="btn-close" aria-label="Close"></button></li>
+<li class="header-sortby"><span>{{ trans('palace.sort_by') }}</span><button type="button" class="btn-close" aria-label="{{ trans('palace.close') }}"></button></li>
 {% for sort in sorts %}<li><a class="truncate {{ sort.is_selected ? 'active' : '' }}" href="?sort={{ sort.id }}"> {{ sort.name }} </a></li>{% endfor %}
 </ul></div>
 </div></div>
 {% endif %}
 </div>
-{% hook 'product:index.items.start' %}
+{% if listing_items_start is defined %}{{ listing_items_start|raw }}{% endif %}
 <div class="row product-grid" id="category_more_wrapper"></div>
 <button id="load-more-button" class="btn primary-btn mt-[25px] mx-auto block" type="button" hidden>{{ trans('palace.more') }}</button>
-{% hook 'product:index.items.end' %}
+{% if listing_items_end is defined %}{{ listing_items_end|raw }}{% endif %}
 </div>
 {% if filters %}
 <div class="col-lg-1-5 primary-sidebar sticky-sidebar">

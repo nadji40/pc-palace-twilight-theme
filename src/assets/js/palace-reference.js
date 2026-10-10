@@ -9,25 +9,29 @@ import {Autoplay, FreeMode, Navigation, Pagination, Thumbs} from 'swiper/modules
 const html = document.documentElement;
 const isRtl = () => html.dir === 'rtl' || document.body.classList.contains('rtl');
 const lang = () => (html.lang || 'ar').slice(0, 2);
-const t = (key, fallback) => {
+// UI text comes from the theme locales (window.palace.i18n, written by layouts/master.twig with
+// trans()) or from Salla's own strings; no text is hard-coded here.
+const t = key => {
+  const own = window.palace?.i18n?.[key];
+  if (own) return own;
   const value = window.salla?.lang?.get?.(key);
-  return value && value !== key ? value : fallback;
+  return value && value !== key ? value : '';
 };
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
 const loader = () => window.palace?.loader || '';
 const sallaReady = () => (window.salla?.onReady ? window.salla.onReady() : Promise.resolve());
 
 const labels = () => ({
-  addToCart: t('pages.cart.add_to_cart', lang() === 'ar' ? 'اضف للسلة' : 'Add to cart'),
-  multiple: t('palace.multiple_options', lang() === 'ar' ? 'خيارات متعددة' : 'Multiple options'),
-  outOfStock: t('palace.out_of_stock', lang() === 'ar' ? 'الكمية نفذت' : 'Out of stock'),
-  notifyMe: t('palace.notify_me', lang() === 'ar' ? 'اخطرني عند التوفر  ' : 'Notify me'),
-  quickView: t('palace.quick_view', lang() === 'ar' ? 'مشاهدة سريعة' : 'Quick view'),
-  addToFav: t('palace.add_to_wishlist', lang() === 'ar' ? 'اضافة الى المفضلة' : 'Add to wishlist'),
-  day: t('palace.day', lang() === 'ar' ? 'يوم' : 'Day'),
-  hour: t('palace.hour', lang() === 'ar' ? 'ساعة' : 'Hour'),
-  mins: t('palace.minutes', lang() === 'ar' ? 'دقيقة' : 'Min'),
-  secs: t('palace.seconds', lang() === 'ar' ? 'ثانية' : 'Sec'),
+  addToCart: t('palace.add_to_cart'),
+  multiple: t('palace.multiple_options'),
+  outOfStock: t('palace.out_of_stock'),
+  notifyMe: t('palace.notify_me'),
+  quickView: t('palace.quick_view'),
+  addToFav: t('palace.add_to_wishlist'),
+  day: t('palace.day'),
+  hour: t('palace.hour'),
+  mins: t('palace.minutes'),
+  secs: t('palace.seconds'),
 });
 
 /* ------------------------------------------------------------------ icons */
@@ -536,7 +540,6 @@ function search() {
   if (!wrapper) return;
   const input = wrapper.querySelector('.header-search-input');
   const results = wrapper.querySelector('#dynamic-search-results');
-  const ar = lang() === 'ar';
   let timer, token = 0;
   input.addEventListener('input', () => {
     const q = input.value.trim();
@@ -549,11 +552,11 @@ function search() {
       try {
         const products = await fetchProducts({source: 'search', value: q, limit: 8});
         if (current !== token) return;
-        if (!products.length) { results.innerHTML = `<div class="search-no-results">${ar ? 'لم يتم العثور على منتجات' : 'No products found'}</div>`; return; }
+        if (!products.length) { results.innerHTML = `<div class="search-no-results">${esc(t('palace.no_search_results'))}</div>`; return; }
         results.innerHTML = `<ul class="search-results-list">${products.map(product => {
           const p = normalize(product);
           return `<li class="search-result-item" data-url="${esc(p.url)}"><div class="search-result-img"><img src="${esc(p.image)}" alt="${esc(p.name)}"></div><div class="search-result-info"><h4 class="search-result-name">${esc(p.name)}</h4><div class="search-result-price">${money(p.price)} ${p.onSale ? `<span class="search-result-price-before">${money(p.regular, true)}</span>` : ''}</div></div>${p.discount ? `<span class="search-discount-badge">-${p.discount}%</span>` : ''}</li>`;
-        }).join('')}</ul><a href="${esc(wrapper.querySelector('form').action)}?q=${encodeURIComponent(q)}" class="search-view-all">${ar ? 'عرض جميع النتائج' : 'View all results'}</a>`;
+        }).join('')}</ul><a href="${esc(wrapper.querySelector('form').action)}?q=${encodeURIComponent(q)}" class="search-view-all">${esc(t('palace.view_all_results'))}</a>`;
       } catch (error) {
         results.classList.remove('show');
       }
@@ -789,7 +792,7 @@ async function listing(section) {
   const column = grid.clientWidth > 1100 ? 'col-lg-1-5' : 'col-lg-3';
   const render = (products, append) => {
     const html = products.map((p, i) => `<div class="${column} col-md-4 col-6"><product-card>${cardHTML(p, {index: i + 1})}</product-card></div>`).join('');
-    if (append) grid.insertAdjacentHTML('beforeend', html); else grid.innerHTML = html || `<p class="text-center w-100">${t('pages.categories.no_products', lang() === 'ar' ? 'لا توجد منتجات' : 'No products')}</p>`;
+    if (append) grid.insertAdjacentHTML('beforeend', html); else grid.innerHTML = html || `<p class="text-center w-100">${esc(t('palace.no_products'))}</p>`;
     ready(grid);
   };
   const page = async reset => {
@@ -836,16 +839,9 @@ async function listing(section) {
 sections.listing = listing;
 
 /* --------------------------------------------------------------- product */
-function reviewHTML(review) {
-  const stars = Number(review.stars ?? review.rating ?? 0);
-  const date = review.date || review.created_at?.date || '';
-  return `<div class="single-comment justify-content-between d-flex mb-30"><div class="user justify-content-between d-flex"><div class="thumb text-center">${review.avatar ? `<img src="${esc(review.avatar)}" alt="">` : ''}<a href="#" class="font-heading text-brand">${esc(review.name || '')}</a></div><div class="desc"><div class="d-flex justify-content-between mb-10"><div class="d-flex align-items-center"><span class="font-xs text-muted">${esc(String(date).slice(0, 10))}</span></div>${stars ? `<div class="product-rate d-inline-block"><div class="product-rating" style="width: ${stars * 20}%"></div></div>` : ''}</div><p class="mb-10">${esc(review.content || review.text || review.comment || '')}</p></div></div></div>`;
-}
-
 function product(section) {
   const cfg = JSON.parse(section.dataset.palaceProduct || '{}');
   const form = section.querySelector('[data-palace-product-form]');
-  const ar = lang() === 'ar';
   section.querySelectorAll('[data-palace-money]').forEach(el => { el.innerHTML = money(el.dataset.palaceMoney, el.hasAttribute('data-small') || el.hasAttribute('data-palace-live-old'), el.hasAttribute('data-fixed')); });
 
   // Gallery: main slider with thumbnails (reference: product-gallery, Swiper Thumbs + FreeMode).
@@ -866,27 +862,17 @@ function product(section) {
     });
   }
 
-  // Option lists (reference: box-view scrollableList); the price follows the selected additions.
-  const livePrice = () => {
-    let extra = 0;
-    section.querySelectorAll('[data-palace-option] li.selected-option[data-price]').forEach(li => { extra += Number(li.dataset.price || 0); });
-    section.querySelectorAll('[data-palace-live-price]').forEach(el => { el.innerHTML = money(Number(cfg.price) + extra); });
-    section.querySelectorAll('[data-palace-live-old]').forEach(el => { el.innerHTML = money(Number(cfg.regular) + extra, true); });
-  };
-  section.querySelectorAll('[data-palace-option]').forEach(group => {
-    const input = group.querySelector('input[type=hidden]');
-    const multiple = group.dataset.multiple === '1';
-    group.querySelectorAll('.scrollableList li').forEach(li => li.addEventListener('click', () => {
-      if (li.classList.contains('disabled')) return;
-      const items = [...group.querySelectorAll('.scrollableList li')];
-      if (multiple && li.dataset.value) {
-        li.classList.toggle('selected-option');
-        items[0].classList.toggle('selected-option', !items.slice(1).some(i => i.classList.contains('selected-option')));
-      } else items.forEach(i => i.classList.toggle('selected-option', i === li));
-      input.value = items.filter(i => i.dataset.value && i.classList.contains('selected-option')).map(i => i.dataset.value).join(',');
-      livePrice();
-    }));
+  // Options are Salla's <salla-product-options> inside the form: once every required option is
+  // valid the form asks Salla for the price, and the price block follows (as in Raed's product.js).
+  form?.addEventListener('change', () => {
+    const complete = [...form.elements].every(el => !el.willValidate || el.validity.valid);
+    if (complete) window.salla?.product?.getPrice?.(new FormData(form));
   });
+  sallaReady().then(() => window.salla?.product?.event?.onPriceUpdated?.(res => {
+    const data = res?.data || {};
+    section.querySelectorAll('[data-palace-live-price]').forEach(el => { el.innerHTML = money(data.price); });
+    section.querySelectorAll('[data-palace-live-old]').forEach(el => { el.innerHTML = money(data.regular_price, true); });
+  }));
 
   // Quantity: Salla's <salla-quantity-input> in both button bars (main and sticky), kept in sync.
   const qtys = [...section.querySelectorAll('salla-quantity-input[data-palace-qty]')];
@@ -900,25 +886,10 @@ function product(section) {
     });
   }));
 
-  const payload = () => {
-    const options = {};
-    for (const group of section.querySelectorAll('[data-palace-option]')) {
-      const value = group.querySelector('input[type=hidden]').value;
-      if (!value && group.dataset.required === '1') {
-        window.salla?.notify?.error?.(`${t('palace.choose_option', ar ? 'الرجاء اختيار' : 'Please choose')} ${group.dataset.name}`);
-        group.scrollIntoView({behavior: 'smooth', block: 'center'});
-        return null;
-      }
-      if (value) options[group.dataset.palaceOption] = group.dataset.multiple === '1' ? value.split(',') : value;
-    }
-    form.querySelectorAll('#product-custom-user-input-fields [name^="options["]').forEach(field => {
-      if (field.value) options[field.name.slice(8, -1)] = field.value;
-    });
-    return {id: Number(cfg.id), quantity: quantity() || 1, options};
-  };
+  // The form carries the product id, Salla's options and the quantity; Salla validates the options.
   const add = async (button, checkout) => {
-    const data = payload();
-    if (!data) return;
+    const data = new FormData(form);
+    data.set('quantity', String(quantity() || 1));
     button.classList.add('loading');
     try {
       await window.salla.cart.addItem(data);
@@ -945,33 +916,7 @@ function product(section) {
       pane.classList.toggle('show', on);
     });
   }));
-
-  // Reviews (Salla product ratings) and questions (Salla product comments).
-  const reviews = section.querySelector('[data-palace-reviews]');
-  if (reviews) sallaReady().then(() => window.salla.api.component.getReviews({source: 'products', source_value: [Number(cfg.id)], limit: 20})).then(({data}) => {
-    const list = data || [];
-    reviews.innerHTML = list.length ? list.map(reviewHTML).join('') : `<p>${t('palace.no_reviews', ar ? 'لا توجد تقييمات بعد' : 'No reviews yet')}</p>`;
-    const counts = [1, 2, 3, 4, 5].map(n => list.filter(r => Math.round(r.stars ?? r.rating ?? 0) === n).length);
-    section.querySelectorAll('[data-palace-stars]').forEach(bar => {
-      const pct = list.length ? Math.round(counts[bar.dataset.palaceStars - 1] / list.length * 100) : 0;
-      bar.style.width = pct + '%';
-      bar.setAttribute('aria-valuenow', pct);
-    });
-  }).catch(() => {});
-  const comments = section.querySelector('[data-palace-comments]');
-  const loadComments = () => comments && sallaReady().then(() => window.salla.comment.getProductComments(Number(cfg.id), 1, 20)).then(({data}) => {
-    comments.innerHTML = (data || []).map(reviewHTML).join('');
-  }).catch(() => {});
-  loadComments();
-  section.querySelector('[data-palace-comment-form]')?.addEventListener('submit', async e => {
-    e.preventDefault();
-    const field = e.currentTarget.querySelector('[name=comment]');
-    try {
-      await window.salla.comment.add({id: Number(cfg.id), comment: field.value, type: 'product'});
-      field.value = '';
-      loadComments();
-    } catch (error) { /* login required: the SDK opens the login modal */ }
-  });
+  // Reviews and questions: Salla's <salla-comments> in the Reviews tab.
 }
 sections.product = product;
 
@@ -995,15 +940,16 @@ function cart(section) {
       section.querySelector('[data-palace-cart-empty]')?.classList.remove('d-none');
     }
   };
-  section.querySelectorAll('[data-palace-cart-qty]').forEach(select => select.addEventListener('change', async () => {
-    const id = Number(select.dataset.palaceCartQty);
-    const quantity = Number(select.value) || 1;
-    busy(select);
+  // Salla's <salla-quantity-input> fires a bubbling change event from its input.
+  section.querySelectorAll('[data-palace-cart-qty]').forEach(box => box.addEventListener('change', async () => {
+    const id = Number(box.dataset.palaceCartQty);
+    const quantity = Number(box.querySelector('input')?.value) || 1;
+    busy(box);
     try {
       refreshTotals(await window.salla.cart.updateItem({id, quantity}));
       section.querySelector(`[data-palace-item-each="${id}"]`)?.classList.toggle('d-none', quantity < 2);
     } catch (e) { /* the SDK reports it */ }
-    busy(select);
+    busy(box);
   }));
   section.querySelectorAll('[data-palace-remove]').forEach(link => link.addEventListener('click', async e => {
     e.preventDefault();
@@ -1040,7 +986,7 @@ function orderActions() {
     try { await window.salla.order.createCartFromOrder(Number(b.dataset.palaceReorder)); window.location.href = window.salla.url.get('cart'); } catch (e) { /* the SDK reports it */ }
   }));
   document.querySelectorAll('[data-palace-cancel-order]').forEach(b => b.addEventListener('click', async () => {
-    if (!window.confirm(t('palace.cancel_confirm', lang() === 'ar' ? 'هل تريد إلغاء الطلب؟' : 'Cancel this order?'))) return;
+    if (!window.confirm(t('palace.cancel_confirm'))) return;
     try { await window.salla.order.cancel(Number(b.dataset.palaceCancelOrder)); window.location.reload(); } catch (e) { /* the SDK reports it */ }
   }));
 }
