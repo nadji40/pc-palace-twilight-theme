@@ -243,6 +243,8 @@
 
 /* Salla components placed in the PC Palace header and product buttons. */
 .palace-ref .palace-header-cart { display: flex; align-items: center; gap: 8px; }
+/* Mobile header: Salla's cart count badge sticks out beside the cart icon; keep it clear of the search icon. */
+.palace-ref .header-action-right.lg\:hidden { align-items: center; gap: 16px; }
 .palace-ref .palace-header-user { display: flex; align-items: center; }
 .palace-qty { flex: 0 0 auto; max-width: 120px; }
 .palace-ref .palace-filters { padding: 0 16px 10px; }
