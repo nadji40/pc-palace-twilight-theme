@@ -94,7 +94,7 @@
 {% block content %}
 {% set images = product.images|length ? product.images : [product.image] %}
 {% set on_sale = product.is_on_sale and product.regular_price > product.price %}
-{% set discount = on_sale ? (product.discount_percentage ? product.discount_percentage|replace({'%': ''})|trim : ((product.regular_price - product.price) / product.regular_price * 100)|round) : 0 %}
+{% set discount = on_sale ? ((product.discount_percentage ? (product.discount_percentage|replace({'%': ''})|trim) + 0 : (product.regular_price - product.price) / product.regular_price * 100)|round) : 0 %}
 {% set stars = product.rating ? product.rating.stars : 0 %}
 {% set buttons %}
 {% if not product.is_hidden_quantity %}<div class="salla-island palace-qty"><salla-quantity-input max="{{ product.max_quantity }}" value="1" name="quantity" aria-label="{{ trans('palace.quantity') }}" data-palace-qty></salla-quantity-input></div>{% endif %}

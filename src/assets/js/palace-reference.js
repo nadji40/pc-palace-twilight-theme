@@ -184,10 +184,14 @@ async function fetchProducts({source, value, limit}) {
   await sallaReady();
   if (source === 'selected' && (!value || !value.length)) return [];
   const query = {source, limit};
-  if (value !== undefined && value !== null && value !== '' && !(Array.isArray(value) && !value.length)) query.source_value = value;
+  if (value !== undefined && value !== null && value !== '' && !(Array.isArray(value) && !value.length)) query.source_value = sourceValue(source, value);
   const response = await productApi().fetch({...query, with: ['images']});
   return response?.data || [];
 }
+
+// Salla's SDK rejects a single id for these sources ("SourceValue type error. Expected an array.").
+const LIST_SOURCES = ['categories', 'brands', 'tags', 'selected'];
+const sourceValue = (source, value) => (LIST_SOURCES.includes(source) && !Array.isArray(value) ? [value] : value);
 
 const productApi = () => window.salla?.product?.api || window.salla?.product || window.salla?.api?.product;
 
@@ -809,7 +813,7 @@ async function listing(section) {
     let response;
     if (reset || !next) {
       const query = {source: cfg.source, limit: cfg.limit || 24, per_page: cfg.limit || 24, filterable: 1, with: ['images']};
-      if (cfg.value !== null && cfg.value !== undefined && cfg.value !== '') query.source_value = cfg.value;
+      if (cfg.value !== null && cfg.value !== undefined && cfg.value !== '') query.source_value = sourceValue(cfg.source, cfg.value);
       if (sort) query.sort = sort;
       if (Object.keys(filters).length) query.filters = filters;
       response = await productApi().fetch(query);
