@@ -968,10 +968,12 @@ function cart(section) {
       section.querySelector('[data-palace-cart-empty]')?.classList.remove('d-none');
     }
   };
-  // Salla's <salla-quantity-input> fires a bubbling change event from its input.
-  section.querySelectorAll('[data-palace-cart-qty]').forEach(box => box.addEventListener('change', async () => {
+  // Salla's <salla-quantity-input> fires a bubbling change event from its input. The component copies
+  // its attributes onto that input, so only the component itself is selected (the input would report
+  // the event again, without a quantity, and reset the item to 1).
+  section.querySelectorAll('salla-quantity-input[data-palace-cart-qty]').forEach(box => box.addEventListener('change', async event => {
     const id = Number(box.dataset.palaceCartQty);
-    const quantity = Number(box.querySelector('input')?.value) || 1;
+    const quantity = Number(event.detail?.quantity || box.querySelector('input')?.value) || 1;
     busy(box);
     try {
       refreshTotals(await window.salla.cart.updateItem({id, quantity}));
