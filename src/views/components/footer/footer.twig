@@ -45,6 +45,11 @@
 {% if store.settings.tax.number %}<li class="mt__20 vat-container d-flex align-items-center"><a href="{{ store.settings.tax.certificate ?: '#' }}"><img class="lz_op_ef vat_image lazyload" src="{{ (palace_img ~ 'lazyloading_img.svg')|asset }}" data-src="{{ (palace_img ~ 'vat-certificate.svg')|asset }}" alt="{{ trans('palace.vat_certificate') }}"></a><div class="ml__5"><div class="vat-number"><span>{{ trans('palace.tax_number') }}</span> <span>{{ store.settings.tax.number }}</span></div></div></li>{% endif %}
 {# Commercial registration / freelance document and e-commerce certificate, always shown when the store has them (Salla trust badges). #}
 <li class="mt__20 palace-trust-badges"><div class="salla-island"><salla-trust-badges dark></salla-trust-badges></div></li>
+{# Saudi Business Center (e-commerce) certificate, from the store settings; always shown when the store has one. #}
+{% set sbc = store.settings.certificate %}
+{% if sbc %}{% set sbc_id = sbc.id is defined ? sbc.id : sbc %}
+<li class="mt__20 vat-container d-flex align-items-center palace-sbc"><a href="https://eauthenticate.saudibusiness.gov.sa/inquiry?certificateRefID={{ sbc_id|url_encode }}" target="_blank" rel="noopener"><img src="{{ (palace_img ~ 'business_center.png')|asset }}" alt="{{ trans('palace.ecommerce_number') }}" width="30" height="30"></a><div class="ml__5"><span>{{ trans('palace.ecommerce_number') }}</span> <span>{{ sbc_id }}</span></div></li>
+{% endif %}
 </ul>
 </div>
 </div>
