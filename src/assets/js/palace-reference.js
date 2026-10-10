@@ -968,18 +968,19 @@ function cart(section) {
       section.querySelector('[data-palace-cart-empty]')?.classList.remove('d-none');
     }
   };
-  // Salla's <salla-quantity-input> fires a bubbling change event from its input. The component copies
-  // its attributes onto that input, so only the component itself is selected (the input would report
-  // the event again, without a quantity, and reset the item to 1).
-  section.querySelectorAll('salla-quantity-input[data-palace-cart-qty]').forEach(box => box.addEventListener('change', async event => {
-    const id = Number(box.dataset.palaceCartQty);
-    const quantity = Number(event.detail?.quantity || box.querySelector('input')?.value) || 1;
-    busy(box);
+  // Each item is a form (id, chosen options, Salla's quantity input): Salla updates an item with options
+  // only when they are sent again, as Raed's cart does. Salla's <salla-quantity-input> fires a bubbling
+  // change event from its input, so one listener on the form sees quantity and option changes.
+  section.querySelectorAll('form[data-palace-cart-form]').forEach(form => form.addEventListener('change', async () => {
+    const id = Number(form.dataset.palaceCartForm);
+    const data = new FormData(form);
+    const quantity = Number(data.get('quantity')) || 1;
+    busy(form);
     try {
-      refreshTotals(await window.salla.cart.updateItem({id, quantity}));
+      refreshTotals(await window.salla.cart.updateItem(data));
       section.querySelector(`[data-palace-item-each="${id}"]`)?.classList.toggle('d-none', quantity < 2);
     } catch (e) { /* the SDK reports it */ }
-    busy(box);
+    busy(form);
   }));
   section.querySelectorAll('[data-palace-remove]').forEach(link => link.addEventListener('click', async e => {
     e.preventDefault();

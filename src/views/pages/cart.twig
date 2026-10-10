@@ -84,25 +84,31 @@
 {# Prices are Money objects: formatted with Salla's money filter, as in Raed (their fields are not read directly). #}
 {% set item_total = item.detailed_offers|length > 0 ? item.total_special_price|money : item.total|money %}
 <div class="cart-product-row-wrapper" data-palace-cart-item="{{ item.id }}">
-<div class="cart-product-row">
+{# Salla updates an item with options only when the options are sent again (Raed wraps each item in a form
+   with its options): the form carries the id, the chosen options and Salla's quantity input. #}
+{% set free_text_options = false %}{% for option in item.options %}{% if not option.details|length %}{% set free_text_options = true %}{% endif %}{% endfor %}
+<form class="cart-product-row" data-palace-cart-form="{{ item.id }}" onsubmit="return false">
+<input type="hidden" name="id" value="{{ item.id }}">
+{% if not free_text_options %}{% for option in item.options %}{% for detail in option.details %}{% if detail.is_selected %}<input type="hidden" name="options[{{ option.id }}]{{ option.type in ['multiple-option', 'multiple-options', 'multi-options', 'checkbox'] ? '[]' : '' }}" value="{{ detail.id }}">{% endif %}{% endfor %}{% endfor %}{% endif %}
 <div class="cart-product-delete"><a href="#" data-palace-remove="{{ item.id }}" aria-label="{{ trans('palace.remove') }}"><span class="icon-delete"></span></a></div>
 <div class="cart-product-col-img"><a class="cart-product-image-link" href="{{ item.url }}"><img class="cart-product-image lazyload" src="{{ 'images/palace/lazyloading_img.svg'|asset }}" data-src="{{ item.product_image }}" alt="{{ item.product_name }}"></a></div>
 <div class="cart-product-col-details">
 <div class="product-title-row"><h1><a class="cart-product-image-link" href="{{ item.url }}">{{ item.product_name }}</a></h1></div>
 {# Chosen options: Salla gives each option its details, the chosen ones marked is_selected (there is no option.value). #}
-{% if item.options|length %}<div class="custom-options-summary">{% for option in item.options %}{% set chosen = [] %}{% for detail in option.details %}{% if detail.is_selected %}{% set chosen = chosen|merge([detail.name]) %}{% endif %}{% endfor %}{% if chosen|length %}<p class="cart_meta_variant">{{ option.name }}: {{ chosen|join('، ') }}</p>{% endif %}{% endfor %}</div>{% endif %}
+{% if item.options|length and not free_text_options %}<div class="custom-options-summary">{% for option in item.options %}{% set chosen = [] %}{% for detail in option.details %}{% if detail.is_selected %}{% set chosen = chosen|merge([detail.name]) %}{% endif %}{% endfor %}{% if chosen|length %}<p class="cart_meta_variant">{{ option.name }}: {{ chosen|join('، ') }}</p>{% endif %}{% endfor %}</div>{% endif %}
 {% if item.offer and item.offer.names and not item.detailed_offers %}<div class="cart-product-discount-messages"><span class="message">{{ item.offer.names }}</span></div>{% endif %}
 <div class="salla-island"><salla-cart-item-offers quantity="{{ item.quantity }}" item-id="{{ item.id }}" product-price="{{ item.product_price }}" offers="{{ item.detailed_offers|json_encode }}"></salla-cart-item-offers></div>
+{% if free_text_options %}<div class="salla-island palace-options palace-cart-options">{% include 'pages.partials.product.options' with {product: item} %}</div>{% endif %}
 {% if item.is_available is same as(false) %}<p class="text-danger font-xs">{{ trans('palace.out_of_stock') }}</p>{% endif %}
 </div>
 <div class="cart-products-action"><div class="cart-product-quantity-dropdown form-group"><div>
-<div class="salla-island palace-cart-qty"><salla-quantity-input cart-item-id="{{ item.id }}" max="{{ item.max_quantity }}" value="{{ item.quantity }}" name="quantity" aria-label="{{ trans('palace.quantity') }}" data-palace-cart-qty="{{ item.id }}" {{ item.is_hidden_quantity ? 'disabled' : '' }}></salla-quantity-input></div>
+<div class="salla-island palace-cart-qty"><salla-quantity-input cart-item-id="{{ item.id }}" max="{{ item.max_quantity }}" value="{{ item.quantity }}" name="quantity" aria-label="{{ trans('palace.quantity') }}" {{ item.is_hidden_quantity ? 'disabled' : '' }}></salla-quantity-input></div>
 </div></div></div>
 <div class="cart-product-prices">
 <div class="totals"><span class="cart-product-total-price" data-palace-item-total="{{ item.id }}">{{ item.is_available ? item_total : trans('palace.out_of_stock') }}</span></div>
 <div class="cart-product-price-each {{ item.quantity > 1 ? 'd-block' : 'd-none' }}" data-palace-item-each="{{ item.id }}"><span>{{ trans('palace.per_item') }}</span> <span>{{ item.price|money }}</span></div>
 </div>
-</div>
+</form>
 </div>
 {% endfor %}
 </div>
