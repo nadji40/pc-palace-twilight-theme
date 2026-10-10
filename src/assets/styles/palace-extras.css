@@ -84,6 +84,10 @@
 /* Spacing around Salla components (islands keep Salla utility classes, so no reference margin classes on them). */
 .palace-island-gap > :not(:empty) { display: block; margin-bottom: 20px; }
 .palace-island-top { margin-top: 30px; }
+/* Footer app column: the store's app badges, then its payment methods, both aligned with the title. */
+.palace-ref .widget-install-app .palace-apps .s-apps-icons-list { flex-wrap: wrap; gap: 12px; }
+.palace-ref .widget-install-app .palace-apps:not(:empty) + .palace-payments { margin-top: 18px; }
+.palace-ref .widget-install-app .palace-payments .s-payments-list { justify-content: flex-start; gap: 10px; }
 
 /* ------------------------------------------------------ dark mode, full site
  * The reference dark mode stops at the page body: header, banners, cards, filters, cart and
