@@ -17,6 +17,7 @@
 <div class="single-header style-2"><h2>{{ page.title ?: trans('palace.brands') }}</h2></div>
 <div class="single-content mb-50">
 <section class="popular-categories section-padding"><div class="container wow animate__animated animate__fadeIn"><div class="carausel-10-columns-cover position-relative"><div class="carausel-10-columns row">
+{% hook 'brands:index.items.start' %}
 {% for char, group in brands %}{% for brand in group %}
 <div class="col-md-2 col-6"><div class="card-2 bg-9 wow animate__animated animate__fadeInUp" data-wow-delay="0.s"><a href="{{ brand.url }}">
 <figure class="img-hover-scale overflow-hidden"><div><img class="lazyload" src="{{ 'images/palace/lazyloading_img.svg'|asset }}" data-src="{{ brand.logo }}" alt="{{ brand.name }}"></div></figure>
@@ -25,6 +26,7 @@
 {% endfor %}{% else %}
 <p class="text-center">{{ trans('pages.brands.non_brands') }}</p>
 {% endfor %}
+{% hook 'brands:index.items.end' %}
 </div></div></div></section>
 </div>
 </div>

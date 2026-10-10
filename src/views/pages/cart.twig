@@ -74,14 +74,15 @@
 {% if cart.items|length %}
 <div class="row cart-details">
 <div class="col-lg-8">
+{% hook 'cart:items.start' %}
 <div class="salla-island palace-island-gap"><salla-conditional-offer></salla-conditional-offer></div>
+<div class="salla-island palace-island-gap"><salla-offer></salla-offer></div>
 <div class="table-responsive shopping-summery"><div class="table-content">
 <div class="cart_header"><div class="row al_center"><div class="col-7">{{ trans('palace.product') }}</div><div class="text-center col-2">{{ trans('palace.quantity') }}</div><div class="text-center col-3">{{ trans('palace.price') }}</div></div></div>
 <div class="cart_items js_cat_items template_for_cart_products_list">
 {% for item in cart.items %}
 {% set item_total = item.total.amount is defined ? item.total.amount : item.total %}
 {% set item_price = item.price.amount is defined ? item.price.amount : item.price %}
-{% set max_quantity = item.max_quantity ?: 10 %}
 <div class="cart-product-row-wrapper" data-palace-cart-item="{{ item.id }}">
 <div class="cart-product-row">
 <div class="cart-product-delete"><a href="#" data-palace-remove="{{ item.id }}" aria-label="{{ trans('palace.remove') }}"><span class="icon-delete"></span></a></div>
@@ -94,9 +95,7 @@
 {% if item.is_available is same as(false) %}<p class="text-danger font-xs">{{ trans('palace.out_of_stock') }}</p>{% endif %}
 </div>
 <div class="cart-products-action"><div class="cart-product-quantity-dropdown form-group"><div>
-<select data-palace-cart-qty="{{ item.id }}" aria-label="{{ trans('palace.quantity') }}" {{ item.is_hidden_quantity ? 'disabled' : '' }}>
-{% for n in 1..(max_quantity > item.quantity ? max_quantity : item.quantity) %}<option value="{{ n }}" {{ n == item.quantity ? 'selected' : '' }}>{{ n }}</option>{% endfor %}
-</select>
+<div class="salla-island palace-cart-qty"><salla-quantity-input cart-item-id="{{ item.id }}" max="{{ item.max_quantity }}" value="{{ item.quantity }}" name="quantity" aria-label="{{ trans('palace.quantity') }}" data-palace-cart-qty="{{ item.id }}" {{ item.is_hidden_quantity ? 'disabled' : '' }}></salla-quantity-input></div>
 </div></div></div>
 <div class="cart-product-prices">
 <div class="totals"><span class="cart-product-total-price" data-palace-money="{{ item_total }}" data-palace-item-total="{{ item.id }}"></span></div>
@@ -109,7 +108,9 @@
 </div></div>
 <a href="{{ store.url }}" class="cart-continue-shopping"><i class="fi-rs-arrow-left"></i> {{ trans('palace.continue_shopping') }}</a>
 <div class="divider-2 mb-30"></div>
+{% hook 'cart:items.end' %}
 </div>
+{% hook 'cart:summary.start' %}
 <div class="col-lg-4">
 <div class="border p-md-4 cart-totals ml-30">
 <div class="salla-island palace-cart-summary">

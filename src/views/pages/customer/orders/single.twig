@@ -83,6 +83,8 @@
 <div class="col-md-4 mb-15"><h6 class="text-muted font-xs">{{ trans('palace.total') }}</h6><p class="text-brand font-weight-bold" data-palace-money="{{ money }}"></p></div>
 {% if order.shipping %}<div class="col-md-12 mb-15"><h6 class="text-muted font-xs">{{ trans('palace.shipping') }}</h6><p>{{ order.shipping.name }}{% if order.shipping.number %} — {{ order.shipping.number }}{% endif %}</p></div>{% endif %}
 </div>
+{% hook 'customer:orders.single.details.start' %}
+<div class="salla-island palace-order-branch mb-30"><salla-order-branch stack-cards></salla-order-branch></div>
 <div class="table-responsive shopping-summery"><table class="table table-wishlist">
 <thead><tr class="main-heading"><th colspan="2">{{ trans('palace.product') }}</th><th>{{ trans('palace.quantity') }}</th><th>{{ trans('palace.total') }}</th></tr></thead>
 <tbody>
@@ -91,12 +93,14 @@
 <td class="image product-thumbnail"><img src="{{ item.image }}" alt="{{ item.name }}" width="80"></td>
 <td class="product-des product-name"><h6 class="mb-5">{% if item.product and item.product.url %}<a class="product-name mb-10 text-heading" href="{{ item.product.url }}">{{ item.name }}</a>{% else %}{{ item.name }}{% endif %}</h6><div class="salla-island"><salla-order-details order-details="{{ item|json_encode }}"></salla-order-details>
 {% if item.note %}<p class="font-xs text-muted">{{ item.note }}</p>{% endif %}
-<salla-review-order-item product-id="{{ item.product.id }}"></salla-review-order-item></div></td>
+<salla-review-order-item product-id="{{ item.product.id }}"></salla-review-order-item>
+<salla-review-factors-tags order-id="{{ order.id }}" product-id="{{ item.product.id }}"></salla-review-factors-tags></div></td>
 <td class="text-center">{{ item.quantity }}</td>
 <td class="price" data-palace-money="{{ item.total.amount is defined ? item.total.amount : item.total }}"></td>
 </tr>
 {% endfor %}
 </tbody></table></div>
+{% hook 'customer:orders.single.details.end' %}
 <div class="salla-island palace-order-totals mt-30"><salla-order-totals-card order="{{ order }}"></salla-order-totals-card></div>
 <div class="d-flex flex-wrap mt-30 palace-order-actions">
 {% if order.is_pending_payment and order.payment_url %}<a href="{{ order.payment_url }}" class="btn mr-10 mb-10">{{ trans('palace.pay_now') }}</a>{% endif %}

@@ -116,7 +116,7 @@
 
 <div class="container mb-30"><div class="row"><div class="m-auto col-xl-10 col-lg-12">
 <div class="product-detail accordion-detail fancybox_content_wrapper">
-<form class="row product mt__40 main-product-form" id="product-form-{{ product.id }}" data-palace-product-form onsubmit="return false">
+<form class="row product mt__40 main-product-form product-form" id="product-form-{{ product.id }}" enctype="multipart/form-data" method="post" data-palace-product-form onsubmit="return false">
 <input type="hidden" name="id" value="{{ product.id }}">
 {% hook 'product:single.form.start' %}
 <div class="row mb-50 mt-30">
@@ -160,30 +160,8 @@
 {% hook 'product:single.description.start' %}
 {% if product.subtitle %}<pre class="short-desc mb-30"><div class="font-sm">{{ product.subtitle|raw }}</div></pre>{% endif %}
 
-{% if product.options|length %}
-<div class="attr-detail attr-size "><div class="product-option-container select-view box-view">
-{% for option in product.options %}
-{% if option.type == 'splitter' %}
-<div class="custom-field-separator"></div>
-{% elseif option.details|length %}
-<div id="product-custom-user-dropdown-fields"><div class="form-group" data-palace-option="{{ option.id }}" data-required="{{ option.required ? 1 : 0 }}" data-multiple="{{ option.type == 'multiple-options' ? 1 : 0 }}" data-name="{{ option.name }}"><div>
-<label><span><span class="text-color-primary">{{ option.name }} </span></span></label>
-<input type="hidden" name="options[{{ option.id }}]" value="">
-<div class="scrollableList"><div class="selectedOption">Select</div><ul>
-<li class="selected-option" data-value="">{{ option.placeholder ?: option.name }} </li>
-{% for detail in option.details %}<li class="{{ detail.is_out ? 'disabled' : '' }}" data-value="{{ detail.id }}" data-price="{{ detail.additional_price }}"> {{ detail.name }} {% if detail.additional_price > 0 %}&nbsp;<span class="text-color-primary">(</span> <span>+</span> <span class="text-color-primary" data-palace-money="{{ detail.additional_price }}" data-small data-fixed></span> <span class="text-color-primary">)</span>{% endif %}</li>{% endfor %}
-</ul></div>
-</div></div></div>
-<div class="custom-field-separator"></div>
-{% else %}
-<div id="product-custom-user-input-fields"><div class="form-group"><label><span><span class="text-color-primary">{{ option.name }} </span></span></label>
-{% if option.type == 'textarea' %}<textarea class="form-control" name="options[{{ option.id }}]" placeholder="{{ option.placeholder }}" {{ option.required ? 'required' : '' }}></textarea>{% else %}<input class="form-control" type="{{ option.type in ['number', 'date', 'time'] ? option.type : (option.type == 'datetime' ? 'datetime-local' : 'text') }}" name="options[{{ option.id }}]" placeholder="{{ option.placeholder }}" {{ option.required ? 'required' : '' }}>{% endif %}
-</div></div>
-<div class="custom-field-separator"></div>
-{% endif %}
-{% endfor %}
-</div></div>
-{% endif %}
+{# Product options, bundles, weight, size guide, notes and attachments: Salla's components #}
+<div class="salla-island palace-options">{% include 'pages.partials.product.options' %}</div>
 
 <div class="salla-island"><salla-installment price="{{ product.price }}"></salla-installment>
 {% if product.has_metadata %}<salla-metadata></salla-metadata>{% endif %}</div>
@@ -219,6 +197,7 @@
 </ul>
 {% hook 'product:single.description.end' %}
 <div class="salla-island"><salla-quick-order class="mt-5 block"></salla-quick-order></div>
+<div class="salla-island"><salla-offer></salla-offer></div>
 </div>
 </div>
 </div>
@@ -236,31 +215,13 @@
 <div class="tab-style3">
 <ul class="nav nav-tabs text-uppercase" id="product-tabs">
 <li class="nav-item"><a class="nav-link active" id="Description-tab" href="#Description" data-palace-tab-link>{{ trans('palace.description') }}</a></li>
-<li class="nav-item"><a class="nav-link" id="Reviews-tab" href="#Reviews" data-palace-tab-link>{{ trans('palace.reviews') }}</a></li>
-<li class="nav-item"><a class="nav-link" id="Questions-tab" href="#Questions" data-palace-tab-link>{{ trans('palace.questions') }}</a></li>
+{% if store.settings.rating.show_on_product %}<li class="nav-item"><a class="nav-link" id="Reviews-tab" href="#Reviews" data-palace-tab-link>{{ trans('palace.reviews') }}</a></li>{% endif %}
 </ul>
 <div class="tab-content shop_info_tab entry-main-content product-full-description-wrapper">
 <div class="tab-pane fade show active" id="Description"><pre>{{ product.description|raw }}</pre></div>
-<div class="tab-pane fade" id="Reviews">
-<div class="comments-area"><div class="row">
-<div class="col-lg-8"><h4 class="mb-30">{{ trans('palace.reviews') }}</h4><div class="comment-list first-reviews" data-palace-reviews="{{ product.id }}"></div><div class="pagination-custom"></div></div>
-<div class="col-lg-4"><div class="ratings-sammary">
-<h4 class="mb-30">{{ stars >= 4 ? trans('palace.rating_good') : (stars > 0 ? trans('palace.rating_ok') : trans('palace.rating_none')) }}</h4>
-<div class="d-flex mb-30"><div class="product-rate d-inline-block mr-15"><div class="product-rating" style="width: {{ stars * 20 }}%"></div></div><h6>{{ stars|number_format(1) }}</h6></div>
-{% for n in [5, 4, 3, 2, 1] %}<div class="progress {{ n == 1 ? 'mb-30' : '' }}"><span>{{ n }} star</span><div class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" data-palace-stars="{{ n }}"></div></div>{% endfor %}
-</div></div>
-</div></div>
-</div>
-<div class="tab-pane fade" id="Questions">
-<div class="comments-area"><div class="row">
-<div class="col-lg-8"><h4 class="mb-30">{{ trans('palace.questions') }}</h4><div class="Questions-content" data-palace-comments="{{ product.id }}"></div><div class="Questions-pagination-custom"></div></div>
-<div class="col-lg-4"><div class="question-form"><h4 class="mb-15">{{ trans('palace.add_question') }}</h4>
-<form class="form-contact comment_form" data-palace-comment-form="{{ product.id }}"><div class="row"><div class="col-12">
-<div class="form-group"><textarea class="form-control w-100 " name="comment" cols="30" rows="9" placeholder="{{ trans('palace.question_placeholder') }}" required></textarea></div>
-</div></div><div class="form-group"><button type="submit" class="button button-contactForm">{{ trans('palace.send') }}</button></div></form>
-</div></div>
-</div></div>
-</div>
+{% if store.settings.rating.show_on_product %}
+<div class="tab-pane fade" id="Reviews"><div class="salla-island palace-comments"><salla-comments item-id="{{ product.id }}" type="product"></salla-comments></div></div>
+{% endif %}
 </div>
 </div>
 </div>

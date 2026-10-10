@@ -242,3 +242,38 @@
 .palace-ref .palace-header-user { display: flex; align-items: center; }
 .palace-qty { flex: 0 0 auto; max-width: 120px; }
 .palace-ref .palace-filters { padding: 0 16px 10px; }
+
+/* Salla product options in button mode, drawn as the PC Palace option chips
+   (reference: .product-option-container.select-view .scrollableList li). */
+.palace-options .s-product-options-wrapper { padding: 0; }
+.palace-options .s-product-options-option-container { margin-bottom: 18px; }
+.palace-options .s-product-options-option { display: block; }
+.palace-options .s-product-options-option-label { display: block; width: auto; margin-bottom: 4px; color: var(--main-color); font-size: 14px; font-weight: 700; }
+.palace-options .s-product-options-option-label b { font-weight: 700; }
+.palace-options .s-product-options-option-label small { display: none; }
+.palace-options .s-product-options-option-content { width: 100%; }
+.palace-options .s-product-options-grid-mode { display: flex; flex-wrap: wrap; gap: 4px 16px; padding: 0 5px; }
+.palace-options .s-product-options-grid-mode label { position: relative; margin: 11px 0; cursor: pointer; }
+.palace-options .s-product-options-grid-mode input { position: absolute; inset: 0; opacity: 0; pointer-events: none; }
+.palace-options .s-product-options-grid-mode-span { display: flex; align-items: center; justify-content: center; min-width: 110px; max-width: 170px; min-height: 45px; padding: 6px 10px; border: 0; border-radius: 7px; background: #fff; box-shadow: 0 3px 4px #0000001a; color: #253d4e; font-size: 12px; font-weight: 700; line-height: 16px; text-align: center; transition: background-color .2s, color .2s; }
+.palace-options .s-product-options-grid-mode label:hover .s-product-options-grid-mode-span { box-shadow: 0 3px 8px #00000026; }
+.palace-options .s-product-options-grid-mode input:checked + .s-product-options-grid-mode-span { background: var(--main-color); color: #fff; }
+.palace-options .s-product-options-grid-mode input:focus-visible + .s-product-options-grid-mode-span { outline: 2px solid var(--main-color); outline-offset: 2px; }
+.palace-options .s-product-options-disabled .s-product-options-grid-mode-span,
+.palace-options .s-product-options-option-stock-out .s-product-options-grid-mode-span { opacity: .45; cursor: not-allowed; text-decoration: line-through; }
+.palace-options .s-form-control { width: 100%; min-height: 45px; padding: 0 14px; border: 1px solid #ececec; border-radius: 10px; background: #fff; }
+.main--dark .palace-options .s-product-options-grid-mode-span { background: var(--dark-mode-card); color: var(--palace-dark-text); box-shadow: none; }
+.main--dark .palace-options .s-product-options-grid-mode input:checked + .s-product-options-grid-mode-span { background: var(--main-color); color: #fff; }
+.main--dark .palace-options .s-product-options-option-label { color: var(--palace-brand-on-dark); }
+.main--dark .palace-options .s-form-control { background: var(--dark-mode-body); border-color: var(--palace-dark-line); color: var(--palace-dark-text); }
+.palace-options .s-product-options-wrapper,
+.palace-options .s-product-options-option-container,
+.palace-options .s-product-options-option { background: transparent; box-shadow: none; }
+/* Add-to-cart and buy-now keep their labels whole; on narrow screens the row wraps. */
+.palace-ref .detail-extralink .product-extra-link2 { flex-wrap: wrap; gap: 8px; }
+.palace-ref .detail-extralink .product-extra-link2 .button.button-add-to-cart { flex: 1 1 auto; min-width: max-content; padding: 0 10px; margin: 0; font-size: 14px; }
+@media (max-width: 575px) {
+  .palace-options .s-product-options-grid-mode { gap: 0 10px; padding: 0; }
+  .palace-options .s-product-options-grid-mode label { flex: 1 1 calc(50% - 10px); margin: 6px 0; }
+  .palace-options .s-product-options-grid-mode-span { max-width: none; min-width: 0; height: 100%; }
+}

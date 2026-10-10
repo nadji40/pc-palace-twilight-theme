@@ -104,7 +104,22 @@
     "cancel_order": "Cancel order",
     "no_notifications": "No notifications",
     "cancel_confirm": "Cancel this order?",
-    "per_item": "per item"
+    "per_item": "per item",
+    "add_to_cart": "Add to cart",
+    "no_search_results": "No products found",
+    "view_all_results": "View all results",
+    "no_products": "No products",
+    "close": "Close",
+    "slide": "Slide",
+    "ios_app": "iOS app",
+    "android_app": "Android app",
+    "payment_method": "Payment method",
+    "vat_certificate": "VAT certificate",
+    "whatsapp": "WhatsApp",
+    "search": "Search",
+    "country_flag": "Country flag",
+    "noscript": "To get the full functionality of this site you need to enable JavaScript.",
+    "noscript_link": "How to enable JavaScript"
   },
   "blocks": {
     "header": {

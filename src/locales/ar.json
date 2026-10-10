@@ -104,7 +104,22 @@
     "cancel_order": "إلغاء الطلب",
     "no_notifications": "لا توجد إشعارات",
     "cancel_confirm": "هل تريد إلغاء الطلب؟",
-    "per_item": "سعر القطعة"
+    "per_item": "سعر القطعة",
+    "add_to_cart": "أضف للسلة",
+    "no_search_results": "لم يتم العثور على منتجات",
+    "view_all_results": "عرض جميع النتائج",
+    "no_products": "لا توجد منتجات",
+    "close": "إغلاق",
+    "slide": "الشريحة",
+    "ios_app": "تطبيق iOS",
+    "android_app": "تطبيق أندرويد",
+    "payment_method": "وسيلة دفع",
+    "vat_certificate": "شهادة ضريبة القيمة المضافة",
+    "whatsapp": "واتساب",
+    "search": "بحث",
+    "country_flag": "علم الدولة",
+    "noscript": "للاستفادة من جميع مزايا الموقع يجب تفعيل JavaScript في المتصفح.",
+    "noscript_link": "طريقة تفعيل JavaScript"
   },
   "blocks": {
     "header": {

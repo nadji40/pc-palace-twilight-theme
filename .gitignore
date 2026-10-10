@@ -37,3 +37,11 @@ local-preview/render-report.json
 # Moodyul preview data (kept out of the theme zip; rebuilt by scripts/moodyul-dump-*.cjs and build-moodyul-fixture.cjs)
 local-preview/data/
 local-preview/fixture.json
+
+# Local preview and Moodyul data tools stay on the developer machine (not part of the theme package)
+local-preview/
+scripts/build-preview-fixture.cjs
+scripts/build-moodyul-fixture.cjs
+scripts/moodyul-dump-*.cjs
+scripts/preview-build.cjs
+scripts/extract-reference-icons.py

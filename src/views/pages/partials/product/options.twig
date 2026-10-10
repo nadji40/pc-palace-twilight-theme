@@ -29,7 +29,8 @@
 | product.options[].details[].is_out              | bool                       | Does current option out of stock?                                                                           |
 #}
 {% if product.options|length %}
-    <salla-product-options data-testid="store-product-options" options="{{ product.options }}" product-id="{{ product.id }}"></salla-product-options>
+    {# Button mode: every choice is a box, styled as the PC Palace option chips (palace-extras.css) #}
+    <salla-product-options data-testid="store-product-options" options="{{ product.options }}" product-id="{{ product.id }}" config='{"single-option":{"type":"button"},"multiple-option":{"type":"button"}}'></salla-product-options>
 {% endif %}
 
 {% if product.has_bundle_products %}

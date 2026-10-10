@@ -23,5 +23,9 @@
 {% set config = {'source': 'brands', 'value': brand.id, 'limit': 24, 'sort': current_sort ? current_sort.id : ''} %}
 {% set listing_description = brand.description %}
 {% set listing_children = [] %}
+{% set listing_details_start %}{% hook 'brands:single.details.start' %}{% endset %}
+{% set listing_details_end %}{% hook 'brands:single.details.end' %}{% endset %}
+{% set listing_items_start %}{% hook 'brands:single.items.start' %}{% endset %}
+{% set listing_items_end %}{% hook 'brands:single.items.end' %}{% endset %}
 {% include 'pages.partials.palace-listing' %}
 {% endblock %}
