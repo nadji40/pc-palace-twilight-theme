@@ -21,7 +21,10 @@ const unhash = file => file.replace(/-[0-9a-f]{9}(\.[a-z0-9]+)$/i, '$1');
 const copied = new Map();
 // Not used by the theme (the footer shows Salla's trust badges), or replaced by a lighter file
 // (tamara2.svg embeds a 250 KB bitmap; the theme ships tamara2.png). Keeps the theme zip under 2 MB.
-const SKIP = new Set(['business_center.png', 'commercial_logo.svg', 'tamara2.svg']);
+// Payment logos and app badges come from the store through Salla's salla-payments and
+// salla-apps-icons, so the reference copies are not bundled either.
+const SKIP = new Set(['business_center.png', 'commercial_logo.svg', 'tamara2.svg', 'tamara2.png', 'tabby2.svg', 'apple_pay.svg', 'mada-circle.png', 'visa-circle.png',
+  'mastercard-circle.png', 'mispay.png', 'madfu.svg', 'emkan_bnpl.svg', 'cod.png', 'bankTransfer.png', 'app-store.png', 'google-play.png']);
 for (const dir of ['assets/icons', 'assets/fonts', 'assets/images']) {
   for (const file of fs.readdirSync(path.join(ref, dir))) {
     const clean = unhash(file);

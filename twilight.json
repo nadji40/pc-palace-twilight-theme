@@ -98,24 +98,6 @@
             "value": "SA"
         },
         {
-            "id": "palace_app_store_url",
-            "type": "string",
-            "format": "text",
-            "label": "رابط تطبيق App Store",
-            "multilanguage": false,
-            "required": false,
-            "value": null
-        },
-        {
-            "id": "palace_google_play_url",
-            "type": "string",
-            "format": "text",
-            "label": "رابط تطبيق Google Play",
-            "multilanguage": false,
-            "required": false,
-            "value": null
-        },
-        {
             "id": "squar_photo_bg_image_size",
             "type": "items",
             "format": "dropdown-list",
