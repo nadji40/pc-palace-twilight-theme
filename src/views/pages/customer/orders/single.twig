@@ -75,12 +75,11 @@
 {% extends "layouts.customer" %}
 {% block inner_title %}{{ trans('palace.order_number') }} #{{ order.reference_id ?: order.id }}{% endblock %}
 {% block inner_content %}
-{% set money = order.total.amount is defined ? order.total.amount : order.total %}
 <div class="salla-island palace-order-edit"><salla-edit-order-button></salla-edit-order-button></div>
 <div class="palace-order-summary row mb-30">
 <div class="col-md-4 mb-15"><h6 class="text-muted font-xs">{{ trans('palace.date') }}</h6><p>{{ order.created_at|date }}</p></div>
 <div class="col-md-4 mb-15"><h6 class="text-muted font-xs">{{ trans('palace.status') }}</h6><p><span class="palace-order-status" style="--status: {{ order.status.color ?: 'var(--main-color)' }}">{{ order.status.name }}</span></p></div>
-<div class="col-md-4 mb-15"><h6 class="text-muted font-xs">{{ trans('palace.total') }}</h6><p class="text-brand font-weight-bold" data-palace-money="{{ money }}"></p></div>
+<div class="col-md-4 mb-15"><h6 class="text-muted font-xs">{{ trans('palace.total') }}</h6><p class="text-brand font-weight-bold">{{ order.total|money }}</p></div>
 {% if order.shipping %}<div class="col-md-12 mb-15"><h6 class="text-muted font-xs">{{ trans('palace.shipping') }}</h6><p>{{ order.shipping.name }}{% if order.shipping.number %} — {{ order.shipping.number }}{% endif %}</p></div>{% endif %}
 </div>
 {% hook 'customer:orders.single.details.start' %}
@@ -96,7 +95,7 @@
 <salla-review-order-item product-id="{{ item.product.id }}"></salla-review-order-item>
 <salla-review-factors-tags order-id="{{ order.id }}" product-id="{{ item.product.id }}"></salla-review-factors-tags></div></td>
 <td class="text-center">{{ item.quantity }}</td>
-<td class="price" data-palace-money="{{ item.total.amount is defined ? item.total.amount : item.total }}"></td>
+<td class="price">{{ item.total|money }}</td>
 </tr>
 {% endfor %}
 </tbody></table></div>

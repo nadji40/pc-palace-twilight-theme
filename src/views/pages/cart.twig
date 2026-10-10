@@ -81,8 +81,8 @@
 <div class="cart_header"><div class="row al_center"><div class="col-7">{{ trans('palace.product') }}</div><div class="text-center col-2">{{ trans('palace.quantity') }}</div><div class="text-center col-3">{{ trans('palace.price') }}</div></div></div>
 <div class="cart_items js_cat_items template_for_cart_products_list">
 {% for item in cart.items %}
-{% set item_total = item.total.amount is defined ? item.total.amount : item.total %}
-{% set item_price = item.price.amount is defined ? item.price.amount : item.price %}
+{# Prices are Money objects: formatted with Salla's money filter, as in Raed (their fields are not read directly). #}
+{% set item_total = item.detailed_offers|length > 0 ? item.total_special_price|money : item.total|money %}
 <div class="cart-product-row-wrapper" data-palace-cart-item="{{ item.id }}">
 <div class="cart-product-row">
 <div class="cart-product-delete"><a href="#" data-palace-remove="{{ item.id }}" aria-label="{{ trans('palace.remove') }}"><span class="icon-delete"></span></a></div>
@@ -99,8 +99,8 @@
 <div class="salla-island palace-cart-qty"><salla-quantity-input cart-item-id="{{ item.id }}" max="{{ item.max_quantity }}" value="{{ item.quantity }}" name="quantity" aria-label="{{ trans('palace.quantity') }}" data-palace-cart-qty="{{ item.id }}" {{ item.is_hidden_quantity ? 'disabled' : '' }}></salla-quantity-input></div>
 </div></div></div>
 <div class="cart-product-prices">
-<div class="totals"><span class="cart-product-total-price" data-palace-money="{{ item_total }}" data-palace-item-total="{{ item.id }}"></span></div>
-<div class="cart-product-price-each {{ item.quantity > 1 ? 'd-block' : 'd-none' }}" data-palace-item-each="{{ item.id }}"><span>{{ trans('palace.per_item') }}</span> <span data-palace-money="{{ item_price }}" data-small></span></div>
+<div class="totals"><span class="cart-product-total-price" data-palace-item-total="{{ item.id }}">{{ item.is_available ? item_total : trans('palace.out_of_stock') }}</span></div>
+<div class="cart-product-price-each {{ item.quantity > 1 ? 'd-block' : 'd-none' }}" data-palace-item-each="{{ item.id }}"><span>{{ trans('palace.per_item') }}</span> <span>{{ item.price|money }}</span></div>
 </div>
 </div>
 </div>
