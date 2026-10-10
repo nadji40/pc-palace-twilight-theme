@@ -196,6 +196,7 @@
 {% endfor %}
 </ul>
 {% hook 'product:single.description.end' %}
+{% if product.has_preorder_campaign %}<div class="salla-island mt-5"><salla-count-down pre-order='{{ product.preorder|json_encode }}' boxed labeled></salla-count-down></div>{% endif %}
 <div class="salla-island"><salla-quick-order class="mt-5 block"></salla-quick-order></div>
 <div class="salla-island"><salla-offer></salla-offer></div>
 </div>
@@ -231,5 +232,21 @@
 </div>
 
 <div class="s-blocks-wrapper s-before-related">{% hook 'product.single.before_product_recommendations' %}</div>
+
+{# Similar products (Salla's "related" source) in the PC Palace product carousel #}
+{% set related_config = {'limit': 12, 'autoplay': false, 'slideClass': ' sm:w-1/5  px-2 w-1/2'} %}
+<section class="palace-ref">
+<section class="pb-5 section-padding featured-products-section hide-main-arrows" section-id="palace-related" data-palace-section="grid" data-palace-products="{{ related_config|json_encode }}" source="related" limit="12" source-value="{{ product.id|json_encode }}">
+<div class="container container-padding-mobile">
+<div class="section-title wow animate__animated animate__fadeIn"><h3>{{ trans('pages.products.similar_products') }}</h3></div>
+<div class="row"><div class="col-md-12 carausel-4-columns-cover wow animate__animated animate__fadeIn" data-wow-delay=".4s">
+<div class="arrow-center position-relative ">
+<div class="slider-arrow slider-arrow-2 carausel-4-columns-arrow"></div>
+<div class="swiper carausel-5-columns carausel-arrow-center"><div class="swiper-wrapper"></div></div>
+</div>
+</div></div>
+</div>
+</section>
+</section>
 <div class="s-blocks-wrapper s-after-related">{% hook 'product.single.after_product_recommendations' %}</div>
 {% endblock %}

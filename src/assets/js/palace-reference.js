@@ -447,6 +447,13 @@ function footerMenu() {
         column.querySelector('.footer-list').innerHTML = links.map(link).join('');
         column.hidden = !links.length;
       });
+      // Cookie preferences link, as salla-menu's with-cookie-preferences adds to the footer menu.
+      if ((window.salla.config.get('store.features') || []).includes('website-cookies')) {
+        const list = columns[0].querySelector('.footer-list');
+        list.insertAdjacentHTML('beforeend', `<li><a href="#cookies-settings" data-palace-cookies>${esc(t('common.cookies.settings'))}</a></li>`);
+        list.querySelector('[data-palace-cookies]').addEventListener('click', e => { e.preventDefault(); window.salla.event.emit('salla-cookies-bar::open'); });
+        columns[0].hidden = false;
+      }
     })
     .catch(error => console.error('PC Palace: unable to load the footer menu', error));
 }
