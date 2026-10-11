@@ -4,11 +4,12 @@
   component.more_text | component.offer_end (e.g. 2026/10/02) | component.hide_offer_date | component.autoplay | component.limit
 #}
 {% set sid = 'palace-' ~ (position|default(0)) %}
-{% set ids = [] %}{% for product in component.products %}{% set ids = ids|merge([product.id is defined ? product.id : product]) %}{% endfor %}
+{% set ids = [] %}{% for product in component.products %}{% set ids = ids|merge([product.id ?: product]) %}{% endfor %}
 {% set category = component.category %}{% if category is iterable and category.id is not defined %}{% set category = category|first %}{% endif %}
-{% set source = ids|length ? 'selected' : (category ? 'categories' : 'offers') %}
-{% set value = ids|length ? ids : (category ? [category.id is defined ? category.id : category] : null) %}
-{% set more_url = component.display_all_url ?: (category.url is defined ? category.url : '') %}
+{% set category_id = category ? category.id : null %}
+{% set source = ids|length ? 'selected' : (category_id ? 'categories' : 'offers') %}
+{% set value = ids|length ? ids : (category_id ? [category_id] : null) %}
+{% set more_url = component.display_all_url ?: (category_id ? category.url : '') %}
 {% set config = {'source': source, 'value': value, 'limit': component.limit ?: 14, 'autoplay': component.autoplay is same as(false) ? false : true, 'slideClass': 'lg:w-1/4 w-72 px-2', 'endDate': component.offer_end, 'hideDate': component.hide_offer_date ? true : false} %}
 <section main-section-id="{{ sid }}" id="offers-section-{{ sid }}" class="palace-ref" component-id="{{ componentId }}">
 <section class="pb-5 section-padding offers-slider-first featured-products-section hide-main-arrows lazyloaded" section-id="{{ sid }}" data-palace-section="offers" data-palace-products="{{ config|json_encode }}">
