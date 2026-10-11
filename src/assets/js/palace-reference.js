@@ -971,10 +971,12 @@ function cart(section) {
   // Each item is a form (id, chosen options, Salla's quantity input): Salla updates an item with options
   // only when they are sent again, as Raed's cart does. Salla's <salla-quantity-input> fires a bubbling
   // change event from its input, so one listener on the form sees quantity and option changes.
-  section.querySelectorAll('form[data-palace-cart-form]').forEach(form => form.addEventListener('change', async () => {
+  // The component's event carries the new quantity (its input can still hold the old one at that moment).
+  section.querySelectorAll('form[data-palace-cart-form]').forEach(form => form.addEventListener('change', async event => {
     const id = Number(form.dataset.palaceCartForm);
     const data = new FormData(form);
-    const quantity = Number(data.get('quantity')) || 1;
+    const quantity = Number(event.detail?.quantity || data.get('quantity')) || 1;
+    data.set('quantity', String(quantity));
     busy(form);
     try {
       refreshTotals(await window.salla.cart.updateItem(data));
