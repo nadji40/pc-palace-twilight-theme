@@ -973,7 +973,8 @@ function cart(section) {
   // change event from its input, so one listener on the form sees quantity and option changes.
   // The component's event carries the new quantity (its input can still hold the old one at that moment).
   section.querySelectorAll('form[data-palace-cart-form]').forEach(form => form.addEventListener('change', async event => {
-    const id = Number(form.dataset.palaceCartForm);
+    // Cart item ids are longer than JavaScript numbers hold exactly (19 digits): kept as strings.
+    const id = form.dataset.palaceCartForm;
     const data = new FormData(form);
     const quantity = Number(event.detail?.quantity || data.get('quantity')) || 1;
     data.set('quantity', String(quantity));
@@ -988,7 +989,7 @@ function cart(section) {
     e.preventDefault();
     busy(link);
     try {
-      const response = await window.salla.cart.deleteItem(Number(link.dataset.palaceRemove));
+      const response = await window.salla.cart.deleteItem(link.dataset.palaceRemove);
       link.closest('.cart-product-row-wrapper').remove();
       refreshTotals(response);
     } catch (error) { busy(link); }
@@ -1016,11 +1017,11 @@ function videos() {
 
 function orderActions() {
   document.querySelectorAll('[data-palace-reorder]').forEach(b => b.addEventListener('click', async () => {
-    try { await window.salla.order.createCartFromOrder(Number(b.dataset.palaceReorder)); window.location.href = window.salla.url.get('cart'); } catch (e) { /* the SDK reports it */ }
+    try { await window.salla.order.createCartFromOrder(b.dataset.palaceReorder); window.location.href = window.salla.url.get('cart'); } catch (e) { /* the SDK reports it */ }
   }));
   document.querySelectorAll('[data-palace-cancel-order]').forEach(b => b.addEventListener('click', async () => {
     if (!window.confirm(t('palace.cancel_confirm'))) return;
-    try { await window.salla.order.cancel(Number(b.dataset.palaceCancelOrder)); window.location.reload(); } catch (e) { /* the SDK reports it */ }
+    try { await window.salla.order.cancel(b.dataset.palaceCancelOrder); window.location.reload(); } catch (e) { /* the SDK reports it */ }
   }));
 }
 
