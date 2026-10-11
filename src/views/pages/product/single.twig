@@ -110,8 +110,8 @@
 <div class="page-header breadcrumb-wrap"><div class="container"><div class="breadcrumb">
 <a href="{{ store.url }}" rel="nofollow"><i class="mr-5 fi-rs-home"></i> {{ trans('palace.home') }}</a>
 <span></span>
-<a href="{{ link('products') }}" rel="nofollow"> {{ trans('palace.products_title') }}</a>
-<span></span> {{ product.name }}
+{% if product.category %}<a href="{{ product.category.url }}" rel="nofollow"> {{ product.category.name }}</a>
+<span></span> {% endif %}{{ product.name }}
 </div></div></div>
 
 <div class="container mb-30"><div class="row"><div class="m-auto col-xl-10 col-lg-12">

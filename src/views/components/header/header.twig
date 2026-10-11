@@ -55,7 +55,7 @@
 </form>
 </div>
 <div class="header-action-right"><div class="header-action-2">
-<div class="header-action-icon-2"><a href="{{ link('customer.wishlist') }}">{{ heart_icon|raw }}<span class="pro-count blue fav-products-count d-none">0</span><span class="ml-0 mr-0 lable">{{ trans('palace.wishlist') }}</span></a></div>
+<div class="header-action-icon-2"><a href="{{ link('wishlist') }}">{{ heart_icon|raw }}<span class="pro-count blue fav-products-count d-none">0</span><span class="ml-0 mr-0 lable">{{ trans('palace.wishlist') }}</span></a></div>
 <div class="header-action-icon-2 center-content palace-header-cart"><div class="salla-island"><salla-cart-summary><span slot="icon" class="palace-cart-icon">{{ cart_icon|raw }}</span></salla-cart-summary></div><span class="lable">{{ trans('palace.cart') }}</span></div>
 <div class="header-action-icon-2 center-content palace-header-user"><div class="salla-island"><salla-user-menu avatar-only show-header show-trigger></salla-user-menu></div></div>
 </div></div>
@@ -95,8 +95,8 @@
 <div class="mobile-header-content-area">
 <div style="position: relative;">
 {% if is_user %}
-<div class="mb-3 single-mobile-header-info"><a href="{{ link('customer.profile') }}"><i class="mr-10 fi fi-rs-user"></i>{{ trans('palace.profile') }}</a></div>
-<div class="mb-3 single-mobile-header-info"><a href="{{ link('customer.orders') }}"><i class="mr-10 fi fi-rs-shopping-bag"></i>{{ trans('palace.orders') }}</a></div>
+<div class="mb-3 single-mobile-header-info"><a href="{{ link('profile') }}"><i class="mr-10 fi fi-rs-user"></i>{{ trans('palace.profile') }}</a></div>
+<div class="mb-3 single-mobile-header-info"><a href="{{ link('orders') }}"><i class="mr-10 fi fi-rs-shopping-bag"></i>{{ trans('palace.orders') }}</a></div>
 <div class="mb-3 single-mobile-header-info"><a class="logout-ptn" href="#" data-palace-logout><i class="mr-10 fi fi-rs-sign-out"></i>{{ trans('palace.logout') }}</a></div>
 {% else %}
 <div class="mb-3 single-mobile-header-info"><a href="#" data-palace-login><i class="mr-10 fi fi-rs-sign-in"></i>{{ trans('palace.login') }}</a></div>
@@ -105,14 +105,14 @@
 <div class="mobile-search search-style-3 mobile-header-border"><form action="{{ link('search') }}"><input name="q" type="text" placeholder="{{ trans('palace.search_placeholder') }}"><button type="submit"><i class="fi-rs-search"></i></button></form></div>
 <div class="mobile-menu-wrap mobile-header-border">
 <nav><ul class="mobile-menu font-heading" data-palace-mobile-menu>
-<li data-palace-static><a href="{{ link('products') }}">{{ trans('palace.all_products') }}</a></li>
-<li data-palace-static><a href="{{ link('categories') }}">{{ trans('palace.all_categories') }}</a></li>
+{# Salla has no all-categories page, and the all-products page is not open on every store: the store's
+   own menu (loaded above) lists the categories. #}
 <li data-palace-static>
 {{ flame_icon|raw }}
 <a href="{{ link('offers') }}">{{ trans('palace.best_offers') }}</a>
 </li>
 <li data-palace-static>
-<button class="open-fav-modal-mobile" type="button" data-palace-href="{{ link('customer.wishlist') }}">
+<button class="open-fav-modal-mobile" type="button" data-palace-href="{{ link('wishlist') }}">
 {{ heart_icon|raw }}			<span class="ml-0 mr-0 lable">{{ trans('palace.wishlist') }}</span>
 </button>
 </li>
