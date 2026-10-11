@@ -9,10 +9,6 @@
 {% set horizontal = component.horizontal_mobile is same as(false) ? false : true %}
 <section main-section-id="{{ sid }}" id="banners-section-{{ sid }}" class="palace-ref" component-id="{{ componentId }}">
 <section id="react-banners-{{ sid }}" class="banners section-padding lazyloaded" section-id="{{ sid }}">
-{% if horizontal %}<style>
-#react-banners-{{ sid }}.banners > .container > .row{flex-wrap:nowrap;overflow-x:auto;--bs-gutter-x:0.6rem}
-#react-banners-{{ sid }}.banners > .container > .row >div{max-width:85%}
-</style>{% endif %}
 <div class="container"><div class="row">
 {% for banner in component.banners %}
 <div class="{{ col }}"><div class="banner-img wow animate__animated animate__fadeInUp" data-wow-delay="0">
@@ -25,8 +21,8 @@
 </section>
 {% if horizontal %}<style>
 @media only screen and (max-width: 768px) {
-  #banners-section-{{ sid }} > .container > .row{flex-wrap:nowrap;overflow-x:auto;--bs-gutter-x:0.6rem}
-  #banners-section-{{ sid }} > .container > .row >div{max-width:85%}
+  #react-banners-{{ sid }} > .container > .row{flex-wrap:nowrap;overflow-x:auto;--bs-gutter-x:0.6rem}
+  #react-banners-{{ sid }} > .container > .row >div{max-width:85%}
 }
 </style>{% endif %}
 </section>
