@@ -286,3 +286,8 @@
   .palace-options .s-product-options-grid-mode label { flex: 1 1 calc(50% - 10px); margin: 6px 0; }
   .palace-options .s-product-options-grid-mode-span { max-width: none; min-width: 0; height: 100%; }
 }
+
+/* Store apps that add their own header wishlist heart (guest wishlist) or floating WhatsApp
+   button: the theme already has both, so its copy steps aside instead of doubling up. */
+.palace-header-user [data-external-guest-wishlist-btn] { display: none !important; }
+body:has(.wa-s-n) .whatsappWrapper { display: none !important; }
