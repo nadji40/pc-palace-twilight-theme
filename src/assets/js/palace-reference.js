@@ -450,8 +450,7 @@ function scrollUp() {
 }
 
 // Footer columns: each top-level footer menu item with children is a column (its title
-// replaces the column heading); single links go to the first column. A flat menu (no
-// groups) is split evenly across the columns instead of filling only the first one.
+// replaces the column heading); single links go to the first column.
 function footerMenu() {
   const columns = [...document.querySelectorAll('[data-palace-footer-column]')];
   if (!columns.length) return;
@@ -461,13 +460,11 @@ function footerMenu() {
       const items = data || [];
       const groups = items.filter(i => i.children?.length);
       const singles = items.filter(i => !i.children?.length);
-      const perColumn = Math.ceil(singles.length / columns.length);
       const link = i => `<li><a href="${esc(i.url || '#')}">${esc(i.title)}</a></li>`;
       columns.forEach((column, index) => {
         const group = groups[index];
         if (group) column.querySelector('.widget-title').textContent = group.title;
-        const own = groups.length ? (index === 0 ? singles : []) : singles.slice(index * perColumn, (index + 1) * perColumn);
-        const links = [...(group ? group.children : []), ...own];
+        const links = [...(group ? group.children : []), ...(index === 0 ? singles : [])];
         column.querySelector('.footer-list').innerHTML = links.map(link).join('');
         column.hidden = !links.length;
       });
